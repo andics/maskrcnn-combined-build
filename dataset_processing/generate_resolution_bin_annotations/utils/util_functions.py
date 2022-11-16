@@ -1,4 +1,3 @@
-import sys
 import os
 import json
 import glob
@@ -7,6 +6,7 @@ import logging
 import yaml
 
 import shutil
+
 import matplotlib.pyplot as plt
 
 from pathlib import Path

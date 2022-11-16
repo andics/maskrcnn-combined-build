@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="81e35a6d-fd2c-4485-8381-499693e9fa08" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="81e35a6d-fd2c-4485-8381-499693e9fa08" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/original_annotations/description.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/maskrcnn_combined.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/maskrcnn_combined.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/logger_obj.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/logger_obj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/utils/util_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/utils/util_functions.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,15 +23,23 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1fXnLWoBT1IDISObgi629Adp3Sx" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/dataset_processing" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -42,19 +58,7 @@
       <recent name="$PROJECT_DIR$/interactive/visualize_gt_and_predictions" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.sequence_runner_preds_lh">
+  <component name="RunManager" selected="Python.sequence_runner_bin_anns">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="maskrcnn_combined" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -139,6 +143,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="sequence_runner_bin_anns" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="maskrcnn_combined" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/opt/conda/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="sequence_runner_clean_fragments" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="maskrcnn_combined" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -202,27 +227,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="sequence_runner_preds_visualizations" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="maskrcnn_combined" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/EXPERIMENTS/generate_preds_visualizations" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EXPERIMENTS/generate_preds_visualizations/sequence_runner_preds_visualizations.py" />
-      <option name="PARAMETERS" value="-cp $PROJECT_DIR$/configs/R-101-FPN/variable_pretrained_resnet/variable_pretrained_resnet_baseline_resnet_norm.yaml -td coco_2017_h_0.5_v_1.0_var" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="sequence_runner_test_classic" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="maskrcnn_combined" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -272,17 +276,17 @@
       <item itemvalue="Python.print_n_checkpoint_weights" />
       <item itemvalue="Python.sequence_runner_test_classic" />
       <item itemvalue="Python.sequence_runner_fiftyone" />
-      <item itemvalue="Python.sequence_runner_preds_visualizations" />
       <item itemvalue="Python.sequence_runner_clean_fragments" />
       <item itemvalue="Python.sequence_runner_preds_lh" />
+      <item itemvalue="Python.sequence_runner_bin_anns" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.sequence_runner_bin_anns" />
         <item itemvalue="Python.sequence_runner_preds_lh" />
         <item itemvalue="Python.sequence_runner_test_classic" />
         <item itemvalue="Python.sequence_runner_fiftyone" />
         <item itemvalue="Python.sequence_runner_clean_fragments" />
-        <item itemvalue="Python.sequence_runner_preds_visualizations" />
       </list>
     </recent_temporary>
   </component>
@@ -300,42 +304,46 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1648823878153">
+    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1668626358778">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1648823878153" />
-    <state width="1239" height="268" key="GridCell.Tab.0.bottom" timestamp="1648826022825">
+    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1668626358778" />
+    <state width="1239" height="260" key="GridCell.Tab.0.bottom" timestamp="1668627752013">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1648826022825" />
-    <state width="1239" height="268" key="GridCell.Tab.0.center" timestamp="1648826022825">
+    <state width="1239" height="260" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
+    <state width="1239" height="260" key="GridCell.Tab.0.center" timestamp="1668627752013">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1648826022825" />
-    <state width="1239" height="268" key="GridCell.Tab.0.left" timestamp="1648826022825">
+    <state width="1239" height="260" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
+    <state width="1239" height="260" key="GridCell.Tab.0.left" timestamp="1668627752013">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1648826022825" />
-    <state width="1239" height="268" key="GridCell.Tab.0.right" timestamp="1648826022825">
+    <state width="1239" height="260" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
+    <state width="1239" height="260" key="GridCell.Tab.0.right" timestamp="1668627752013">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1648826022825" />
-    <state width="1239" height="268" key="GridCell.Tab.1.bottom" timestamp="1648826022826">
+    <state width="1239" height="260" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
+    <state width="1239" height="144" key="GridCell.Tab.1.bottom" timestamp="1668626518677">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1648826022826" />
-    <state width="1239" height="268" key="GridCell.Tab.1.center" timestamp="1648826022826">
+    <state width="1239" height="144" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
+    <state width="1239" height="144" key="GridCell.Tab.1.center" timestamp="1668626518677">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1648826022826" />
-    <state width="1239" height="268" key="GridCell.Tab.1.left" timestamp="1648826022826">
+    <state width="1239" height="144" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
+    <state width="1239" height="144" key="GridCell.Tab.1.left" timestamp="1668626518677">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1648826022826" />
-    <state width="1239" height="268" key="GridCell.Tab.1.right" timestamp="1648826022826">
+    <state width="1239" height="144" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
+    <state width="1239" height="144" key="GridCell.Tab.1.right" timestamp="1668626518677">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="268" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1648826022826" />
+    <state width="1239" height="144" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
+    <state x="93" y="93" width="1095" height="495" key="ShowDiffWithBranchDialog" timestamp="1668626358778">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="93" y="93" width="1095" height="495" key="ShowDiffWithBranchDialog/0.0.1280.680@0.0.1280.680" timestamp="1668626358778" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -454,6 +462,11 @@
           <url>file://$PROJECT_DIR$/maskrcnn_benchmark/utils/checkpoint.py</url>
           <line>148</line>
           <option name="timeStamp" value="201" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="202" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
