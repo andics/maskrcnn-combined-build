@@ -1,0 +1,2 @@
+This folder contains configuration files used in the process of modifying annotation
+files (for border-based evaluation)

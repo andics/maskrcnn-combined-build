@@ -1,0 +1,8 @@
+Currently the image-inference script is made to generate visualizations without neuronal activations
+TODO:
+ - Move the default parameters from the Model_single class to a config file
+ - Understand what those parameters do (eg confidence_threshold)
+ - Add a logging mechanism throughout the entire experiment. Allows for easier debugging later on
+ - Make GT to be displayed on the same image as prediction
+FINALLY:
+ - Make hooks for recording neuron values

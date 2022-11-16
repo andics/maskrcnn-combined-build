@@ -1,0 +1,2 @@
+This folder contains files which were used to extract featuremaps from the 5-modules architecture.
+The scripts can be easily adapted to work with any of the architectures in MaskRCNN. Example featuremaps:

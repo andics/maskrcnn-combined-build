@@ -1,0 +1,8 @@
+FRAME:
+  new_annotation_dir_path: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/annotations
+  org_annotation_file_path: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/annotations/gen_ann_frame_0.45_thickness/instances_val2017_org_unobfiscated.json
+  thickness_ratio: 0.45
+LOGGING:
+  logs_subdir: gen_ann_frame_0.45_thickness
+  main_logger_name: main_logger_anns
+  main_logs_dir: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Cluster_runtime/gen_anns_with_border

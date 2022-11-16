@@ -1,0 +1,5 @@
+The folder contains a script for shifting a dataset in either corner of an image as
+measured by percentage. E.g. 50/50 would shift the image to the lower right corer,
+splitting it exactly into 4 pieces
+
+The percentages are measured starting from the top left corner.

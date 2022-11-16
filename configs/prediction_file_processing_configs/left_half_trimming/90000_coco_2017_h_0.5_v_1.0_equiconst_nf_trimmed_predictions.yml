@@ -1,0 +1,10 @@
+FRAME:
+  new_predictions_dir_path: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/equiconst_pretrained_resnet/baseline_resnet_norm/inference
+  org_predictions_file_path: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/equiconst_pretrained_resnet/baseline_resnet_norm/inference/90000_coco_2017_h_0.5_v_1.0_equiconst_nf/predictions.pth
+  thickness_ratio: 0.1
+LOGGING:
+  logs_subdir: 90000_coco_2017_h_0.5_v_1.0_equiconst_nf_trimmed_predictions
+  main_logger_name: main_logger_preds
+  main_logs_dir: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Cluster_runtime/gen_preds_left_half
+MODEL:
+  model_config: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/configs/R-101-FPN/equiconst_pretrained_resnet/equiconst_pretrained_resnet_baseline_resnet_norm.yaml

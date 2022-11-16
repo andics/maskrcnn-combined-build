@@ -1,0 +1,77 @@
+COMMAND:
+  GENERATE_COMMAND: true
+  NUM_GPUS: 2
+  NUM_JOBS: 12
+DATALOADER:
+  COCO_VERSION: dataloader_COCO_version_5_mod
+  SIZE_DIVISIBILITY: 32
+  TRANSFORM_FUNCTION: dataloader_transform_function_5_mod
+DATASETS:
+  TEST: ("coco_2017_multi_ch_val",)
+  TRAIN: ("coco_2017_multi_ch_train",)
+MODEL:
+  BACKBONE:
+    CONV_BODY: R-101-FPN
+    FREEZE_CONV_BODY_AT: -1
+    OUT_CHANNELS: 256
+  MASK_ON: true
+  META_ARCHITECTURE: GeneralizedRCNN
+  RESNETS:
+    VERSION: resnet_version_5_mod
+  ROI_BOX_HEAD:
+    FEATURE_EXTRACTOR: FPN2MLPFeatureExtractor
+    POOLER_RESOLUTION: 7
+    POOLER_SAMPLING_RATIO: 2
+    POOLER_SCALES: (0.25, 0.125, 0.0625, 0.03125)
+    PREDICTOR: FPNPredictor
+  ROI_HEADS:
+    USE_FPN: true
+  ROI_MASK_HEAD:
+    FEATURE_EXTRACTOR: MaskRCNNFPNFeatureExtractor
+    POOLER_RESOLUTION: 14
+    POOLER_SAMPLING_RATIO: 2
+    POOLER_SCALES: (0.25, 0.125, 0.0625, 0.03125)
+    PREDICTOR: MaskRCNNC4Predictor
+    RESOLUTION: 28
+    SHARE_BOX_FEATURE_EXTRACTOR: false
+  RPN:
+    ANCHOR_STRIDE: (4, 8, 16, 32, 64)
+    FPN_POST_NMS_TOP_N_TEST: 1000
+    POST_NMS_TOP_N_TEST: 1000
+    PRE_NMS_TOP_N_TEST: 1000
+    PRE_NMS_TOP_N_TRAIN: 2000
+    USE_FPN: true
+  SEQUENCE: 5_mod
+  SERIALIZATION_FUNCTION: serialization_function_5_mod
+  SPECIFIC_SEQUENCE: conv_bn1_relu1_cat_bn2_relu2_comp
+  WEIGHT: catalog://ImageNetPretrained/MSRA/R-101
+OUTPUT_DIR: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/5_mod/conv_bn1_relu1_cat_bn2_relu2_comp
+SOLVER:
+  BASE_LR: 0.002
+  CHECKPOINT_PERIOD: 2000
+  IMS_PER_BATCH: 16
+  LAYER_FREEZE_PATTERN:
+  - - 0
+    - 10000
+    - backbone.body.layer2
+    - backbone.body.layer3
+    - backbone.body.layer4
+  MAX_ITER: 30000
+  STEPS: (40000,)
+  TEST_EVERY_CHECKPOINT: false
+  USE_APEX_DDP: false
+  WARMUP_FACTOR: 1.0e-06
+  WARMUP_ITERS: 10000
+  WEIGHT_DECAY: 0.0001
+TENSORBOARD:
+  BASE_LOG_DIR: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Tensorboard_logs
+  TARGET_LAYERS:
+  - backbone.body.stem.pure_conv_ch1
+  - backbone.body.stem.pure_conv_ch2
+  - backbone.body.stem.pure_conv_ch3
+  - backbone.body.stem.mixed_conv_ch1_ch2
+  - backbone.body.stem.mixed_conv_ch2_ch3
+  - backbone.body.layer1._modules['0'].conv1
+  - backbone.body.layer2._modules['0'].conv1
+  - backbone.body.layer3._modules['0'].conv1
+  - backbone.body.layer4._modules['0'].conv1

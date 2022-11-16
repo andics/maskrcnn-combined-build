@@ -1,0 +1,2 @@
+The following are scripts used to generate annotation files covering
+only the outer-most 19% of the image area (19 = 100 - 9 * 9)

@@ -1,0 +1,12 @@
+    def load_model(self):
+        self.model = build_detection_model(self.cfg)
+        self.cpu_device = torch.device("cpu")
+        self.model.to(self.cpu_device)
+        self.transforms = build_transforms(self.cfg, False)
+
+        # Weight loading
+        self.model_checkpointer = DetectronCheckpointer(self.cfg, self.model, save_dir=self.model_checkpoint_dir)
+        self.model_checkpointer.load()
+
+        #Put into evaluation mode
+        self.model.eval()
