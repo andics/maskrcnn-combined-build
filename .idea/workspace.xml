@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="81e35a6d-fd2c-4485-8381-499693e9fa08" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/original_annotations/description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/maskrcnn_combined.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/maskrcnn_combined.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/logger_obj.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/logger_obj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/annotation_processor_obj.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/objects/annotation_processor_obj.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/utils/util_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/utils/util_functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -308,42 +303,50 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1668626358778" />
-    <state width="1239" height="260" key="GridCell.Tab.0.bottom" timestamp="1668627752013">
+    <state width="1239" height="469" key="GridCell.Tab.0.bottom" timestamp="1668791025009">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="260" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
-    <state width="1239" height="260" key="GridCell.Tab.0.center" timestamp="1668627752013">
+    <state width="1239" height="469" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
+    <state width="1239" height="469" key="GridCell.Tab.0.center" timestamp="1668791025008">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="260" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
-    <state width="1239" height="260" key="GridCell.Tab.0.left" timestamp="1668627752013">
+    <state width="1239" height="469" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
+    <state width="1239" height="469" key="GridCell.Tab.0.left" timestamp="1668791025008">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="260" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
-    <state width="1239" height="260" key="GridCell.Tab.0.right" timestamp="1668627752013">
+    <state width="1239" height="469" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
+    <state width="1239" height="469" key="GridCell.Tab.0.right" timestamp="1668791025008">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="260" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1668627752013" />
-    <state width="1239" height="144" key="GridCell.Tab.1.bottom" timestamp="1668626518677">
+    <state width="1239" height="469" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
+    <state width="1239" height="469" key="GridCell.Tab.1.bottom" timestamp="1668791025009">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="144" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
-    <state width="1239" height="144" key="GridCell.Tab.1.center" timestamp="1668626518677">
+    <state width="1239" height="469" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
+    <state width="1239" height="469" key="GridCell.Tab.1.center" timestamp="1668791025009">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="144" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
-    <state width="1239" height="144" key="GridCell.Tab.1.left" timestamp="1668626518677">
+    <state width="1239" height="469" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
+    <state width="1239" height="469" key="GridCell.Tab.1.left" timestamp="1668791025009">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="144" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
-    <state width="1239" height="144" key="GridCell.Tab.1.right" timestamp="1668626518677">
+    <state width="1239" height="469" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
+    <state width="1239" height="469" key="GridCell.Tab.1.right" timestamp="1668791025009">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="144" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1668626518677" />
+    <state width="1239" height="469" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
     <state x="93" y="93" width="1095" height="495" key="ShowDiffWithBranchDialog" timestamp="1668626358778">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="93" y="93" width="1095" height="495" key="ShowDiffWithBranchDialog/0.0.1280.680@0.0.1280.680" timestamp="1668626358778" />
+    <state width="647" height="347" key="XDebugger.FullValuePopup" timestamp="1668778111295">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="647" height="347" key="XDebugger.FullValuePopup/0.0.1280.680@0.0.1280.680" timestamp="1668778111295" />
+    <state x="0" y="0" width="603" height="680" key="find.popup" timestamp="1668791822617">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="0" y="0" width="603" height="680" key="find.popup/0.0.1280.680@0.0.1280.680" timestamp="1668791822617" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -462,11 +465,6 @@
           <url>file://$PROJECT_DIR$/maskrcnn_benchmark/utils/checkpoint.py</url>
           <line>148</line>
           <option name="timeStamp" value="201" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="202" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
