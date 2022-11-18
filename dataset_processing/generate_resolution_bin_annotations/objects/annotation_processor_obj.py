@@ -13,7 +13,7 @@ from skimage import measure
 from operator import itemgetter
 
 class annotationProcessor:
-    _DEBUGGING = True
+    _DEBUGGING = False
     _VERBOSE = True
     _WRITE_ALL_RLE_FORMAT = True
     _USE_COMPRESSED_FORMAT = False
@@ -65,93 +65,6 @@ class annotationProcessor:
         self.utils_helper.write_data_to_json(self.new_annotations_file_path, self.new_annotations_data)
 
 
-    def _binary_mask_to_compressed_rle(self, binary_mask):
-        #Function to transform a binary mask to compressed RLE, only used for is_crowd True and compress=True
-        return mask.encode(np.asfortranarray(binary_mask.astype(np.uint8)))
-
-
-    def _rle_to_binary_mask(self, segmentation, org_annotation):
-        '''
-        :param segmentation: an RLE-format segmentation (dict: counts, size)
-        :return: a numpy array representing a binary mask of the segmentation
-        '''
-        return self.coco.annToMask({'image_id': org_annotation['image_id'], 'segmentation': segmentation})
-
-
-    def _binary_mask_to_polygon(self, binary_mask, tolerance=1):
-        """Converts a binary mask to COCO polygon representation
-        Args:
-            binary_mask: a 2D binary numpy array where '1's represent the object
-            tolerance: Maximum distance from original points of polygon to approximated
-                polygonal chain. If tolerance is 0, the original coordinate array is returned.
-        """
-
-        def close_contour(contour):
-            if not np.array_equal(contour[0], contour[-1]):
-                contour = np.vstack((contour, contour[0]))
-            return contour
-        polygons = []
-        # pad mask to close contours of shapes which start and end at an edge
-        padded_binary_mask = np.pad(binary_mask, pad_width=1, mode='constant', constant_values=0)
-        contours = measure.find_contours(padded_binary_mask, 0.5)
-        contours = np.subtract(contours, 1)
-        for contour in contours:
-            contour = close_contour(contour)
-            contour = measure.approximate_polygon(contour, tolerance)
-            if len(contour) < 3:
-                continue
-            contour = np.flip(contour, axis=1)
-            segmentation = contour.ravel().tolist()
-            # after padding and subtracting 1 we may get -0.5 points in our segmentation
-            segmentation = [0 if i < 0 else i for i in segmentation]
-            polygons.append(segmentation)
-
-
-    def _binary_mask_to_uncompressed_rle(self, binary_mask):
-        #Function to transform a binary mask to uncompressed RLE, only used for is_crowd True
-        rle = {'counts': [], 'size': list(binary_mask.shape)}
-        counts = rle.get('counts')
-        for i, (value, elements) in enumerate(groupby(binary_mask.ravel(order='F'))):
-            if i == 0 and value == 1:
-                counts.append(0)
-            counts.append(len(list(elements)))
-        return rle
-
-
-    def _binary_mask_to_polygon_v2(self, bin_mask):
-        mask_new, contours = cv2.findContours((bin_mask).astype(np.uint8), cv2.RETR_TREE,
-                                                         cv2.CHAIN_APPROX_SIMPLE)
-        segmentation = []
-
-        for contour in contours:
-            contour = contour.flatten().tolist()
-            # segmentation.append(contour)
-            if len(contour) > 4:
-                segmentation.append(contour)
-        if len(segmentation) == 0:
-            return segmentation
-
-        return segmentation
-
-
-    def _binary_mask_to_polygon_v3(self, bin_mask):
-
-        contours, _ = cv2.findContours(bin_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-        segmentation = []
-        for contour in contours:
-            # Valid polygons have >= 6 coordinates (3 points)
-            if contour.size >= 6:
-                segmentation.append(contour.flatten().tolist())
-        RLEs = mask.frPyObjects(segmentation, bin_mask.shape[0], bin_mask.shape[1])
-        RLE = mask.merge(RLEs)
-        # RLE = cocomask.encode(np.asfortranarray(mask))
-        area = mask.area(RLE)
-        [x, y, w, h] = cv2.boundingRect(bin_mask)
-
-        return segmentation, [x, y, w, h], area
-
-
     def _calculate_high_res_bbox(self, image_array):
         '''
         :param image_array: a numpy array representing the image
@@ -166,13 +79,13 @@ class annotationProcessor:
 
         #Calculate the image center, considering that Python indexing has an origin [0, 0]
         [center_y, center_x] = [math.floor(img_height/2) - 1, math.floor(img_width/2) - 1]
-        margin_to_combine_with_center = self.middle_boundary/2
-        assert isinstance(margin_to_combine_with_center, int)
+        margin_to_combine_with_center = int(self.middle_boundary/2)
+        assert margin_to_combine_with_center == self.middle_boundary/2
 
         #Logic behind this statement is that if a 100x100 region is desired, one must add 49 and 50
         #along each diagonal dicection, starting from the center
         return [center_y - (margin_to_combine_with_center - 1), center_x - (margin_to_combine_with_center - 1),
-                center_y + (margin_to_combine_with_center), center_x - (margin_to_combine_with_center)]
+                center_y + (margin_to_combine_with_center) + 1, center_x + (margin_to_combine_with_center) + 1]
 
 
     def _bin_check_this_annotation(self, annotation, index):
@@ -186,7 +99,8 @@ class annotationProcessor:
         if annotationProcessor._VERBOSE:
             self.logger.log(f"Working on annotation with ID {index}: "
                             f" | Area {annotation['area']}"
-                            f" | Image ID {annotation['id']}"
+                            f" | Image ID {annotation['image_id']}"
+                            f" | Annotation ID {annotation['id']}"
                             f" | Label {self.coco.loadCats(annotation['category_id'])}|")
 
         annotation_coco_format = self.coco.loadAnns(annotation["id"])[0]
@@ -201,7 +115,7 @@ class annotationProcessor:
         self.logger.log(f"Calculated segmentation area: {current_image_binary_mask_calculated_area}")
 
         if annotationProcessor._DEBUGGING:
-            self.utils_helper.display_multi_image_collage(((current_image_binary_mask_img, f"Image ID {annotation['id']}"), ),
+            self.utils_helper.display_multi_image_collage(((current_image_binary_mask_img, f"Image ID {annotation['image_id']}"), ),
                                                           [1, 1])
             pass
         _high_res_border_bbox = self._calculate_high_res_bbox(current_image_binary_mask)
@@ -214,7 +128,8 @@ class annotationProcessor:
                                                           _high_res_border_bbox[1]:_high_res_border_bbox[3]]
 
         if annotationProcessor._DEBUGGING:
-            self.utils_helper.display_multi_image_collage(((current_image_bunary_mask_inside_hr_bin, f"Inside high-res Image ID {annotation['id']}"), ),
+            self.utils_helper.display_multi_image_collage(((current_image_bunary_mask_inside_hr_bin, f"Inside high-res"
+                                                                                                     f" Image ID {annotation['image_id']}"), ),
                                                           [1, 1])
             pass
 
@@ -231,10 +146,10 @@ class annotationProcessor:
                             f"\n | Ratio: {high_res_area_fract} | ")
 
 
-        if high_res_area_fract >= self.filter_threshold_array[0] & high_res_area_fract <= self.filter_threshold_array[1]:
-            self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
-        else:
+        if (high_res_area_fract >= self.filter_threshold_array[0]) and (high_res_area_fract <= self.filter_threshold_array[1]):
             self.ann_indices_to_keep.append(index)
             self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was kept")
+        else:
+            self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
 
         return None

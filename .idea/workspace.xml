@@ -303,38 +303,38 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1668626358778" />
-    <state width="1239" height="469" key="GridCell.Tab.0.bottom" timestamp="1668791025009">
+    <state width="1239" height="233" key="GridCell.Tab.0.bottom" timestamp="1668796784166">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
-    <state width="1239" height="469" key="GridCell.Tab.0.center" timestamp="1668791025008">
+    <state width="1239" height="233" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668796784166" />
+    <state width="1239" height="233" key="GridCell.Tab.0.center" timestamp="1668796784166">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
-    <state width="1239" height="469" key="GridCell.Tab.0.left" timestamp="1668791025008">
+    <state width="1239" height="233" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1668796784166" />
+    <state width="1239" height="233" key="GridCell.Tab.0.left" timestamp="1668796784166">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
-    <state width="1239" height="469" key="GridCell.Tab.0.right" timestamp="1668791025008">
+    <state width="1239" height="233" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1668796784166" />
+    <state width="1239" height="233" key="GridCell.Tab.0.right" timestamp="1668796784166">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1668791025008" />
-    <state width="1239" height="469" key="GridCell.Tab.1.bottom" timestamp="1668791025009">
+    <state width="1239" height="233" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1668796784166" />
+    <state width="1239" height="233" key="GridCell.Tab.1.bottom" timestamp="1668796784056">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
-    <state width="1239" height="469" key="GridCell.Tab.1.center" timestamp="1668791025009">
+    <state width="1239" height="233" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1668796784056" />
+    <state width="1239" height="233" key="GridCell.Tab.1.center" timestamp="1668796784056">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
-    <state width="1239" height="469" key="GridCell.Tab.1.left" timestamp="1668791025009">
+    <state width="1239" height="233" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1668796784056" />
+    <state width="1239" height="233" key="GridCell.Tab.1.left" timestamp="1668796784056">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
-    <state width="1239" height="469" key="GridCell.Tab.1.right" timestamp="1668791025009">
+    <state width="1239" height="233" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1668796784056" />
+    <state width="1239" height="233" key="GridCell.Tab.1.right" timestamp="1668796784056">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1239" height="469" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1668791025009" />
+    <state width="1239" height="233" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1668796784056" />
     <state x="93" y="93" width="1095" height="495" key="ShowDiffWithBranchDialog" timestamp="1668626358778">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -465,6 +465,11 @@
           <url>file://$PROJECT_DIR$/maskrcnn_benchmark/utils/checkpoint.py</url>
           <line>148</line>
           <option name="timeStamp" value="201" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dataset_processing/generate_resolution_bin_annotations/sequence_runner_bin_anns.py</url>
+          <line>81</line>
+          <option name="timeStamp" value="206" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

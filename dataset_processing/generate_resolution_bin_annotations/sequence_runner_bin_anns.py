@@ -79,7 +79,7 @@ class flowRunner:
     def run_all(self):
         self.annotation_processor.read_annotations()
         self.annotation_processor.filter_annotations_w_wrong_area_ratio()
-        #self.annotation_processor.write_new_annotations_to_disk()
+        self.annotation_processor.write_new_annotations_to_disk()
 
 
     def setup_objects_and_file_structure(self):
