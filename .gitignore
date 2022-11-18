@@ -2,3 +2,4 @@ core.90
 trained_models/*
 pretrained_models/*
 build/*
+.idea/
