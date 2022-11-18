@@ -1,0 +1,125 @@
+2022-11-18 19:31:43,175 | INFO | Finished setting up logger object
+2022-11-18 19:31:43,175 | INFO | Finished setting up new annotations folder structure! Created new annotations sub-dir: False
+2022-11-18 19:31:54,195 | INFO | Loaded JSON annotation data from: Q:\Projects\Variable_resolution\Programming\maskrcnn-combined-build\dataset_processing\generate_resolution_bin_annotations\original_annotations\instances_val2017.json
+2022-11-18 19:31:54,195 | INFO | Working on annotation with ID 0:  | Area 702.1057499999998 | Image ID 289343 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:31:54,211 | INFO | Calculated segmentation area: 703
+2022-11-18 19:32:31,843 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:41,065 | INFO | Annotation 1768 on image 289343 was deleted
+2022-11-18 19:32:41,065 | INFO | Processed 1/36781 annotations
+2022-11-18 19:32:41,065 | INFO | Working on annotation with ID 1:  | Area 27718.476299999995 | Image ID 61471 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:41,065 | INFO | Calculated segmentation area: 27717
+2022-11-18 19:32:41,205 | INFO | Calculated segmentation area inside high-resolution region: 6613
+ | Ratio: 0.2385900349965725 | 
+2022-11-18 19:32:41,205 | INFO | Annotation 1773 on image 61471 was kept
+2022-11-18 19:32:41,205 | INFO | Processed 2/36781 annotations
+2022-11-18 19:32:41,205 | INFO | Working on annotation with ID 2:  | Area 78969.31690000003 | Image ID 472375 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:41,221 | INFO | Calculated segmentation area: 79002
+2022-11-18 19:32:41,393 | INFO | Calculated segmentation area inside high-resolution region: 9943
+ | Ratio: 0.12585757322599428 | 
+2022-11-18 19:32:41,393 | INFO | Annotation 2551 on image 472375 was kept
+2022-11-18 19:32:41,393 | INFO | Processed 3/36781 annotations
+2022-11-18 19:32:41,393 | INFO | Working on annotation with ID 3:  | Area 108316.66515000002 | Image ID 520301 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:41,393 | INFO | Calculated segmentation area: 108307
+2022-11-18 19:32:41,612 | INFO | Calculated segmentation area inside high-resolution region: 9272
+ | Ratio: 0.08560850175888908 | 
+2022-11-18 19:32:41,612 | INFO | Annotation 3186 on image 520301 was deleted
+2022-11-18 19:32:41,612 | INFO | Processed 4/36781 annotations
+2022-11-18 19:32:41,612 | INFO | Working on annotation with ID 4:  | Area 75864.53530000002 | Image ID 579321 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:41,627 | INFO | Calculated segmentation area: 75854
+2022-11-18 19:32:41,846 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.131832203970786 | 
+2022-11-18 19:32:41,846 | INFO | Annotation 3419 on image 579321 was kept
+2022-11-18 19:32:41,846 | INFO | Processed 5/36781 annotations
+2022-11-18 19:32:41,846 | INFO | Working on annotation with ID 5:  | Area 16932.135100000003 | Image ID 494869 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:41,846 | INFO | Calculated segmentation area: 16944
+2022-11-18 19:32:42,096 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:42,096 | INFO | Annotation 3658 on image 494869 was deleted
+2022-11-18 19:32:42,112 | INFO | Processed 6/36781 annotations
+2022-11-18 19:32:42,112 | INFO | Working on annotation with ID 6:  | Area 32002.702999999998 | Image ID 554002 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:42,112 | INFO | Calculated segmentation area: 32017
+2022-11-18 19:32:42,424 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:42,424 | INFO | Annotation 4594 on image 554002 was deleted
+2022-11-18 19:32:42,424 | INFO | Processed 7/36781 annotations
+2022-11-18 19:32:42,424 | INFO | Working on annotation with ID 7:  | Area 16694.404700000003 | Image ID 78823 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:42,424 | INFO | Calculated segmentation area: 16696
+2022-11-18 19:32:42,752 | INFO | Calculated segmentation area inside high-resolution region: 6259
+ | Ratio: 0.3748802108289411 | 
+2022-11-18 19:32:42,752 | INFO | Annotation 7544 on image 78823 was kept
+2022-11-18 19:32:42,752 | INFO | Processed 8/36781 annotations
+2022-11-18 19:32:42,752 | INFO | Working on annotation with ID 8:  | Area 9496.329899999997 | Image ID 419974 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:42,752 | INFO | Calculated segmentation area: 9495
+2022-11-18 19:32:43,049 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:43,049 | INFO | Annotation 7915 on image 419974 was deleted
+2022-11-18 19:32:43,049 | INFO | Processed 9/36781 annotations
+2022-11-18 19:32:43,049 | INFO | Working on annotation with ID 9:  | Area 2613.772699999999 | Image ID 404484 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:43,049 | INFO | Calculated segmentation area: 2608
+2022-11-18 19:32:43,361 | INFO | Calculated segmentation area inside high-resolution region: 1658
+ | Ratio: 0.6357361963190185 | 
+2022-11-18 19:32:43,361 | INFO | Annotation 7981 on image 404484 was kept
+2022-11-18 19:32:43,361 | INFO | Processed 10/36781 annotations
+2022-11-18 19:32:43,361 | INFO | Working on annotation with ID 10:  | Area 4290.290900000001 | Image ID 329219 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:43,361 | INFO | Calculated segmentation area: 4290
+2022-11-18 19:32:43,881 | INFO | Calculated segmentation area inside high-resolution region: 59
+ | Ratio: 0.013752913752913752 | 
+2022-11-18 19:32:43,881 | INFO | Annotation 8032 on image 329219 was deleted
+2022-11-18 19:32:43,881 | INFO | Processed 11/36781 annotations
+2022-11-18 19:32:43,881 | INFO | Working on annotation with ID 11:  | Area 5478.6852 | Image ID 68078 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:43,897 | INFO | Calculated segmentation area: 5487
+2022-11-18 19:32:44,240 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:44,240 | INFO | Annotation 9024 on image 68078 was deleted
+2022-11-18 19:32:44,240 | INFO | Processed 12/36781 annotations
+2022-11-18 19:32:44,240 | INFO | Working on annotation with ID 12:  | Area 58488.148799999995 | Image ID 170893 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:44,240 | INFO | Calculated segmentation area: 58498
+2022-11-18 19:32:44,599 | INFO | Calculated segmentation area inside high-resolution region: 7554
+ | Ratio: 0.1291326199186297 | 
+2022-11-18 19:32:44,599 | INFO | Annotation 9940 on image 170893 was kept
+2022-11-18 19:32:44,599 | INFO | Processed 13/36781 annotations
+2022-11-18 19:32:44,599 | INFO | Working on annotation with ID 13:  | Area 2991.9213 | Image ID 65485 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:44,615 | INFO | Calculated segmentation area: 2999
+2022-11-18 19:32:44,994 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:44,994 | INFO | Annotation 10176 on image 65485 was deleted
+2022-11-18 19:32:44,994 | INFO | Processed 14/36781 annotations
+2022-11-18 19:32:44,994 | INFO | Working on annotation with ID 14:  | Area 179462.9809 | Image ID 498286 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:44,994 | INFO | Calculated segmentation area: 179476
+2022-11-18 19:32:45,400 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.05571775613452495 | 
+2022-11-18 19:32:45,400 | INFO | Annotation 12182 on image 498286 was deleted
+2022-11-18 19:32:45,400 | INFO | Processed 15/36781 annotations
+2022-11-18 19:32:45,400 | INFO | Working on annotation with ID 15:  | Area 14402.837599999995 | Image ID 424162 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:45,416 | INFO | Calculated segmentation area: 14416
+2022-11-18 19:32:45,842 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:45,842 | INFO | Annotation 12414 on image 424162 was deleted
+2022-11-18 19:32:45,842 | INFO | Processed 16/36781 annotations
+2022-11-18 19:32:45,842 | INFO | Working on annotation with ID 16:  | Area 8769.457499999999 | Image ID 61108 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:45,858 | INFO | Calculated segmentation area: 8785
+2022-11-18 19:32:46,295 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:46,295 | INFO | Annotation 12582 on image 61108 was deleted
+2022-11-18 19:32:46,295 | INFO | Processed 17/36781 annotations
+2022-11-18 19:32:46,295 | INFO | Working on annotation with ID 17:  | Area 15711.620349999997 | Image ID 67213 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:46,295 | INFO | Calculated segmentation area: 15712
+2022-11-18 19:32:46,748 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:46,748 | INFO | Annotation 13714 on image 67213 was deleted
+2022-11-18 19:32:46,748 | INFO | Processed 18/36781 annotations
+2022-11-18 19:32:46,764 | INFO | Working on annotation with ID 18:  | Area 4792.913050000001 | Image ID 365207 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:46,764 | INFO | Calculated segmentation area: 4798
+2022-11-18 19:32:47,264 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-18 19:32:47,264 | INFO | Annotation 13886 on image 365207 was deleted
+2022-11-18 19:32:47,264 | INFO | Processed 19/36781 annotations
+2022-11-18 19:32:47,264 | INFO | Working on annotation with ID 19:  | Area 137612.20434999999 | Image ID 131273 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:47,280 | INFO | Calculated segmentation area: 137634
+2022-11-18 19:32:47,825 | INFO | Calculated segmentation area inside high-resolution region: 1963
+ | Ratio: 0.014262464216690644 | 
+2022-11-18 19:32:47,825 | INFO | Annotation 14105 on image 131273 was deleted
+2022-11-18 19:32:47,825 | INFO | Processed 20/36781 annotations
+2022-11-18 19:32:47,825 | INFO | Working on annotation with ID 20:  | Area 3278.3082000000004 | Image ID 279278 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
+2022-11-18 19:32:47,840 | INFO | Calculated segmentation area: 3286
