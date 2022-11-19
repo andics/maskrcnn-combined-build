@@ -25,6 +25,7 @@ class flowRunner:
     _LOGGER_NAME = "main_logger"
     _ORIGINAL_ANNOTATIONS_SUBDIR = "original_annotations"
     _PROCESSED_ANNOTATIONS_SAVE_SUBDIR = "filtered_annotations"
+    _OVERRIDE_ANNOTATIONS = False
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='Potential arguments for script')
@@ -39,18 +40,19 @@ class flowRunner:
                             required=False,
                             default=[100],
                             help='The edge size of the middle square we define to have high-resolution')
-        parser.add_argument('-lt', '--lower-threshold', nargs='?',
+        parser.add_argument('-lt', '--lower-threshold', nargs='+',
                             type=float,
-                            default=0.0,
+                            default=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                             required = False,
                             help='(% / 100) The lower boundary of area we want to'
                                  ' allow a non-filtered object to have in middle')
-        parser.add_argument('-ut', '--upper-threshold', nargs='?',
+        parser.add_argument('-ut', '--upper-threshold', nargs='+',
                             type=float,
-                            default=0.1,
+                            default=[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                             required = False,
                             help='(% / 100) The upper boundary of area we want to'
-                                 ' allow a non-filtered object to have in middle')
+                                 ' allow a non-filtered object to have in middle'
+                                 'IMPORTANT: There need to be as may upper-threshold elements as lower')
         #---FILE-STRUCTURE-ARGS--
         parser.add_argument('-fd', '--filtered-dir', nargs='?',
                             type=str,
@@ -68,7 +70,8 @@ class flowRunner:
         args = parser.parse_args()
         self.original_annotations_path = args.annotations_path
         self.middle_boundary = args.middle_boundary[0]
-        self.area_threshold_array = [args.lower_threshold, args.upper_threshold]
+        self.area_threshold_array = list(zip(args.lower_threshold,
+                                             args.upper_threshold))
         self.annotations_save_dir = args.filtered_dir
         self.experiment_name = args.experiment_name
 
@@ -77,9 +80,30 @@ class flowRunner:
 
 
     def run_all(self):
-        self.annotation_processor.read_annotations()
-        self.annotation_processor.filter_annotations_w_wrong_area_ratio()
-        self.annotation_processor.write_new_annotations_to_disk()
+        for _current_threshold_array in self.area_threshold_array:
+            annotations_save_path = os.path.join(self.annotations_save_dir,
+                                                 self.experiment_name +
+                                                 f"_{str(_current_threshold_array[0])}" +
+                                                 f"_{str(_current_threshold_array[1])}" +
+                                                 "_instances_val2017" + "." +
+                                                 self.utils_helper.extract_filename_and_ext(
+                                                 self.original_annotations_path)[1])
+            if (not flowRunner._OVERRIDE_ANNOTATIONS) and (os.path.exists(annotations_save_path)):
+                self.logger.log(f"Skipping annotation bin {_current_threshold_array} as file already exists ...")
+                continue
+            else:
+                if os.path.exists(annotations_save_path): self.logger.log(f"Overriding annotation bin {_current_threshold_array}")
+                self.annotation_processor = annotationProcessor(original_annotations_path = self.original_annotations_path,
+                                                                filter_threshold_array = _current_threshold_array,
+                                                                middle_boundary=self.middle_boundary,
+                                                                experiment_name= self.experiment_name,
+                                                                new_annotations_file_path = annotations_save_path,
+                                                                utils_helper= self.utils_helper,
+                                                                logger= self.logger)
+
+            self.annotation_processor.read_annotations()
+            self.annotation_processor.filter_annotations_w_wrong_area_ratio()
+            self.annotation_processor.write_new_annotations_to_disk()
 
 
     def setup_objects_and_file_structure(self):
@@ -97,20 +121,6 @@ class flowRunner:
         self.logger.log("Finished setting up logger object")
 
         _tmp = self.utils_helper.check_dir_and_make_if_na(self.annotations_save_dir)
-        annotations_save_path = os.path.join(self.annotations_save_dir,
-                                             self.experiment_name +
-                                             f"_{str(self.area_threshold_array[0])}" +
-                                             f"_{str(self.area_threshold_array[1])}" +
-                                             "_instances_val2017" + "." +
-                                             self.utils_helper.extract_filename_and_ext(
-                                             self.original_annotations_path)[1])
-        self.annotation_processor = annotationProcessor(original_annotations_path = self.original_annotations_path,
-                                                        filter_threshold_array = self.area_threshold_array,
-                                                        middle_boundary=self.middle_boundary,
-                                                        experiment_name= self.experiment_name,
-                                                        new_annotations_file_path = annotations_save_path,
-                                                        utils_helper= self.utils_helper,
-                                                        logger= self.logger)
         self.logger.log(f"Finished setting up new annotations folder structure! Created new annotations sub-dir: {not _tmp}")
 
 

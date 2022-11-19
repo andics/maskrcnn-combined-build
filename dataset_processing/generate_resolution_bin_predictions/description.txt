@@ -1,0 +1,2 @@
+The following are scripts used to generate annotation files containing
+annotations only wiht AREA_INSIDE_LOWER-AREA_INSIDE_HIGHER

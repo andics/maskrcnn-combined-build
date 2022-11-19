@@ -3,3 +3,5 @@ trained_models/*
 pretrained_models/*
 build/*
 .idea/
+dataset_processing/generate_resolution_bin_annotations/logs/*
+*.pth

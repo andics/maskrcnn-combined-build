@@ -1,0 +1,2 @@
+The following folder contains the predictions.pth file from the Variable pretrained-Resnet model
+on the vanilla COCO dataset

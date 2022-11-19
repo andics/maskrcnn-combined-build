@@ -1,0 +1,10 @@
+2022-11-19 11:16:34,811 | INFO | Finished setting up logger object
+2022-11-19 11:16:34,811 | INFO | Finished setting up new annotations folder structure! Created new annotations sub-dir: False
+2022-11-19 11:16:37,966 | INFO | Loaded JSON annotation data from: Q:\Projects\Variable_resolution\Programming\maskrcnn-combined-build\dataset_processing\generate_resolution_bin_annotations\original_annotations\instances_val2017.json
+2022-11-19 11:16:37,966 | INFO | Working on annotations bin (0.1, 0.2)
+2022-11-19 11:17:58,684 | INFO | Successfully saved annotations for bin (0.1, 0.2) to disk. Moving to next bin (if any)...
+2022-11-19 11:18:02,418 | INFO | Loaded JSON annotation data from: Q:\Projects\Variable_resolution\Programming\maskrcnn-combined-build\dataset_processing\generate_resolution_bin_annotations\original_annotations\instances_val2017.json
+2022-11-19 11:18:02,418 | INFO | Working on annotations bin (0.2, 0.3)
+2022-11-19 11:19:28,659 | INFO | Successfully saved annotations for bin (0.2, 0.3) to disk. Moving to next bin (if any)...
+2022-11-19 11:19:32,676 | INFO | Loaded JSON annotation data from: Q:\Projects\Variable_resolution\Programming\maskrcnn-combined-build\dataset_processing\generate_resolution_bin_annotations\original_annotations\instances_val2017.json
+2022-11-19 11:19:32,676 | INFO | Working on annotations bin (0.3, 0.4)

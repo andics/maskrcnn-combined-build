@@ -11,10 +11,11 @@ from pycocotools import mask
 from itertools import groupby
 from skimage import measure
 from operator import itemgetter
+from tqdm import tqdm
 
 class annotationProcessor:
     _DEBUGGING = False
-    _VERBOSE = True
+    _VERBOSE = False
     _WRITE_ALL_RLE_FORMAT = True
     _USE_COMPRESSED_FORMAT = False
 
@@ -47,15 +48,20 @@ class annotationProcessor:
         #E.g. If bin (self.filter_threshold_array) is [0.0, 0.1] => all segmentations with more than 10%
         #of their area outside the high-resolution region will be filtered
 
+        self.logger.log(f"Working on annotations bin {self.filter_threshold_array}")
+
         _anns_len = len(self.new_annotations_data["annotations"])
         self.ann_indices_to_keep = []
-        for i, annotation in enumerate(self.new_annotations_data["annotations"]):
+        for i, annotation in tqdm(enumerate(self.new_annotations_data["annotations"]),
+                                  total = _anns_len,
+                                  desc ="Progress for filtering annotations"):
             #---DEBUGGING---
             if annotationProcessor._DEBUGGING:
                 pass
             #---------------
             self._bin_check_this_annotation(annotation, i)
-            self.logger.log(f"Processed {i+1}/{_anns_len} annotations")
+            if int(i+1)%100==0:
+                self.logger.log(f"Processed {i+1}/{_anns_len} annotations from {self.filter_threshold_array} bin")
 
         self.new_annotations_data["annotations"] = [self.new_annotations_data["annotations"][index] for index in
                                                     self.ann_indices_to_keep]
@@ -63,6 +69,8 @@ class annotationProcessor:
 
     def write_new_annotations_to_disk(self):
         self.utils_helper.write_data_to_json(self.new_annotations_file_path, self.new_annotations_data)
+        self.logger.log(f"Successfully saved annotations for bin {self.filter_threshold_array} to disk. "
+                        "Moving to next bin (if any)...")
 
 
     def _calculate_high_res_bbox(self, image_array):
@@ -111,8 +119,8 @@ class annotationProcessor:
         #Calculate the area of the current segmentation manually
         current_image_binary_mask_calculated_area = np.count_nonzero(current_image_binary_mask)
         assert current_image_binary_mask_calculated_area == current_image_binary_mask.sum()
-
-        self.logger.log(f"Calculated segmentation area: {current_image_binary_mask_calculated_area}")
+        if annotationProcessor._VERBOSE:
+            self.logger.log(f"Calculated segmentation area: {current_image_binary_mask_calculated_area}")
 
         if annotationProcessor._DEBUGGING:
             self.utils_helper.display_multi_image_collage(((current_image_binary_mask_img, f"Image ID {annotation['image_id']}"), ),
@@ -148,8 +156,10 @@ class annotationProcessor:
 
         if (high_res_area_fract >= self.filter_threshold_array[0]) and (high_res_area_fract <= self.filter_threshold_array[1]):
             self.ann_indices_to_keep.append(index)
-            self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was kept")
+            if annotationProcessor._VERBOSE:
+                self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was kept")
         else:
-            self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
+            if annotationProcessor._VERBOSE:
+                self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
 
         return None

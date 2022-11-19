@@ -1,0 +1,8 @@
+The following folder contains the original validation file for COCO
+filtered based on the area of its annotations contained in the high-resolution middle
+area of the image (100x100)
+Note that this file is in leu of the annotation file in the coco_2017_variable_val dataset
+and the coco_2017_constant_val
+
+Both of those datasets use the original annotation file for COCO, so our modified version
+of the original is a valid substitute, which is important to keep in mind
