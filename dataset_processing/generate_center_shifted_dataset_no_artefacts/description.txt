@@ -3,3 +3,7 @@ measured by percentage. E.g. 50/50 would shift the image to the lower right core
 splitting it exactly into 4 pieces
 
 The percentages are measured starting from the top left corner.
+
+No fragments essentially means that the white spots around the edges of the shifted dataset
+have been removed
+This script does exactly that: removes the white spots

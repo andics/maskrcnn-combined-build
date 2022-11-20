@@ -180,6 +180,102 @@ class DatasetCatalog(object):
         },
         #-------------------------------------
 
+        #Used to test the Variable resolution and the equiconstant on objects which span
+        #the high and low resolution regions in particular area-ratios (bins)
+        #-------------------------------------
+        "coco_2017_res_bin_0.0_0.1_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.0_0.1_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.1_0.2_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.1_0.2_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.2_0.3_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.2_0.3_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.3_0.4_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.3_0.4_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.4_0.5_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.4_0.5_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.5_0.6_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.5_0.6_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.6_0.7_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.6_0.7_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.7_0.8_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.7_0.8_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.8_0.9_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.8_0.9_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.9_1.0_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.9_1.0_instances_val2017.json"
+        },
+        #---EQUICONST---
+        "coco_2017_res_bin_0.0_0.1_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.0_0.1_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.1_0.2_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.1_0.2_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.2_0.3_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.2_0.3_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.3_0.4_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.3_0.4_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.4_0.5_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.4_0.5_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.5_0.6_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.5_0.6_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.6_0.7_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.6_0.7_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.7_0.8_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.7_0.8_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.8_0.9_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.8_0.9_instances_val2017.json"
+        },
+        "coco_2017_res_bin_0.9_1.0_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.9_1.0_instances_val2017.json"
+        },
+
+        #---TEST-DATASET-FOR-LOCAL-WORK---
+        "test_coco_2017_res_bin_0.0_0.1_var": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "ann_file": "Q:/Projects/Variable_resolution/Programming/maskrcnn-combined-build/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.0_0.1_instances_val2017.json"
+        },
+        "test_coco_2017_res_bin_0.0_0.1_equiconst": {
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Constant",
+            "ann_file": "Q:/Projects/Variable_resolution/Programming/maskrcnn-combined-build/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.0_0.1_instances_val2017.json"
+        },
+        #-------------------------------------
+
         "coco_2017_multi_debug_train": {
             "img_dir": "coco_filt/train2017_multi",
             "ann_file": "coco_filt/annotations/instances_multi_debug_train2017.json"

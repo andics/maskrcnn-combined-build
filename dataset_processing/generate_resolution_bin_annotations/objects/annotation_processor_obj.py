@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 class annotationProcessor:
     _DEBUGGING = False
-    _VERBOSE = False
+    _VERBOSE = True
     _WRITE_ALL_RLE_FORMAT = True
     _USE_COMPRESSED_FORMAT = False
 
@@ -153,6 +153,13 @@ class annotationProcessor:
                             f" {current_image_binary_mask_calculated_area_inside_hr}"
                             f"\n | Ratio: {high_res_area_fract} | ")
 
+        if self.filter_threshold_array[1] == 1.0 and high_res_area_fract>1.0:
+            #Consider the special case when the area inside the rectangle is actually more than outside
+            #p.s. this is a pre-cautionary measure for a bug that has never appeared so far
+            self.ann_indices_to_keep.append(index)
+            self.logger.log(f"Annotation {annotation['id']} on image {annotation['image_id']} was kept,"
+                            f" and we had area_fract > 1")
+            return None
 
         if (high_res_area_fract >= self.filter_threshold_array[0]) and (high_res_area_fract <= self.filter_threshold_array[1]):
             self.ann_indices_to_keep.append(index)

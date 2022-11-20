@@ -42,13 +42,13 @@ class flowRunner:
                             help='The edge size of the middle square we define to have high-resolution')
         parser.add_argument('-lt', '--lower-threshold', nargs='+',
                             type=float,
-                            default=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                            default=[0.9],
                             required = False,
                             help='(% / 100) The lower boundary of area we want to'
                                  ' allow a non-filtered object to have in middle')
         parser.add_argument('-ut', '--upper-threshold', nargs='+',
                             type=float,
-                            default=[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                            default=[1.0],
                             required = False,
                             help='(% / 100) The upper boundary of area we want to'
                                  ' allow a non-filtered object to have in middle'
