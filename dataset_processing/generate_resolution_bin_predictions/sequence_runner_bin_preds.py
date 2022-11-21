@@ -32,8 +32,7 @@ class flowRunner:
 
         parser.add_argument('-pp', '--predictions-path', nargs='?',
                             type=str,
-                            default=os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__)))),
-                                                   flowRunner._ORIGINAL_PREDICTIONS_SUBDIR, "predictions_variable_pretrained.pth"),
+                            default="/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/variable_pretrained_resnet/baseline_resnet_norm/inference/coco_2017_variable_val/predictions.pth",
                             required = False,
                             help='Path to prediction file to be filtered')
         parser.add_argument('-mb', '--middle-boundary', nargs='+',
@@ -55,7 +54,7 @@ class flowRunner:
                                  'IMPORTANT: There need to be as may upper-threshold elements as lower')
         parser.add_argument('-cp', '--config-path', nargs='?',
                             type=str,
-                            default = os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__))).parent[1]),
+                            default = os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1]),
                                                    "configs/R-101-FPN/variable_pretrained_resnet/variable_pretrained_resnet_baseline_resnet_norm.yaml"),
                             required=False,
                             help='The configuration file used to construct the model. Can be any generic config file, '
@@ -64,7 +63,7 @@ class flowRunner:
                                  ' to generate the original predictions.pth you wish to filter now.')
         parser.add_argument('-dn', '--dataset-name', nargs='?',
                             type=str,
-                            default = "test_coco_2017_res_bin_0.0_0.1_var",
+                            default = "coco_2017_res_bin_0.0_0.1_var",
                             required = False,
                             help='Determines the location from which the images will be read as the predictions file'
                                  'gets filtered, as well as the name of the directory in which the new predictions file will'
@@ -128,7 +127,7 @@ class flowRunner:
         #Setting up the logger
         self.logger = Logger(logger_name = flowRunner._LOGGER_NAME,
                              logs_subdir = self.logs_subdir,
-                             log_file_name = self.experiment_name,
+                             log_file_name = self.dataset_name,
                              utils_helper = self.utils_helper)
         self.logger.log("Finished setting up logger object")
 

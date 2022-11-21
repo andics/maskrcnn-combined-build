@@ -47,7 +47,7 @@ class predictionProcessor:
         # of each prediction later on. In fact, those variables are the image directory as well as the annotation file
 
         cfg.merge_from_file(self.model_cfg_path)
-        cfg.merge_from_list(["DATASETS.TEST", self.dataset_name])
+        cfg.merge_from_list(["DATASETS.TEST", (self.dataset_name,)])
         cfg.freeze()
 
         dataset_catalogue = dataset_utils.get_dataset_catalog(cfg)
