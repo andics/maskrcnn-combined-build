@@ -267,7 +267,7 @@ class DatasetCatalog(object):
 
         #---TEST-DATASET-FOR-LOCAL-WORK---
         "test_coco_2017_res_bin_0.0_0.1_var": {
-            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017/Variable",
+            "img_dir": "W:/bagon/dannyh/data/coco_filt/val2017/Variable",
             "ann_file": "Q:/Projects/Variable_resolution/Programming/maskrcnn-combined-build/dataset_processing/generate_resolution_bin_annotations/filtered_annotations/0.0_0.1_instances_val2017.json"
         },
         "test_coco_2017_res_bin_0.0_0.1_equiconst": {
