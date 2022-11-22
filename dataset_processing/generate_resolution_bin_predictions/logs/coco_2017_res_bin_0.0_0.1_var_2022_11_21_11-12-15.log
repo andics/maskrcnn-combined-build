@@ -1,0 +1,4 @@
+2022-11-21 11:12:15,019 | INFO | Finished setting up logger object
+2022-11-21 11:12:15,020 | INFO | Finished setting up new predictions folder structure! Created new predictions sub-dir: False
+2022-11-21 11:12:15,063 | INFO | Successfully loaded annotation file for the ('coco_2017_res_bin_0.0_0.1_var',) dataset!
+2022-11-21 11:12:19,222 | INFO | Loaded PTH prediction data from: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/variable_pretrained_resnet/baseline_resnet_norm/inference/coco_2017_variable_val/predictions.pth

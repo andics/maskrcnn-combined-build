@@ -1,0 +1,8 @@
+2022-11-22 10:32:32,351 | INFO | Finished setting up logger object
+2022-11-22 10:32:32,352 | INFO | Finished setting up new predictions folder structure! Created new predictions sub-dir: False
+2022-11-22 10:32:32,352 | INFO | Working on prediction bin (0.1, 0.2)
+2022-11-22 10:32:32,400 | INFO | Successfully loaded annotation file for the ('coco_2017_res_bin_0.1_0.2_var',) dataset!
+2022-11-22 10:32:35,488 | INFO | Loaded PTH prediction data from: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/variable_pretrained_resnet/baseline_resnet_norm/inference/coco_2017_variable_val/predictions.pth
+2022-11-22 10:32:35,491 | INFO | Working on image 0/5000
+2022-11-22 10:32:43,515 | INFO | Working on prediction 0/100 on image 000000000139.jpg
+2022-11-22 10:32:43,523 | INFO | Calculated segmentation area: 2407

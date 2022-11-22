@@ -41,13 +41,13 @@ class flowRunner:
                             help='The edge size of the middle square we define to have high-resolution')
         parser.add_argument('-lt', '--lower-threshold', nargs='+',
                             type=float,
-                            default=[0.0],#[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                            default=[0.1],#[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                             required = False,
                             help='(% / 100) The lower boundary of area we want to'
                                  ' allow a non-filtered object to have in middle')
         parser.add_argument('-ut', '--upper-threshold', nargs='+',
                             type=float,
-                            default=[0.1],#[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                            default=[0.2],#[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                             required = False,
                             help='(% / 100) The upper boundary of area we want to'
                                  ' allow a non-filtered object to have in middle'
@@ -63,7 +63,7 @@ class flowRunner:
                                  ' to generate the original predictions.pth you wish to filter now.')
         parser.add_argument('-dn', '--dataset-name', nargs='?',
                             type=str,
-                            default = "coco_2017_res_bin_0.0_0.1_var",
+                            default = "coco_2017_res_bin_0.1_0.2_var",
                             required = False,
                             help='Determines the location from which the images will be read as the predictions file'
                                  'gets filtered, as well as the name of the directory in which the new predictions file will'
@@ -92,6 +92,8 @@ class flowRunner:
 
     def run_all(self):
         for _current_threshold_array in self.area_threshold_array:
+            self.logger.log(f"Working on prediction bin {_current_threshold_array}")
+
             predictions_save_path = os.path.join(self.predictions_save_dir,
                                                  self.utils_helper.extract_filename_and_ext(
                                                      self.original_predictions_path)[0] + "." +
@@ -105,7 +107,7 @@ class flowRunner:
                 self.prediction_processor = predictionProcessor(org_predictions_path=self.original_predictions_path,
                                                                 new_predictions_path=predictions_save_path,
                                                                 area_threshold_array=_current_threshold_array,
-                                                                middle_boundry=self.middle_boundary,
+                                                                middle_boundary=self.middle_boundary,
                                                                 model_cfg_path=self.config_path,
                                                                 dataset_name=self.dataset_name,
                                                                 logger=self.logger,
@@ -114,7 +116,7 @@ class flowRunner:
             self.prediction_processor.setup_objects_and_misk_variables()
             self.prediction_processor.read_predictions()
             self.prediction_processor.filter_predictions_w_wrong_area_ratio()
-            #self.prediction_processor.write_new_predictions_to_disk()
+            self.prediction_processor.write_new_predictions_to_disk()
 
 
     def setup_objects_and_file_structure(self):

@@ -22,12 +22,12 @@ from utils_gen import dataset_utils
 
 class predictionProcessor:
     _DEBUGGING = False
-    _VERBOSE = False
+    _VERBOSE = True
 
     def __init__(self, org_predictions_path,
                  new_predictions_path,
                  area_threshold_array,
-                 middle_boundry,
+                 middle_boundary,
                  dataset_name,
                  model_cfg_path,
                  logger,
@@ -35,7 +35,7 @@ class predictionProcessor:
         self.org_predictions_path = org_predictions_path
         self.new_predictions_path = new_predictions_path
         self.area_threshold_array = area_threshold_array
-        self.middle_boundry = middle_boundry
+        self.middle_boundary = middle_boundary
         self.dataset_name = dataset_name
         self.model_cfg_path = model_cfg_path
         self.logger = logger
@@ -88,8 +88,10 @@ class predictionProcessor:
         #Initiate Masker class for projecting masks to fit image size
         #This class is used to transform the Maskrcnn-native 28x28 mask to fit the image size and look like something
         masker = Masker(threshold=0.5, padding=1)
-
+        #new_predictions_data: contains 5000 BoxLists, full of predictions (per image)
+        total_num_images = len(self.new_predictions_data)
         for ind, img_predictions in enumerate(self.new_predictions_data):
+            self.logger.log(f"Working on image {ind}/{total_num_images}")
             #Empty cropped predictions will be discarded
             inds_to_keep = []
             img_id = self.coco_dataset.id_to_img_map[ind]
@@ -110,6 +112,9 @@ class predictionProcessor:
             rsz_pred_masks = rsz_predictions.get_field('mask')
             #Masker is necessary only if masks haven't been already resized.
             if list(rsz_pred_masks.shape[-2:]) != [org_img_height, org_img_width]:
+                #This iff actually get called every time we process a new image
+                # It is needed in order to filter out the logic scores lower than the Threshold
+                #This is why it is possible to get after filtering segmentation empty with 
                 rsz_pred_masks = masker(rsz_pred_masks.expand(1, -1, -1, -1, -1), rsz_predictions)
                 rsz_pred_masks = rsz_pred_masks[0]
             rsz_pred_bboxes = rsz_predictions.bbox
@@ -118,62 +123,108 @@ class predictionProcessor:
             # Crop the bbox region
             #Cycle through all predictions for a given image and borderize them
             for i in range(len(rsz_predictions)):
+                self.logger.log(f"Working on prediction {i}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
                 #Prediction mask before cropping
-                pred_mask = rsz_pred_masks[i]
-                pred_mask_binary_array_1d_for_disp = np.swapaxes(np.swapaxes(pred_mask.numpy(), 0, 2), 0, 1)
-                #The masks require that the diemsnions of the mask tensor are (1, height, width)
-                pred_mask_binary_array = np.repeat(pred_mask_binary_array_1d_for_disp, 3, axis=2)
-                pred_mask_binary_form = Image.fromarray(pred_mask_binary_array * 255)
+                sing_pred_on_sing_img_mask = rsz_pred_masks[i, :, :, :]
+                #Format [bbox_top_x_corner, bbox_top_y_corner, bbox_width, bbox_height]
+                sing_pred_on_sing_img_bbox = rsz_pred_bboxes[i, :]
+
+                pred_mask_binary_np = np.swapaxes(np.swapaxes(sing_pred_on_sing_img_mask.numpy(), 0, 2), 0, 1)[:,:,0]
+                pred_mask_binary_image_form = Image.fromarray(pred_mask_binary_np)
+                #The masks require that the diemsnions of the mask tensor are (1, height, width), so we convert to normal img format
+                #(height, width)
+                pred_mask_binary_np_3_channels = pred_mask_binary_np[:, :, None] * np.ones(3, dtype=int)[None, None, :]
+                #We calculate the area of the total binary mask (first) as well as the
+                #area of the binary mask inside the middle boundry
+                current_image_pred_mask_tot_calculated_area = np.count_nonzero(pred_mask_binary_np)
+                assert current_image_pred_mask_tot_calculated_area == pred_mask_binary_np.sum()
+
+                if predictionProcessor._VERBOSE:
+                    self.logger.log(f"Calculated segmentation area: {current_image_pred_mask_tot_calculated_area}")
+
+                #Now we calcuate the area inside the high-resolution boundry
+                current_image_binary_mask_inside_hr_bin = np.zeros_like(pred_mask_binary_np)
+                current_image_binary_mask_inside_hr_bin[_high_res_border_bbox[0]:_high_res_border_bbox[2],
+                _high_res_border_bbox[1]:_high_res_border_bbox[3]] = pred_mask_binary_np[
+                                                                     _high_res_border_bbox[0]:_high_res_border_bbox[2],
+                                                                     _high_res_border_bbox[1]:_high_res_border_bbox[3]]
+
                 if predictionProcessor._DEBUGGING:
                     self.utils_helper.display_multi_image_collage(
                         ((org_img_np_format, f"Original image {self.coco_dataset.coco.imgs[img_id]['file_name']}"),
-                         (pred_mask_binary_form, f"Prediction mask before filtering"),),
-                        [1, 2])
-                pass
-                #We crop the mask of the resized prediction
-                #The binary mask from which we crop need be numpy (to ensure matrix and have dimensions
-                #(m_num_rows, n_num_columns)
-                pred_mask_binary_array_1d_for_disp[_high_res_border_bbox[0]:_high_res_border_bbox[2], _high_res_border_bbox[1]:_high_res_border_bbox[3]] = 0
-                cropped_pred_mask_binary_array = np.repeat(pred_mask_binary_array_1d_for_disp, 3, axis=2)
-                cropped_pred_mask_binary_form = Image.fromarray(cropped_pred_mask_binary_array * 255)
-                if predictionProcessor._DEBUGGING:
-                    self.utils_helper.display_multi_image_collage(
-                        ((cropped_pred_mask_binary_form, f"Mask after cropping on image {self.coco_dataset.coco.imgs[img_id]['file_name']}"),),
-                        [1, 1])
-                self.logger.log(f"Working on prediction {i}, image {ind}")
-                pred_mask_binary_array_1d_for_mask = np.swapaxes(np.swapaxes(pred_mask_binary_array_1d_for_disp, 2, 0),
-                                                                 1, 2)
-                if pred_mask_binary_array_1d_for_disp.any():  # in case the cropped prediction mask is not empty
-                    fov_pred_mask = torch.from_numpy(pred_mask_binary_array_1d_for_mask)
-                    # create a new bounding box for the cropped prediction mask
-                    mask = mask_util.encode(np.array(torch.from_numpy(pred_mask_binary_array_1d_for_disp), order="F"))
-                    fov_pred_bbox = mask_util.toBbox(mask).astype(int)
-                    if predictionProcessor._DEBUGGING:
-                        mask_v2 = self._binary_mask_to_compressed_rle(pred_mask_binary_array_1d_for_disp)
-                        fov_pred_bbox_v2 = mask_util.toBbox(mask_v2).tolist()
-                        self.logger.log(f"Transformed prediction into RLE format")
-                    rsz_pred_masks[i] = fov_pred_mask
-                    rsz_pred_bboxes[i] = torch.from_numpy(fov_pred_bbox.astype('float32'))
+                         (img_predictions.get_field("mask")[i, 0, :, :], f"Prediction mask logits original size"),
+                         (pred_mask_binary_image_form, f"Prediction mask before filtering"),
+                         (current_image_binary_mask_inside_hr_bin, f"Prediction mask after filtering"),),
+                        [1, 4])
+
+                # Calculate the area of the current segmentation inside high-res manually
+                current_image_binary_mask_calculated_area_inside_hr = np.count_nonzero(
+                    current_image_binary_mask_inside_hr_bin)
+                assert current_image_binary_mask_calculated_area_inside_hr == current_image_binary_mask_inside_hr_bin.sum()
+
+                # Now we proceed to the filtering
+                # Calculate hr/total ratio
+                if current_image_pred_mask_tot_calculated_area == 0:
+                    if predictionProcessor._VERBOSE:
+                        self.logger.log(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was deleted"
+                                        f" because segmentation after Masker logit filtering was empty")
+                        continue
+
+                high_res_area_fract = current_image_binary_mask_calculated_area_inside_hr / current_image_pred_mask_tot_calculated_area
+                if predictionProcessor._VERBOSE:
+                    self.logger.log(f"Calculated segmentation area inside high-resolution region:"
+                                    f" {current_image_binary_mask_calculated_area_inside_hr}"
+                                    f"\n | Ratio: {high_res_area_fract} | ")
+
+
+                if self.area_threshold_array[1] == 1.0 and high_res_area_fract > 1.0:
+                    # Consider the special case when the area inside the rectangle is actually more than outside
+                    # p.s. this is a pre-cautionary measure for a bug that has never appeared so far
+                    #KEEP MECHANISM
                     inds_to_keep.append(i)
+                    if predictionProcessor._VERBOSE:
+                        self.logger.log(
+                            f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was kept")
+
+
+                if (high_res_area_fract >= self.area_threshold_array[0]) and (
+                        high_res_area_fract <= self.area_threshold_array[1]):
+                    #KEEP MECHANISM
+                    inds_to_keep.append(i)
+                    if predictionProcessor._VERBOSE:
+                        self.logger.log(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was kept")
+                else:
+                    if predictionProcessor._VERBOSE:
+                        self.logger.log(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was deleted")
+
             #Discard all annotations which were empty after cropping
             rsz_pred_masks = rsz_pred_masks[inds_to_keep, :, :, :]
             rsz_pred_bboxes = rsz_pred_bboxes[inds_to_keep, :]
 
-            img_fov_crop_predictions = copy.deepcopy(rsz_predictions)
-            img_fov_crop_predictions.bbox = rsz_pred_bboxes
+            #Here we modify directly the structure in which predictions.pth
+            #stores predictions for a single image (a BoxList). We replace the original BoxList
+            #with the BoxList we have modified, bu throwing out Tensors from its
+            #masks, bbox, labels, and scores fields
+            sing_img_boxlist_resized_predictions = copy.deepcopy(rsz_predictions)
+            sing_img_boxlist_resized_predictions.bbox = rsz_pred_bboxes
             #For resizing the cropped masks back to 28x28
             #Img_fov_crop_predictions.extra_fields['mask'] = fov_pred_masks_rsz
-            img_fov_crop_predictions.extra_fields['mask'] = rsz_pred_masks
-            img_fov_crop_predictions.extra_fields['scores'] = img_fov_crop_predictions.extra_fields['scores'][inds_to_keep]
-            img_fov_crop_predictions.extra_fields['labels'] = img_fov_crop_predictions.extra_fields['labels'][inds_to_keep]
-            img_fov_crop_predictions = img_fov_crop_predictions.convert("xyxy")
-            img_fov_crop_predictions = img_fov_crop_predictions.resize((rsz_img_width, rsz_img_height))
-            self.new_predictions_data[ind] = img_fov_crop_predictions
+            sing_img_boxlist_resized_predictions.extra_fields['mask'] = rsz_pred_masks
+            sing_img_boxlist_resized_predictions.extra_fields['scores'] = sing_img_boxlist_resized_predictions.extra_fields['scores'][inds_to_keep]
+            sing_img_boxlist_resized_predictions.extra_fields['labels'] = sing_img_boxlist_resized_predictions.extra_fields['labels'][inds_to_keep]
+            #Here the name is misleadning: the BoxList is not resized anymore
+            sing_img_boxlist_resized_predictions = sing_img_boxlist_resized_predictions.convert("xyxy")
+            sing_img_boxlist_resized_predictions = sing_img_boxlist_resized_predictions.resize((rsz_img_width, rsz_img_height))
+            self.new_predictions_data[ind] = sing_img_boxlist_resized_predictions
+
+            #ind and img_ind have a one-to-one correspondence
+            if predictionProcessor._VERBOSE: self.logger.log(f"Finished working on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
             if ind == 1000:
                 self.logger.log("Reached 1K lol")
 
+
     def write_new_predictions_to_disk(self):
-        torch.save(self.new_predictions_data, self.new_predictions_file_path)
+        torch.save(self.new_predictions_data, self.new_predictions_path)
 
     def _binary_mask_to_compressed_rle(self, binary_mask):
         #Function to transform a binary mask to compressed RLE, only used for is_crowd True and compress=True

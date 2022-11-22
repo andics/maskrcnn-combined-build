@@ -1,0 +1,537 @@
+2022-11-21 12:10:07,363 | INFO | Finished setting up logger object
+2022-11-21 12:10:07,364 | INFO | Finished setting up new predictions folder structure! Created new predictions sub-dir: False
+2022-11-21 12:10:07,364 | INFO | Working on prediction bin (0.0, 0.1)
+2022-11-21 12:10:07,426 | INFO | Successfully loaded annotation file for the ('coco_2017_res_bin_0.0_0.1_var',) dataset!
+2022-11-21 12:10:11,813 | INFO | Loaded PTH prediction data from: /home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/variable_pretrained_resnet/baseline_resnet_norm/inference/coco_2017_variable_val/predictions.pth
+2022-11-21 12:11:23,639 | INFO | Working on prediction 0 on image 000000000139.jpg
+2022-11-21 12:11:23,645 | INFO | Calculated segmentation area: 2407
+2022-11-21 12:11:23,646 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,646 | INFO | Prediction 0 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,647 | INFO | Working on prediction 1 on image 000000000139.jpg
+2022-11-21 12:11:23,651 | INFO | Calculated segmentation area: 1614
+2022-11-21 12:11:23,652 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,652 | INFO | Prediction 1 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,652 | INFO | Working on prediction 2 on image 000000000139.jpg
+2022-11-21 12:11:23,656 | INFO | Calculated segmentation area: 1825
+2022-11-21 12:11:23,657 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,657 | INFO | Prediction 2 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,657 | INFO | Working on prediction 3 on image 000000000139.jpg
+2022-11-21 12:11:23,661 | INFO | Calculated segmentation area: 644
+2022-11-21 12:11:23,662 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,662 | INFO | Prediction 3 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,662 | INFO | Working on prediction 4 on image 000000000139.jpg
+2022-11-21 12:11:23,666 | INFO | Calculated segmentation area: 1227
+2022-11-21 12:11:23,667 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,667 | INFO | Prediction 4 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,667 | INFO | Working on prediction 5 on image 000000000139.jpg
+2022-11-21 12:11:23,671 | INFO | Calculated segmentation area: 605
+2022-11-21 12:11:23,672 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,672 | INFO | Prediction 5 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,672 | INFO | Working on prediction 6 on image 000000000139.jpg
+2022-11-21 12:11:23,675 | INFO | Calculated segmentation area: 1437
+2022-11-21 12:11:23,676 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,677 | INFO | Prediction 6 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,677 | INFO | Working on prediction 7 on image 000000000139.jpg
+2022-11-21 12:11:23,680 | INFO | Calculated segmentation area: 515
+2022-11-21 12:11:23,681 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,681 | INFO | Prediction 7 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,681 | INFO | Working on prediction 8 on image 000000000139.jpg
+2022-11-21 12:11:23,685 | INFO | Calculated segmentation area: 1112
+2022-11-21 12:11:23,686 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,686 | INFO | Prediction 8 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,686 | INFO | Working on prediction 9 on image 000000000139.jpg
+2022-11-21 12:11:23,690 | INFO | Calculated segmentation area: 7440
+2022-11-21 12:11:23,691 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,691 | INFO | Prediction 9 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,691 | INFO | Working on prediction 10 on image 000000000139.jpg
+2022-11-21 12:11:23,695 | INFO | Calculated segmentation area: 1020
+2022-11-21 12:11:23,696 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,696 | INFO | Prediction 10 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,696 | INFO | Working on prediction 11 on image 000000000139.jpg
+2022-11-21 12:11:23,700 | INFO | Calculated segmentation area: 635
+2022-11-21 12:11:23,701 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,701 | INFO | Prediction 11 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,701 | INFO | Working on prediction 12 on image 000000000139.jpg
+2022-11-21 12:11:23,706 | INFO | Calculated segmentation area: 293
+2022-11-21 12:11:23,707 | INFO | Calculated segmentation area inside high-resolution region: 293
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,707 | INFO | Prediction 12 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,708 | INFO | Working on prediction 13 on image 000000000139.jpg
+2022-11-21 12:11:23,711 | INFO | Calculated segmentation area: 151
+2022-11-21 12:11:23,712 | INFO | Calculated segmentation area inside high-resolution region: 151
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,712 | INFO | Prediction 13 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,713 | INFO | Working on prediction 14 on image 000000000139.jpg
+2022-11-21 12:11:23,718 | INFO | Calculated segmentation area: 212
+2022-11-21 12:11:23,719 | INFO | Calculated segmentation area inside high-resolution region: 212
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,719 | INFO | Prediction 14 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,719 | INFO | Working on prediction 15 on image 000000000139.jpg
+2022-11-21 12:11:23,723 | INFO | Calculated segmentation area: 59
+2022-11-21 12:11:23,724 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,724 | INFO | Prediction 15 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,724 | INFO | Working on prediction 16 on image 000000000139.jpg
+2022-11-21 12:11:23,728 | INFO | Calculated segmentation area: 2084
+2022-11-21 12:11:23,728 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,729 | INFO | Prediction 16 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,729 | INFO | Working on prediction 17 on image 000000000139.jpg
+2022-11-21 12:11:23,732 | INFO | Calculated segmentation area: 1317
+2022-11-21 12:11:23,733 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,733 | INFO | Prediction 17 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,734 | INFO | Working on prediction 18 on image 000000000139.jpg
+2022-11-21 12:11:23,737 | INFO | Calculated segmentation area: 67
+2022-11-21 12:11:23,738 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,738 | INFO | Prediction 18 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,738 | INFO | Working on prediction 19 on image 000000000139.jpg
+2022-11-21 12:11:23,742 | INFO | Calculated segmentation area: 435
+2022-11-21 12:11:23,743 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,743 | INFO | Prediction 19 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,743 | INFO | Working on prediction 20 on image 000000000139.jpg
+2022-11-21 12:11:23,747 | INFO | Calculated segmentation area: 490
+2022-11-21 12:11:23,748 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,748 | INFO | Prediction 20 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,748 | INFO | Working on prediction 21 on image 000000000139.jpg
+2022-11-21 12:11:23,752 | INFO | Calculated segmentation area: 106
+2022-11-21 12:11:23,753 | INFO | Calculated segmentation area inside high-resolution region: 106
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,753 | INFO | Prediction 21 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,753 | INFO | Working on prediction 22 on image 000000000139.jpg
+2022-11-21 12:11:23,756 | INFO | Calculated segmentation area: 183
+2022-11-21 12:11:23,757 | INFO | Calculated segmentation area inside high-resolution region: 146
+ | Ratio: 0.7978142076502732 | 
+2022-11-21 12:11:23,757 | INFO | Prediction 22 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,758 | INFO | Working on prediction 23 on image 000000000139.jpg
+2022-11-21 12:11:23,761 | INFO | Calculated segmentation area: 162
+2022-11-21 12:11:23,762 | INFO | Calculated segmentation area inside high-resolution region: 162
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,762 | INFO | Prediction 23 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,762 | INFO | Working on prediction 24 on image 000000000139.jpg
+2022-11-21 12:11:23,766 | INFO | Calculated segmentation area: 512
+2022-11-21 12:11:23,767 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,767 | INFO | Prediction 24 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,767 | INFO | Working on prediction 25 on image 000000000139.jpg
+2022-11-21 12:11:23,771 | INFO | Calculated segmentation area: 2068
+2022-11-21 12:11:23,772 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,772 | INFO | Prediction 25 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,772 | INFO | Working on prediction 26 on image 000000000139.jpg
+2022-11-21 12:11:23,776 | INFO | Calculated segmentation area: 4275
+2022-11-21 12:11:23,777 | INFO | Calculated segmentation area inside high-resolution region: 168
+ | Ratio: 0.03929824561403509 | 
+2022-11-21 12:11:23,777 | INFO | Prediction 26 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,777 | INFO | Working on prediction 27 on image 000000000139.jpg
+2022-11-21 12:11:23,781 | INFO | Calculated segmentation area: 152
+2022-11-21 12:11:23,781 | INFO | Calculated segmentation area inside high-resolution region: 152
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,782 | INFO | Prediction 27 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,782 | INFO | Working on prediction 28 on image 000000000139.jpg
+2022-11-21 12:11:23,785 | INFO | Calculated segmentation area: 3624
+2022-11-21 12:11:23,786 | INFO | Calculated segmentation area inside high-resolution region: 1451
+ | Ratio: 0.4003863134657837 | 
+2022-11-21 12:11:23,786 | INFO | Prediction 28 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,787 | INFO | Working on prediction 29 on image 000000000139.jpg
+2022-11-21 12:11:23,790 | INFO | Calculated segmentation area: 5786
+2022-11-21 12:11:23,791 | INFO | Calculated segmentation area inside high-resolution region: 853
+ | Ratio: 0.14742481852748013 | 
+2022-11-21 12:11:23,791 | INFO | Prediction 29 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,792 | INFO | Working on prediction 30 on image 000000000139.jpg
+2022-11-21 12:11:23,796 | INFO | Calculated segmentation area: 3827
+2022-11-21 12:11:23,797 | INFO | Calculated segmentation area inside high-resolution region: 1069
+ | Ratio: 0.27933106872223673 | 
+2022-11-21 12:11:23,797 | INFO | Prediction 30 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,797 | INFO | Working on prediction 31 on image 000000000139.jpg
+2022-11-21 12:11:23,801 | INFO | Calculated segmentation area: 1560
+2022-11-21 12:11:23,802 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,802 | INFO | Prediction 31 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,802 | INFO | Working on prediction 32 on image 000000000139.jpg
+2022-11-21 12:11:23,806 | INFO | Calculated segmentation area: 2770
+2022-11-21 12:11:23,807 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,807 | INFO | Prediction 32 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,807 | INFO | Working on prediction 33 on image 000000000139.jpg
+2022-11-21 12:11:23,811 | INFO | Calculated segmentation area: 2290
+2022-11-21 12:11:23,812 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,812 | INFO | Prediction 33 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,812 | INFO | Working on prediction 34 on image 000000000139.jpg
+2022-11-21 12:11:23,816 | INFO | Calculated segmentation area: 1187
+2022-11-21 12:11:23,817 | INFO | Calculated segmentation area inside high-resolution region: 628
+ | Ratio: 0.5290648694187026 | 
+2022-11-21 12:11:23,817 | INFO | Prediction 34 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,818 | INFO | Working on prediction 35 on image 000000000139.jpg
+2022-11-21 12:11:23,821 | INFO | Calculated segmentation area: 966
+2022-11-21 12:11:23,822 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,823 | INFO | Prediction 35 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,823 | INFO | Working on prediction 36 on image 000000000139.jpg
+2022-11-21 12:11:23,826 | INFO | Calculated segmentation area: 1563
+2022-11-21 12:11:23,827 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,828 | INFO | Prediction 36 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,828 | INFO | Working on prediction 37 on image 000000000139.jpg
+2022-11-21 12:11:23,831 | INFO | Calculated segmentation area: 2058
+2022-11-21 12:11:23,832 | INFO | Calculated segmentation area inside high-resolution region: 1156
+ | Ratio: 0.5617103984450923 | 
+2022-11-21 12:11:23,833 | INFO | Prediction 37 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,833 | INFO | Working on prediction 38 on image 000000000139.jpg
+2022-11-21 12:11:23,836 | INFO | Calculated segmentation area: 1381
+2022-11-21 12:11:23,837 | INFO | Calculated segmentation area inside high-resolution region: 271
+ | Ratio: 0.19623461259956554 | 
+2022-11-21 12:11:23,837 | INFO | Prediction 38 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,837 | INFO | Working on prediction 39 on image 000000000139.jpg
+2022-11-21 12:11:23,841 | INFO | Calculated segmentation area: 1426
+2022-11-21 12:11:23,842 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,842 | INFO | Prediction 39 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,842 | INFO | Working on prediction 40 on image 000000000139.jpg
+2022-11-21 12:11:23,846 | INFO | Calculated segmentation area: 1491
+2022-11-21 12:11:23,847 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,847 | INFO | Prediction 40 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,848 | INFO | Working on prediction 41 on image 000000000139.jpg
+2022-11-21 12:11:23,851 | INFO | Calculated segmentation area: 3258
+2022-11-21 12:11:23,852 | INFO | Calculated segmentation area inside high-resolution region: 172
+ | Ratio: 0.05279312461632903 | 
+2022-11-21 12:11:23,852 | INFO | Prediction 41 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,853 | INFO | Working on prediction 42 on image 000000000139.jpg
+2022-11-21 12:11:23,856 | INFO | Calculated segmentation area: 251
+2022-11-21 12:11:23,857 | INFO | Calculated segmentation area inside high-resolution region: 251
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,857 | INFO | Prediction 42 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,857 | INFO | Working on prediction 43 on image 000000000139.jpg
+2022-11-21 12:11:23,861 | INFO | Calculated segmentation area: 980
+2022-11-21 12:11:23,862 | INFO | Calculated segmentation area inside high-resolution region: 202
+ | Ratio: 0.20612244897959184 | 
+2022-11-21 12:11:23,862 | INFO | Prediction 43 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,862 | INFO | Working on prediction 44 on image 000000000139.jpg
+2022-11-21 12:11:23,866 | INFO | Calculated segmentation area: 694
+2022-11-21 12:11:23,867 | INFO | Calculated segmentation area inside high-resolution region: 168
+ | Ratio: 0.2420749279538905 | 
+2022-11-21 12:11:23,867 | INFO | Prediction 44 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,867 | INFO | Working on prediction 45 on image 000000000139.jpg
+2022-11-21 12:11:23,871 | INFO | Calculated segmentation area: 1325
+2022-11-21 12:11:23,872 | INFO | Calculated segmentation area inside high-resolution region: 401
+ | Ratio: 0.3026415094339623 | 
+2022-11-21 12:11:23,872 | INFO | Prediction 45 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,872 | INFO | Working on prediction 46 on image 000000000139.jpg
+2022-11-21 12:11:23,876 | INFO | Calculated segmentation area: 2716
+2022-11-21 12:11:23,877 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,877 | INFO | Prediction 46 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,877 | INFO | Working on prediction 47 on image 000000000139.jpg
+2022-11-21 12:11:23,880 | INFO | Calculated segmentation area: 975
+2022-11-21 12:11:23,881 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,881 | INFO | Prediction 47 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,881 | INFO | Working on prediction 48 on image 000000000139.jpg
+2022-11-21 12:11:23,885 | INFO | Calculated segmentation area: 2844
+2022-11-21 12:11:23,886 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,886 | INFO | Prediction 48 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,886 | INFO | Working on prediction 49 on image 000000000139.jpg
+2022-11-21 12:11:23,890 | INFO | Calculated segmentation area: 781
+2022-11-21 12:11:23,891 | INFO | Calculated segmentation area inside high-resolution region: 719
+ | Ratio: 0.9206145966709347 | 
+2022-11-21 12:11:23,891 | INFO | Prediction 49 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,891 | INFO | Working on prediction 50 on image 000000000139.jpg
+2022-11-21 12:11:23,895 | INFO | Calculated segmentation area: 224
+2022-11-21 12:11:23,896 | INFO | Calculated segmentation area inside high-resolution region: 224
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,896 | INFO | Prediction 50 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,896 | INFO | Working on prediction 51 on image 000000000139.jpg
+2022-11-21 12:11:23,900 | INFO | Calculated segmentation area: 2097
+2022-11-21 12:11:23,901 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,901 | INFO | Prediction 51 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,901 | INFO | Working on prediction 52 on image 000000000139.jpg
+2022-11-21 12:11:23,904 | INFO | Calculated segmentation area: 375
+2022-11-21 12:11:23,905 | INFO | Calculated segmentation area inside high-resolution region: 375
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,905 | INFO | Prediction 52 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,906 | INFO | Working on prediction 53 on image 000000000139.jpg
+2022-11-21 12:11:23,909 | INFO | Calculated segmentation area: 673
+2022-11-21 12:11:23,910 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,910 | INFO | Prediction 53 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,910 | INFO | Working on prediction 54 on image 000000000139.jpg
+2022-11-21 12:11:23,914 | INFO | Calculated segmentation area: 8261
+2022-11-21 12:11:23,915 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,915 | INFO | Prediction 54 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,915 | INFO | Working on prediction 55 on image 000000000139.jpg
+2022-11-21 12:11:23,919 | INFO | Calculated segmentation area: 9652
+2022-11-21 12:11:23,920 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,920 | INFO | Prediction 55 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,920 | INFO | Working on prediction 56 on image 000000000139.jpg
+2022-11-21 12:11:23,924 | INFO | Calculated segmentation area: 5635
+2022-11-21 12:11:23,925 | INFO | Calculated segmentation area inside high-resolution region: 854
+ | Ratio: 0.1515527950310559 | 
+2022-11-21 12:11:23,925 | INFO | Prediction 56 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,925 | INFO | Working on prediction 57 on image 000000000139.jpg
+2022-11-21 12:11:23,928 | INFO | Calculated segmentation area: 519
+2022-11-21 12:11:23,929 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,929 | INFO | Prediction 57 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,930 | INFO | Working on prediction 58 on image 000000000139.jpg
+2022-11-21 12:11:23,933 | INFO | Calculated segmentation area: 139
+2022-11-21 12:11:23,934 | INFO | Calculated segmentation area inside high-resolution region: 139
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,934 | INFO | Prediction 58 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,935 | INFO | Working on prediction 59 on image 000000000139.jpg
+2022-11-21 12:11:23,938 | INFO | Calculated segmentation area: 278
+2022-11-21 12:11:23,939 | INFO | Calculated segmentation area inside high-resolution region: 278
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,939 | INFO | Prediction 59 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,939 | INFO | Working on prediction 60 on image 000000000139.jpg
+2022-11-21 12:11:23,943 | INFO | Calculated segmentation area: 394
+2022-11-21 12:11:23,944 | INFO | Calculated segmentation area inside high-resolution region: 394
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,944 | INFO | Prediction 60 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,944 | INFO | Working on prediction 61 on image 000000000139.jpg
+2022-11-21 12:11:23,948 | INFO | Calculated segmentation area: 360
+2022-11-21 12:11:23,949 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,949 | INFO | Prediction 61 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,949 | INFO | Working on prediction 62 on image 000000000139.jpg
+2022-11-21 12:11:23,952 | INFO | Calculated segmentation area: 287
+2022-11-21 12:11:23,953 | INFO | Calculated segmentation area inside high-resolution region: 287
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,953 | INFO | Prediction 62 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,954 | INFO | Working on prediction 63 on image 000000000139.jpg
+2022-11-21 12:11:23,957 | INFO | Calculated segmentation area: 236
+2022-11-21 12:11:23,958 | INFO | Calculated segmentation area inside high-resolution region: 236
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,958 | INFO | Prediction 63 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,958 | INFO | Working on prediction 64 on image 000000000139.jpg
+2022-11-21 12:11:23,962 | INFO | Calculated segmentation area: 512
+2022-11-21 12:11:23,963 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,963 | INFO | Prediction 64 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,963 | INFO | Working on prediction 65 on image 000000000139.jpg
+2022-11-21 12:11:23,967 | INFO | Calculated segmentation area: 761
+2022-11-21 12:11:23,968 | INFO | Calculated segmentation area inside high-resolution region: 761
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,968 | INFO | Prediction 65 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,968 | INFO | Working on prediction 66 on image 000000000139.jpg
+2022-11-21 12:11:23,972 | INFO | Calculated segmentation area: 1753
+2022-11-21 12:11:23,972 | INFO | Calculated segmentation area inside high-resolution region: 1753
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,973 | INFO | Prediction 66 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,973 | INFO | Working on prediction 67 on image 000000000139.jpg
+2022-11-21 12:11:23,976 | INFO | Calculated segmentation area: 8480
+2022-11-21 12:11:23,977 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,977 | INFO | Prediction 67 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,977 | INFO | Working on prediction 68 on image 000000000139.jpg
+2022-11-21 12:11:23,981 | INFO | Calculated segmentation area: 1452
+2022-11-21 12:11:23,982 | INFO | Calculated segmentation area inside high-resolution region: 1370
+ | Ratio: 0.9435261707988981 | 
+2022-11-21 12:11:23,982 | INFO | Prediction 68 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,982 | INFO | Working on prediction 69 on image 000000000139.jpg
+2022-11-21 12:11:23,986 | INFO | Calculated segmentation area: 268
+2022-11-21 12:11:23,987 | INFO | Calculated segmentation area inside high-resolution region: 268
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,987 | INFO | Prediction 69 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,987 | INFO | Working on prediction 70 on image 000000000139.jpg
+2022-11-21 12:11:23,990 | INFO | Calculated segmentation area: 753
+2022-11-21 12:11:23,991 | INFO | Calculated segmentation area inside high-resolution region: 753
+ | Ratio: 1.0 | 
+2022-11-21 12:11:23,992 | INFO | Prediction 70 on image 000000000139.jpg was deleted
+2022-11-21 12:11:23,992 | INFO | Working on prediction 71 on image 000000000139.jpg
+2022-11-21 12:11:23,995 | INFO | Calculated segmentation area: 12618
+2022-11-21 12:11:23,996 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:23,996 | INFO | Prediction 71 on image 000000000139.jpg was kept
+2022-11-21 12:11:23,997 | INFO | Working on prediction 72 on image 000000000139.jpg
+2022-11-21 12:11:24,000 | INFO | Calculated segmentation area: 1704
+2022-11-21 12:11:24,001 | INFO | Calculated segmentation area inside high-resolution region: 1665
+ | Ratio: 0.977112676056338 | 
+2022-11-21 12:11:24,001 | INFO | Prediction 72 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,001 | INFO | Working on prediction 73 on image 000000000139.jpg
+2022-11-21 12:11:24,005 | INFO | Calculated segmentation area: 232
+2022-11-21 12:11:24,006 | INFO | Calculated segmentation area inside high-resolution region: 232
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,006 | INFO | Prediction 73 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,006 | INFO | Working on prediction 74 on image 000000000139.jpg
+2022-11-21 12:11:24,010 | INFO | Calculated segmentation area: 1529
+2022-11-21 12:11:24,011 | INFO | Calculated segmentation area inside high-resolution region: 1497
+ | Ratio: 0.9790712884238064 | 
+2022-11-21 12:11:24,011 | INFO | Prediction 74 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,011 | INFO | Working on prediction 75 on image 000000000139.jpg
+2022-11-21 12:11:24,014 | INFO | Calculated segmentation area: 1954
+2022-11-21 12:11:24,015 | INFO | Calculated segmentation area inside high-resolution region: 439
+ | Ratio: 0.22466734902763563 | 
+2022-11-21 12:11:24,015 | INFO | Prediction 75 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,015 | INFO | Working on prediction 76 on image 000000000139.jpg
+2022-11-21 12:11:24,019 | INFO | Calculated segmentation area: 370
+2022-11-21 12:11:24,020 | INFO | Calculated segmentation area inside high-resolution region: 370
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,020 | INFO | Prediction 76 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,020 | INFO | Working on prediction 77 on image 000000000139.jpg
+2022-11-21 12:11:24,024 | INFO | Calculated segmentation area: 1903
+2022-11-21 12:11:24,025 | INFO | Calculated segmentation area inside high-resolution region: 993
+ | Ratio: 0.5218076720966894 | 
+2022-11-21 12:11:24,025 | INFO | Prediction 77 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,025 | INFO | Working on prediction 78 on image 000000000139.jpg
+2022-11-21 12:11:24,029 | INFO | Calculated segmentation area: 543
+2022-11-21 12:11:24,030 | INFO | Calculated segmentation area inside high-resolution region: 543
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,030 | INFO | Prediction 78 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,030 | INFO | Working on prediction 79 on image 000000000139.jpg
+2022-11-21 12:11:24,034 | INFO | Calculated segmentation area: 278
+2022-11-21 12:11:24,034 | INFO | Calculated segmentation area inside high-resolution region: 272
+ | Ratio: 0.9784172661870504 | 
+2022-11-21 12:11:24,035 | INFO | Prediction 79 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,035 | INFO | Working on prediction 80 on image 000000000139.jpg
+2022-11-21 12:11:24,038 | INFO | Calculated segmentation area: 1048
+2022-11-21 12:11:24,039 | INFO | Calculated segmentation area inside high-resolution region: 1048
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,039 | INFO | Prediction 80 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,039 | INFO | Working on prediction 81 on image 000000000139.jpg
+2022-11-21 12:11:24,043 | INFO | Calculated segmentation area: 13644
+2022-11-21 12:11:24,044 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,044 | INFO | Prediction 81 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,045 | INFO | Working on prediction 82 on image 000000000139.jpg
+2022-11-21 12:11:24,048 | INFO | Calculated segmentation area: 13863
+2022-11-21 12:11:24,049 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,049 | INFO | Prediction 82 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,049 | INFO | Working on prediction 83 on image 000000000139.jpg
+2022-11-21 12:11:24,053 | INFO | Calculated segmentation area: 31985
+2022-11-21 12:11:24,054 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,054 | INFO | Prediction 83 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,054 | INFO | Working on prediction 84 on image 000000000139.jpg
+2022-11-21 12:11:24,058 | INFO | Calculated segmentation area: 168
+2022-11-21 12:11:24,059 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,059 | INFO | Prediction 84 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,059 | INFO | Working on prediction 85 on image 000000000139.jpg
+2022-11-21 12:11:24,063 | INFO | Calculated segmentation area: 182
+2022-11-21 12:11:24,064 | INFO | Calculated segmentation area inside high-resolution region: 182
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,064 | INFO | Prediction 85 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,064 | INFO | Working on prediction 86 on image 000000000139.jpg
+2022-11-21 12:11:24,068 | INFO | Calculated segmentation area: 262
+2022-11-21 12:11:24,068 | INFO | Calculated segmentation area inside high-resolution region: 262
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,069 | INFO | Prediction 86 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,069 | INFO | Working on prediction 87 on image 000000000139.jpg
+2022-11-21 12:11:24,072 | INFO | Calculated segmentation area: 2255
+2022-11-21 12:11:24,073 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,073 | INFO | Prediction 87 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,074 | INFO | Working on prediction 88 on image 000000000139.jpg
+2022-11-21 12:11:24,077 | INFO | Calculated segmentation area: 165
+2022-11-21 12:11:24,078 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,078 | INFO | Prediction 88 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,078 | INFO | Working on prediction 89 on image 000000000139.jpg
+2022-11-21 12:11:24,082 | INFO | Calculated segmentation area: 199
+2022-11-21 12:11:24,083 | INFO | Calculated segmentation area inside high-resolution region: 150
+ | Ratio: 0.7537688442211056 | 
+2022-11-21 12:11:24,083 | INFO | Prediction 89 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,083 | INFO | Working on prediction 90 on image 000000000139.jpg
+2022-11-21 12:11:24,087 | INFO | Calculated segmentation area: 97
+2022-11-21 12:11:24,088 | INFO | Calculated segmentation area inside high-resolution region: 97
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,088 | INFO | Prediction 90 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,088 | INFO | Working on prediction 91 on image 000000000139.jpg
+2022-11-21 12:11:24,091 | INFO | Calculated segmentation area: 119
+2022-11-21 12:11:24,092 | INFO | Calculated segmentation area inside high-resolution region: 119
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,093 | INFO | Prediction 91 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,093 | INFO | Working on prediction 92 on image 000000000139.jpg
+2022-11-21 12:11:24,096 | INFO | Calculated segmentation area: 160
+2022-11-21 12:11:24,097 | INFO | Calculated segmentation area inside high-resolution region: 160
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,097 | INFO | Prediction 92 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,098 | INFO | Working on prediction 93 on image 000000000139.jpg
+2022-11-21 12:11:24,101 | INFO | Calculated segmentation area: 516
+2022-11-21 12:11:24,102 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,102 | INFO | Prediction 93 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,102 | INFO | Working on prediction 94 on image 000000000139.jpg
+2022-11-21 12:11:24,106 | INFO | Calculated segmentation area: 97
+2022-11-21 12:11:24,107 | INFO | Calculated segmentation area inside high-resolution region: 97
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,107 | INFO | Prediction 94 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,107 | INFO | Working on prediction 95 on image 000000000139.jpg
+2022-11-21 12:11:24,111 | INFO | Calculated segmentation area: 156
+2022-11-21 12:11:24,112 | INFO | Calculated segmentation area inside high-resolution region: 156
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,112 | INFO | Prediction 95 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,112 | INFO | Working on prediction 96 on image 000000000139.jpg
+2022-11-21 12:11:24,115 | INFO | Calculated segmentation area: 129
+2022-11-21 12:11:24,116 | INFO | Calculated segmentation area inside high-resolution region: 129
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,117 | INFO | Prediction 96 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,117 | INFO | Working on prediction 97 on image 000000000139.jpg
+2022-11-21 12:11:24,120 | INFO | Calculated segmentation area: 152
+2022-11-21 12:11:24,121 | INFO | Calculated segmentation area inside high-resolution region: 152
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,122 | INFO | Prediction 97 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,122 | INFO | Working on prediction 98 on image 000000000139.jpg
+2022-11-21 12:11:24,125 | INFO | Calculated segmentation area: 187
+2022-11-21 12:11:24,126 | INFO | Calculated segmentation area inside high-resolution region: 187
+ | Ratio: 1.0 | 
+2022-11-21 12:11:24,126 | INFO | Prediction 98 on image 000000000139.jpg was deleted
+2022-11-21 12:11:24,127 | INFO | Working on prediction 99 on image 000000000139.jpg
+2022-11-21 12:11:24,130 | INFO | Calculated segmentation area: 303
+2022-11-21 12:11:24,131 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:24,131 | INFO | Prediction 99 on image 000000000139.jpg was kept
+2022-11-21 12:11:24,136 | INFO | Finished working on image 000000000139.jpg
+2022-11-21 12:11:42,625 | INFO | Working on prediction 0 on image 000000000285.jpg
+2022-11-21 12:11:42,634 | INFO | Calculated segmentation area: 249152
+2022-11-21 12:11:42,635 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.040136141792961724 | 
+2022-11-21 12:11:42,635 | INFO | Prediction 0 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,635 | INFO | Working on prediction 1 on image 000000000285.jpg
+2022-11-21 12:11:42,643 | INFO | Calculated segmentation area: 237184
+2022-11-21 12:11:42,644 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.042161359956826766 | 
+2022-11-21 12:11:42,644 | INFO | Prediction 1 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,645 | INFO | Working on prediction 2 on image 000000000285.jpg
+2022-11-21 12:11:42,651 | INFO | Calculated segmentation area: 5993
+2022-11-21 12:11:42,652 | INFO | Calculated segmentation area inside high-resolution region: 0
+ | Ratio: 0.0 | 
+2022-11-21 12:11:42,652 | INFO | Prediction 2 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,652 | INFO | Working on prediction 3 on image 000000000285.jpg
+2022-11-21 12:11:42,659 | INFO | Calculated segmentation area: 250053
+2022-11-21 12:11:42,660 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.03999152179737896 | 
+2022-11-21 12:11:42,660 | INFO | Prediction 3 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,660 | INFO | Working on prediction 4 on image 000000000285.jpg
+2022-11-21 12:11:42,665 | INFO | Calculated segmentation area: 248252
+2022-11-21 12:11:42,667 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.040281649291848604 | 
+2022-11-21 12:11:42,667 | INFO | Prediction 4 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,667 | INFO | Working on prediction 5 on image 000000000285.jpg
+2022-11-21 12:11:42,672 | INFO | Calculated segmentation area: 246702
+2022-11-21 12:11:42,673 | INFO | Calculated segmentation area inside high-resolution region: 10000
+ | Ratio: 0.04053473421374776 | 
+2022-11-21 12:11:42,673 | INFO | Prediction 5 on image 000000000285.jpg was kept
+2022-11-21 12:11:42,675 | INFO | Finished working on image 000000000285.jpg
