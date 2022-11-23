@@ -41,17 +41,21 @@ class flowRunner:
                             help='The edge size of the middle square we define to have high-resolution')
         parser.add_argument('-lt', '--lower-threshold', nargs='+',
                             type=float,
-                            default=[0.1],#[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                            default=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                             required = False,
                             help='(% / 100) The lower boundary of area we want to'
-                                 ' allow a non-filtered object to have in middle')
+                                 ' allow a non-filtered object to have in middle. '
+                                 'This parameter can accept arrays, with an equal num. entries'
+                                 'as upper-thresh.')
         parser.add_argument('-ut', '--upper-threshold', nargs='+',
                             type=float,
-                            default=[0.2],#[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                            default=[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                             required = False,
                             help='(% / 100) The upper boundary of area we want to'
                                  ' allow a non-filtered object to have in middle'
-                                 'IMPORTANT: There need to be as may upper-threshold elements as lower')
+                                 'IMPORTANT: There need to be as may upper-threshold elements as lower'
+                                 'This parameter can accept arrays, with an equal num. entries'
+                                 'as lower-thresh.')
         parser.add_argument('-cp', '--config-path', nargs='?',
                             type=str,
                             default = os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1]),
@@ -60,21 +64,27 @@ class flowRunner:
                             help='The configuration file used to construct the model. Can be any generic config file, '
                                  'even if the test set IS NOT the name of the set you wish to filter now. The'
                                  'important part is that the config file is of the type of the model you used'
-                                 ' to generate the original predictions.pth you wish to filter now.')
-        parser.add_argument('-dn', '--dataset-name', nargs='?',
+                                 ' to generate the original predictions.pth you wish to filter now.'
+                                 'E.g. If the predictions.pth is of the pretrained_resnet_var, use any'
+                                 'config file of pretrained_resnet_var')
+        parser.add_argument('-dn', '--dataset-name', nargs='+',
                             type=str,
-                            default = "coco_2017_res_bin_0.1_0.2_var",
+                            default = ["coco_2017_res_bin_0.1_0.2_var", "coco_2017_res_bin_0.2_0.3_var", "coco_2017_res_bin_0.3_0.4_var"
+                                       "coco_2017_res_bin_0.4_0.5_var", "coco_2017_res_bin_0.5_0.6_var", "coco_2017_res_bin_0.6_0.7_var"
+                                       "coco_2017_res_bin_0.7_0.8_var", "coco_2017_res_bin_0.8_0.9_var", "coco_2017_res_bin_0.9_1.0_var"],
                             required = False,
                             help='Determines the location from which the images will be read as the predictions file'
                                  'gets filtered, as well as the name of the directory in which the new predictions file will'
-                                 'be stored.')
+                                 'be stored.'
+                                 'The type of this agrument is a list, equal to the number of threshold'
+                                 'pairs we are generating files for')
         #---FILE-STRUCTURE-ARGS--
         parser.add_argument('-fd', '--filtered-dir', nargs='?',
                             type=str,
                             default = os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__)))),
                                                    flowRunner._PROCESSED_PREDICTIONS_SAVE_SUBDIR),
                             required=False,
-                            help='Directory where the filtered prediction file will be stored')
+                            help='(General) Directory where the filtered prediction file will be stored')
 
         print("Here")
         args = parser.parse_args()
@@ -82,19 +92,29 @@ class flowRunner:
         self.middle_boundary = args.middle_boundary[0]
         self.area_threshold_array = list(zip(args.lower_threshold,
                                              args.upper_threshold))
-        self.dataset_name = args.dataset_name
+        self.dataset_names = args.dataset_name
+
+        assert len(self.area_threshold_array) == len(self.dataset_names)
+
+        self.filtered_preds_dir_path = args.filtered_dir
         self.config_path = args.config_path
-        self.predictions_save_dir = os.path.join(args.filtered_dir, self.dataset_name)
 
         self.main_file_dir = str(Path(os.path.dirname(os.path.realpath(__file__))))
         self.objects_setup_complete = False
 
 
     def run_all(self):
-        for _current_threshold_array in self.area_threshold_array:
+        for _current_threshold_array, _current_dataset_name in zip(self.area_threshold_array,
+                                                                   self.dataset_names):
             self.logger.log(f"Working on prediction bin {_current_threshold_array}")
 
-            predictions_save_path = os.path.join(self.predictions_save_dir,
+            predictions_save_dir = os.path.join(self.filtered_preds_dir_path,
+                                                     _current_dataset_name)
+
+            _tmp = self.utils_helper.check_dir_and_make_if_na(predictions_save_dir)
+            self.logger.log(f"Created new {_current_dataset_name} predictions sub-dir: {not _tmp}")
+
+            predictions_save_path = os.path.join(predictions_save_dir,
                                                  self.utils_helper.extract_filename_and_ext(
                                                      self.original_predictions_path)[0] + "." +
                                                  self.utils_helper.extract_filename_and_ext(
@@ -109,7 +129,7 @@ class flowRunner:
                                                                 area_threshold_array=_current_threshold_array,
                                                                 middle_boundary=self.middle_boundary,
                                                                 model_cfg_path=self.config_path,
-                                                                dataset_name=self.dataset_name,
+                                                                dataset_name=self.dataset_names,
                                                                 logger=self.logger,
                                                                 utils_helper=self.utils_helper)
 
@@ -129,12 +149,12 @@ class flowRunner:
         #Setting up the logger
         self.logger = Logger(logger_name = flowRunner._LOGGER_NAME,
                              logs_subdir = self.logs_subdir,
-                             log_file_name = self.dataset_name,
+                             log_file_name = self.dataset_names,
                              utils_helper = self.utils_helper)
         self.logger.log("Finished setting up logger object")
 
-        _tmp = self.utils_helper.check_dir_and_make_if_na(self.predictions_save_dir)
-        self.logger.log(f"Finished setting up new predictions folder structure! Created new predictions sub-dir: {not _tmp}")
+        _tmp = self.utils_helper.check_dir_and_make_if_na(self.filtered_preds_dir_path)
+        self.logger.log(f"Finished setting up new predictions folder structure! Created new general predictions sub-dir: {not _tmp}")
 
 
 if __name__ == "__main__":
