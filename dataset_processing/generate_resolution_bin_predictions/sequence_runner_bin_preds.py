@@ -41,7 +41,7 @@ class flowRunner:
                             help='The edge size of the middle square we define to have high-resolution')
         parser.add_argument('-lt', '--lower-threshold', nargs='+',
                             type=float,
-                            default=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                            default=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                             required = False,
                             help='(% / 100) The lower boundary of area we want to'
                                  ' allow a non-filtered object to have in middle. '
@@ -49,7 +49,7 @@ class flowRunner:
                                  'as upper-thresh.')
         parser.add_argument('-ut', '--upper-threshold', nargs='+',
                             type=float,
-                            default=[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+                            default=[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
                             required = False,
                             help='(% / 100) The upper boundary of area we want to'
                                  ' allow a non-filtered object to have in middle'
@@ -69,9 +69,9 @@ class flowRunner:
                                  'config file of pretrained_resnet_var')
         parser.add_argument('-dn', '--dataset-name', nargs='+',
                             type=str,
-                            default = ["coco_2017_res_bin_0.1_0.2_var", "coco_2017_res_bin_0.2_0.3_var", "coco_2017_res_bin_0.3_0.4_var"
-                                       "coco_2017_res_bin_0.4_0.5_var", "coco_2017_res_bin_0.5_0.6_var", "coco_2017_res_bin_0.6_0.7_var"
-                                       "coco_2017_res_bin_0.7_0.8_var", "coco_2017_res_bin_0.8_0.9_var", "coco_2017_res_bin_0.9_1.0_var"],
+                            default = ["coco_2017_res_bin_0.1_0.2_var", "coco_2017_res_bin_0.2_0.3_var", "coco_2017_res_bin_0.3_0.4_var",
+                                       "coco_2017_res_bin_0.4_0.5_var", "coco_2017_res_bin_0.5_0.6_var", "coco_2017_res_bin_0.6_0.7_var",
+                                       "coco_2017_res_bin_0.7_0.8_var", "coco_2017_res_bin_0.8_0.9_var"],
                             required = False,
                             help='Determines the location from which the images will be read as the predictions file'
                                  'gets filtered, as well as the name of the directory in which the new predictions file will'
@@ -129,7 +129,7 @@ class flowRunner:
                                                                 area_threshold_array=_current_threshold_array,
                                                                 middle_boundary=self.middle_boundary,
                                                                 model_cfg_path=self.config_path,
-                                                                dataset_name=self.dataset_names,
+                                                                dataset_name=_current_dataset_name,
                                                                 logger=self.logger,
                                                                 utils_helper=self.utils_helper)
 
@@ -149,7 +149,7 @@ class flowRunner:
         #Setting up the logger
         self.logger = Logger(logger_name = flowRunner._LOGGER_NAME,
                              logs_subdir = self.logs_subdir,
-                             log_file_name = self.dataset_names,
+                             log_file_name = "log",
                              utils_helper = self.utils_helper)
         self.logger.log("Finished setting up logger object")
 

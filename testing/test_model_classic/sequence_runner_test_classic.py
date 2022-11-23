@@ -3,21 +3,21 @@ import os
 import dllogger
 
 from pathlib import Path
+try:
+    path_main = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1])
+    sys.path.append(path_main)
+    print(path_main)
+    sys.path.remove('/workspace/object_detection')
+    os.chdir(path_main)
+    print("Environmental paths updated successfully!")
+except Exception:
+    print("Tried to edit environmental paths but was unsuccessful!")
+
 from testing.test_model_classic.utils.util_functions import Utilities_helper
 from utils_gen import model_utils
 from testing.test_model_classic import test_functions
 
 from maskrcnn_benchmark.config import cfg
-
-try:
-    path_main = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[0])
-    print(path_main)
-    sys.path.remove('/workspace/object_detection')
-    sys.path.append(path_main)
-    os.chdir(path_main)
-    print("Environmental paths updated successfully!")
-except Exception:
-    print("Tried to edit environmental paths but was unsuccessful!")
 
 
 import argparse

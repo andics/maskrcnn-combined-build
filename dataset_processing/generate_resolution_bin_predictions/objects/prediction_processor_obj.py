@@ -109,14 +109,14 @@ class predictionProcessor:
             #Resize the predictions to the original image dimensions for cropping inside the given FOV
             rsz_predictions = img_predictions.resize((org_img_width, org_img_height))
             rsz_predictions = rsz_predictions.convert("xywh")
-            rsz_pred_masks = rsz_predictions.get_field('mask')
+            rsz_pred_masks_28_x_28 = rsz_predictions.get_field('mask')
             #Masker is necessary only if masks haven't been already resized.
-            if list(rsz_pred_masks.shape[-2:]) != [org_img_height, org_img_width]:
+            if list(rsz_pred_masks_28_x_28.shape[-2:]) != [org_img_height, org_img_width]:
                 #This iff actually get called every time we process a new image
                 # It is needed in order to filter out the logic scores lower than the Threshold
                 #This is why it is possible to get after filtering segmentation empty with 
-                rsz_pred_masks = masker(rsz_pred_masks.expand(1, -1, -1, -1, -1), rsz_predictions)
-                rsz_pred_masks = rsz_pred_masks[0]
+                rsz_pred_masks_img_hight_width = masker(rsz_pred_masks_28_x_28.expand(1, -1, -1, -1, -1), rsz_predictions)
+                rsz_pred_masks_img_hight_width = rsz_pred_masks_img_hight_width[0]
             rsz_pred_bboxes = rsz_predictions.bbox
 
             _high_res_border_bbox = self._calculate_high_res_bbox(org_img_np_format)
@@ -125,7 +125,7 @@ class predictionProcessor:
             for i in range(len(rsz_predictions)):
                 self.logger.log(f"Working on prediction {i}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
                 #Prediction mask before cropping
-                sing_pred_on_sing_img_mask = rsz_pred_masks[i, :, :, :]
+                sing_pred_on_sing_img_mask = rsz_pred_masks_img_hight_width[i, :, :, :]
                 #Format [bbox_top_x_corner, bbox_top_y_corner, bbox_width, bbox_height]
                 sing_pred_on_sing_img_bbox = rsz_pred_bboxes[i, :]
 
@@ -198,7 +198,7 @@ class predictionProcessor:
                         self.logger.log(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was deleted")
 
             #Discard all annotations which were empty after cropping
-            rsz_pred_masks = rsz_pred_masks[inds_to_keep, :, :, :]
+            rsz_pred_masks_28_x_28 = rsz_pred_masks_28_x_28[inds_to_keep, :, :, :]
             rsz_pred_bboxes = rsz_pred_bboxes[inds_to_keep, :]
 
             #Here we modify directly the structure in which predictions.pth
@@ -209,7 +209,7 @@ class predictionProcessor:
             sing_img_boxlist_resized_predictions.bbox = rsz_pred_bboxes
             #For resizing the cropped masks back to 28x28
             #Img_fov_crop_predictions.extra_fields['mask'] = fov_pred_masks_rsz
-            sing_img_boxlist_resized_predictions.extra_fields['mask'] = rsz_pred_masks
+            sing_img_boxlist_resized_predictions.extra_fields['mask'] = rsz_pred_masks_28_x_28
             sing_img_boxlist_resized_predictions.extra_fields['scores'] = sing_img_boxlist_resized_predictions.extra_fields['scores'][inds_to_keep]
             sing_img_boxlist_resized_predictions.extra_fields['labels'] = sing_img_boxlist_resized_predictions.extra_fields['labels'][inds_to_keep]
             #Here the name is misleadning: the BoxList is not resized anymore
