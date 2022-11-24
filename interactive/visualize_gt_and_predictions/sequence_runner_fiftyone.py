@@ -77,7 +77,10 @@ class flowRunner:
                                                                                  self.port,
                                                                                  self.predictions_location,
                                                                                  self.session_location):
-
+            print(f"Visualizing on port: {port} \n")
+            print(f"Annotations: {annotations_location} \n")
+            print(f"Images: {images_location} \n")
+            print(f"Predictions: {predictions_location} \n")
             dataset_visualizer = self.setup_objects_and_variables_for_one_session(annotations_location,
                                                                                   images_location, port,
                                                                                   predictions_location, session_location)
