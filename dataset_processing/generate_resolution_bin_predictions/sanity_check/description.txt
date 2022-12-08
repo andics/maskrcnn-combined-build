@@ -1,2 +1,0 @@
-The following folder contains a command to run the FiftyOne app using the filtered annotation files AND
-the variable resolution images of COCO: to best observe how they have been filtered w.r.t. the high-res area
