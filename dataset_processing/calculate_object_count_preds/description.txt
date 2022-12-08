@@ -1,0 +1,4 @@
+The following script generates log files in which are specified the number of objects
+of each type (small, medium, large) in a given prediction file
+
+The script recursively analyzes all .pth files in all sub-folders of the given one
