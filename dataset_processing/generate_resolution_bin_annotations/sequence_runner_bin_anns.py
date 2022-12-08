@@ -35,7 +35,8 @@ class flowRunner:
                             default=os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__)))),
                                                    flowRunner._ORIGINAL_ANNOTATIONS_SUBDIR, "instances_val2017.json"),
                             required = False,
-                            help='Path to annotation file to be filtered')
+                            help='Path to annotation file to be filtered. Commonly, this should be the'
+                                 'original COCO annotation file')
         parser.add_argument('-mb', '--middle-boundary', nargs='+',
                             required=False,
                             default=[100],
@@ -59,12 +60,12 @@ class flowRunner:
                             default = os.path.join(str(Path(os.path.dirname(os.path.realpath(__file__)))),
                                                    flowRunner._PROCESSED_ANNOTATIONS_SAVE_SUBDIR),
                             required=False,
-                            help='Directory where the filtered annotation file will be stored')
+                            help='The general directory where the filtered annotation file will be stored')
         parser.add_argument('-en', '--experiment-name', nargs='?',
                             type=str,
-                            default = "variable_resolution_test",
+                            default = "",
                             required = False,
-                            help='The name which the new annotation file will assume (based on the experiment name')
+                            help='This name will be appended as a prefix to the annotation file (used as an ID)')
 
 
         args = parser.parse_args()
