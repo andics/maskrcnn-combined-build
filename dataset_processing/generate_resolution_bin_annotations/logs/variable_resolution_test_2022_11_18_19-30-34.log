@@ -1,7 +1,0 @@
-2022-11-18 19:30:34,758 | INFO | Finished setting up logger object
-2022-11-18 19:30:34,758 | INFO | Finished setting up new annotations folder structure! Created new annotations sub-dir: False
-2022-11-18 19:30:45,635 | INFO | Loaded JSON annotation data from: Q:\Projects\Variable_resolution\Programming\maskrcnn-combined-build\dataset_processing\generate_resolution_bin_annotations\original_annotations\instances_val2017.json
-2022-11-18 19:30:45,635 | INFO | Working on annotation with ID 0:  | Area 702.1057499999998 | Image ID 289343 | Label [{'supercategory': 'animal', 'id': 18, 'name': 'dog'}]|
-2022-11-18 19:30:45,635 | INFO | Calculated segmentation area: 703
-2022-11-18 19:30:45,635 | INFO | Calculated segmentation area inside high-resolution region: 0
- | Ratio: 0.0 | 
