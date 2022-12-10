@@ -113,7 +113,7 @@ class predictionProcessor:
             #Masker is necessary only if masks haven't been already resized.
             if list(rsz_pred_masks_28_x_28.shape[-2:]) != [org_img_height, org_img_width]:
                 #This iff actually get called every time we process a new image
-                # It is needed in order to filter out the logic scores lower than the Threshold
+                # It is needed in order to filter out the logit scores lower than the Threshold
                 #This is why it is possible to get after filtering segmentation empty with 
                 rsz_pred_masks_img_hight_width = masker(rsz_pred_masks_28_x_28.expand(1, -1, -1, -1, -1), rsz_predictions)
                 rsz_pred_masks_img_hight_width = rsz_pred_masks_img_hight_width[0]

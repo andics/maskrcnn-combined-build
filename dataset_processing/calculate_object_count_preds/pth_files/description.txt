@@ -1,0 +1,1 @@
+The following folder contains a .pth file used just to test the workflow of object types
