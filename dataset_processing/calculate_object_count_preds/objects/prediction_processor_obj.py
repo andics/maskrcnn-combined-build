@@ -98,11 +98,10 @@ class predictionProcessor:
                 rsz_pred_masks_img_hight_width = rsz_pred_masks_img_hight_width[0]
             rsz_pred_bboxes = rsz_predictions.bbox
 
-            _high_res_border_bbox = self._calculate_high_res_bbox(org_img_np_format)
             # Crop the bbox region
             #Cycle through all predictions for a given image and borderize them
             for i in range(len(rsz_predictions)):
-                self.logger.log(f"Working on prediction {i}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
+                self.logger.log(f"Working on prediction {i+1}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
                 #Prediction mask before cropping
                 sing_pred_on_sing_img_mask = rsz_pred_masks_img_hight_width[i, :, :, :]
                 #Format [bbox_top_x_corner, bbox_top_y_corner, bbox_width, bbox_height]
