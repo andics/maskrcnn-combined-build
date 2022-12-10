@@ -32,7 +32,7 @@ class flowRunner:
 
         parser.add_argument('-pp', '--predictions-path', nargs='?',
                             type=str,
-                            default="/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/variable_pretrained_resnet/baseline_resnet_norm/inference",
+                            default="/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/trained_models/equiconst_pretrained_resnet/baseline_resnet_norm/inference",
                             required = False,
                             help='Path to prediction file(s) to be analyzed')
 
@@ -44,10 +44,11 @@ class flowRunner:
 
 
     def run_all(self):
-        for pred_file in self.pth_file_paths_full:
+        for pred_file in sorted(self.pth_file_paths_full):
             pred_processor = predictionProcessor(pred_file, self.logger)
             pred_processor.read_predictions()
-            pred_processor.count_predictions()
+            total_grand = pred_processor.count_predictions()
+            self.logger.log(f"Objects in {pred_file}:\n {total_grand}")
 
 
     def setup_objects_and_file_structure(self):
@@ -65,7 +66,7 @@ class flowRunner:
         self.logger.log("Finished setting up logger object")
         self.logger.log("Gathering all .pth files ...")
         self.pth_file_paths_full = self.utils_helper.list_all_files_w_ext_in_a_parent_folder_recursively(self.main_predictions_path,
-                                                                                                         [".pth"])
+                                                                                                         ("predictions.pth"))
         self.logger.log(self.pth_file_paths_full)
 
 

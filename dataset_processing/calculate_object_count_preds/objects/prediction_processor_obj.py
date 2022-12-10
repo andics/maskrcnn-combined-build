@@ -51,18 +51,17 @@ class predictionProcessor:
         total_grand = 0
 
         for ind, img_predictions in enumerate(self.new_predictions_data):
-            for prediction in img_predictions:
-                total_grand += 1
-                '''
-                if annotation['area'] <= 32**2:
-                    total_binary_mask_small += current_image_binary_mask_resized
-                    continue
-                elif annotation['area'] <= 96**2:
-                    total_binary_mask_medium += current_image_binary_mask_resized
-                    continue
-                else:
-                    total_binary_mask_large += current_image_binary_mask_resized
-                    continue
-                '''
+            total_grand += img_predictions.get_field("labels").__len__()
+            '''
+            if annotation['area'] <= 32**2:
+                total_binary_mask_small += current_image_binary_mask_resized
+                continue
+            elif annotation['area'] <= 96**2:
+                total_binary_mask_medium += current_image_binary_mask_resized
+                continue
+            else:
+                total_binary_mask_large += current_image_binary_mask_resized
+                continue
+            '''
 
         return total_grand
