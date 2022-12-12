@@ -8,3 +8,4 @@ dataset_processing/generate_resolution_bin_annotations/logs/*
 **/core.*
 *.log
 *.pyc
+*.json
