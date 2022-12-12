@@ -32,6 +32,9 @@ class predictionProcessor:
                  model_cfg_path,
                  logger,
                  utils_helper):
+        ''':param org_predictions_path - path to a .pth file
+        :param new_predictions_path - path to a .pth file
+        :param area_threshold_array - E.g. (0.0, 0.1)'''
         self.org_predictions_path = org_predictions_path
         self.new_predictions_path = new_predictions_path
         self.area_threshold_array = area_threshold_array

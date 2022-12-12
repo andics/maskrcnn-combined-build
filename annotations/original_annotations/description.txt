@@ -1,0 +1,2 @@
+The following folder contains that 100% original (test) annotations provided by the COCO creators
+Those annotations are used by both the equiconstant model and the variable one
