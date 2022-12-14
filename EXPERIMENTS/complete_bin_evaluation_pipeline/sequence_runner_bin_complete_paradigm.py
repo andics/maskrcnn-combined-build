@@ -33,6 +33,10 @@ class flowRunner:
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
     _GENERATED_ANNOTATION_FILES_NAME = "instances_val2017.json"
     _GENERATED_PRECITIONS_FILES_NAME = "predictions.pth"
+    #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
+    #If FALSE: predictions regardless of their mask logits score will be kept
+    #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
+    _FILTER_MASK_LOGITS = False
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='Potential arguments for complete resolution-bin evaluation pipeline')
@@ -194,13 +198,18 @@ class flowRunner:
                     area_threshold_array = (lower_threshold, upper_threshold),
                     middle_boundary = self.middle_boundary,
                     model_cfg_path = self.model_config_file,
-                    utils_helper = self.utils_helper)
+                    utils_helper = self.utils_helper,
+                    mask_logit_threshold = 0.5 if flowRunner._FILTER_MASK_LOGITS else 0.0)
                 prediction_processor_object.setup_objects_and_misk_variables()
                 prediction_processor_object.read_predictions()
                 prediction_processor_object.filter_predictions_w_wrong_area_ratio()
                 prediction_processor_object.write_new_predictions_to_disk()
             else: logging.info("Bin prediction file exists. Moving to evaluation -->>")
+            logging.info("Finished prediction file processing ->>")
             #---------------------------
+            #---BIN-EVALUATION---
+
+            #--------------------
             #-----------------
             self.logger.remove_temp_file_handler_and_add_main_file_handler()
             logging.info(f"Finished working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
