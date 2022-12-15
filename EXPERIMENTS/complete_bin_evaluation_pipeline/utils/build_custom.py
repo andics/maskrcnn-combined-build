@@ -118,7 +118,8 @@ def make_batch_data_sampler(
     return batch_sampler
 
 
-def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0):
+def make_data_loader_custom(cfg, current_bin_annotation_file_path, current_bin_images_path,
+                            bin_test_set_name, is_train=True, is_distributed=False, start_iter=0):
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -141,7 +142,7 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0):
         start_iter = 0
 
     if images_per_gpu > 1:
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger("maskrcnn_benchmark.inference")
         logger.warning(
             "When using more than one image per GPU you may encounter "
             "an out-of-memory (OOM) error if your GPU does not have "
@@ -162,7 +163,8 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, start_iter=0):
         "maskrcnn_benchmark.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
     DatasetCatalog = paths_catalog.DatasetCatalog
-    dataset_list = cfg.DATASETS.TRAIN if is_train else cfg.DATASETS.TEST
+    #TODO: edit the DatasetCatalog right here!
+    dataset_list = [bin_test_set_name]
 
     transforms = build_transforms(cfg, is_train)
     datasets, epoch_size = build_dataset(dataset_list, transforms, DatasetCatalog, cfg, is_train)
