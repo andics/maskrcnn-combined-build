@@ -28,6 +28,11 @@ class CustomFormatter(logging.Formatter):
 
 
 class loggerObj():
+    #This class initiates a logger with the name maskrcnn_benchmark.inference
+    #The reason for this naming of the logger is that the coco evaluation
+    #script uses this name for its logger, and thus, it is outputs the
+    #coco evaluation results at our logger's file be default
+
     def __init__(self, logs_subdir, log_file_name, utils_helper, log_level):
         self.logs_path = logs_subdir
         self.log_file_name = log_file_name + "_" + time.strftime("%Y_%m_%d_%H-%M-%S") + '.log'
@@ -43,7 +48,7 @@ class loggerObj():
             print("General log dir did not exist; created one!")
 
         #Create a root logger
-        logger_main = logging.getLogger()
+        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
 
         self.log_file_current = os.path.join(self.logs_path, self.log_file_name)
         self.main_log_file_handler = logging.FileHandler(self.log_file_current)
@@ -70,29 +75,12 @@ class loggerObj():
         self._tmp_log_file_handler.setFormatter(formatter)
         self._tmp_log_file_handler.setLevel(logging.DEBUG)
 
-        logger_main = logging.getLogger()
+        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
         logger_main.removeHandler(self.main_log_file_handler)
         logger_main.addHandler(self._tmp_log_file_handler)
 
 
     def remove_temp_file_handler_and_add_main_file_handler(self):
-        logger_main = logging.getLogger()
+        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
         logger_main.removeHandler(self._tmp_log_file_handler)
         logger_main.addHandler(self.main_log_file_handler)
-
-
-    def log(self, *args):
-        message = ""
-
-        if type(args) == tuple:
-            message = "".join(map(str, args))
-
-        else:
-            for _message_tmp in args:
-                message = message + str(_message_tmp)
-
-
-        logger = logging.getLogger(self.logger_name)
-
-        logger.info(message)
-        print(message)

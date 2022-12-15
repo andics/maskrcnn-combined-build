@@ -20,6 +20,7 @@ from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.logger_obj import logg
 from EXPERIMENTS.complete_bin_evaluation_pipeline.utils.util_functions import Utilities_helper
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.annotation_processor_obj import annotationProcessor
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.prediction_processor_obj import predictionProcessor
+from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.tester_obj import testerObj
 
 import argparse
 
@@ -33,6 +34,7 @@ class flowRunner:
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
     _GENERATED_ANNOTATION_FILES_NAME = "instances_val2017.json"
     _GENERATED_PRECITIONS_FILES_NAME = "predictions.pth"
+    _GENERATED_EVALUTION_FILES_NAME = "coco_results.json"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
@@ -208,7 +210,13 @@ class flowRunner:
             logging.info("Finished prediction file processing ->>")
             #---------------------------
             #---BIN-EVALUATION---
-
+            if not os.path.exists(os.path.join(evaluation_folder, "coco_results.json")):
+                tester_obj = testerObj(model_config_file = self.model_config_file,
+                                       pth_file_location = self.org_predictions_location,
+                                       utils_helper = self.utils_helper)
+                tester_obj.build_model()
+                tester_obj.test_model()
+            else: logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
             #--------------------
             #-----------------
             self.logger.remove_temp_file_handler_and_add_main_file_handler()

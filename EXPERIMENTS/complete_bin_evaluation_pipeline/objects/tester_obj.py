@@ -1,5 +1,6 @@
 import sys
 import os
+import torch
 import dllogger
 
 from pathlib import Path
@@ -16,6 +17,9 @@ except Exception:
 from testing.test_model_classic.utils.util_functions import Utilities_helper
 from utils_gen import model_utils
 from testing.test_model_classic import test_functions
+from maskrcnn_benchmark.data.datasets.evaluation import evaluate
+from maskrcnn_benchmark.engine.inference import inference
+from maskrcnn_benchmark.utils.comm import synchronize, get_rank, is_main_process
 
 from maskrcnn_benchmark.config import cfg
 
@@ -26,41 +30,28 @@ import functools
 import gc
 import time
 
-class flowRunner:
+class testerObj:
     #TODO:
     #Combine this file with the test_functions one
     #Sneaky sneaky just replace the dataset name, and the predictions.pth file in the testing function
     #From what I saw all else should remain the same
-    def __init__(self):
-        parser = argparse.ArgumentParser(description='Potential arguments for script')
+    def __init__(self, model_config_file, current_bin_pth_dir_path,
+                 current_bin_annotation_file_path, current_bin_dataset_name,
+                 utils_helper):
 
-        parser.add_argument('-cm', '--config-path-model', nargs='?',
-                            type=str,
-                            required = True,
-                            help='Path to configuration file used to build the model')
-        parser.add_argument('-td', '--test-dataset', nargs='?',
-                            type=str,
-                            required = True,
-                            help='The name of the borderised dataset as written in the paths_catalog file')
-
-        args = parser.parse_args()
-        self.config_location_model = args.config_path_model
-        self.test_dataset = args.test_dataset
-
-        self.objects_setup_complete = False
-        self.setup_objects()
-
+        self.model_config_path = model_config_file
+        self.current_bin_pth_dir_path = current_bin_pth_dir_path
+        self.current_bin_annotation_file_path = current_bin_annotation_file_path
+        self.current_bin_dataset_name = current_bin_dataset_name
+        self.utils_helper = utils_helper
 
     def build_model(self):
         #add function which returns the model as well as the established CFG file
         #pass the model and the cfg to the test_model function in my_train_net
         #Perhaps make a local copy of my_train_net to keep everything modular and clean
-        self.model, self.cfg = model_utils.load_model_and_cfg(self.config_location_model)
-        self.test_dataset = (self.test_dataset,)
-        self.cfg.merge_from_list(["DATASETS.TEST", self.test_dataset])
+        self.model, self.cfg = model_utils.load_model_and_cfg(self.model_config_path)
 
-        print("Successfully loaded model weights")
-        print("Using the following dataset for testing: ", cfg.DATASETS.TEST)
+        logging.info("Successfully loaded model weights")
 
     def test_model(self):
         num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
@@ -71,26 +62,65 @@ class flowRunner:
         dllogger_initialized = True
         dllogger.log(step="PARAMETER", data={"gpu_count": num_gpus})
         # dllogger.log(step="PARAMETER", data={"environment_info": collect_env_info()})
-        dllogger.log(step="PARAMETER", data={"config_path": self.config_location_model})
-        with open(self.config_location_model, "r") as cf:
+        dllogger.log(step="PARAMETER", data={"config_path": self.model_config_path})
+        with open(self.model_config_path, "r") as cf:
             config_str = "\n" + cf.read()
         dllogger.log(step="PARAMETER", data={"config": self.cfg})
 
         dllogger.log(step="INFORMATION", data="Running evaluation...")
-        test_functions.test_model(cfg=self.cfg, model=self.model, distributed=distributed,
+        self.test_model_sneaky_v2(cfg=self.cfg, model=self.model, distributed=distributed,
                                   dllogger=dllogger, iters_per_epoch=1,
-                                  current_iterations=self.cfg.SOLVER.MAX_ITER)
+                                  current_bin_annotation_file_path = self.current_bin_annotation_file_path,
+                                  current_bin_dataset_name = self.current_bin_dataset_name,
+                                  current_bin_pth_dir_path = self.current_bin_pth_dir_path)
 
-    def setup_objects(self):
-        self.utils_helper = Utilities_helper()
+
+    def test_model_sneaky_v2(cfg, model, distributed, iters_per_epoch, dllogger,
+                             current_bin_annotation_file_path,
+                             current_bin_dataset_name,
+                             current_bin_pth_dir_path):
+
+        if distributed:
+            model = model.module
+        torch.cuda.empty_cache()  # TODO check if it helps
+        iou_types = ("bbox",)
+        if cfg.MODEL.MASK_ON:
+            iou_types = iou_types + ("segm",)
+        output_folders = [current_bin_pth_dir_path]
+        dataset_names = [current_bin_dataset_name]
+
+        data_loaders_val = make_data_loader_custom(cfg, current_bin_annotation_file_path,
+                                                   is_train=False, is_distributed=distributed)
+        results = []
+        # -----MODIFICATION-----
+        # This is used to allow for custom prediction files to be found by the inference function
+        # Used for border-based evaluation
+        if not (current_bin_pth_dir_path is None):
+            for output_folder, dataset_name, data_loader_val in zip(output_folders, dataset_names, data_loaders_val):
+                result = inference(
+                    model,
+                    data_loader_val,
+                    dataset_name=dataset_name,
+                    iou_types=iou_types,
+                    box_only=cfg.MODEL.RPN_ONLY,
+                    device=cfg.MODEL.DEVICE,
+                    expected_results=cfg.TEST.EXPECTED_RESULTS,
+                    expected_results_sigma_tol=cfg.TEST.EXPECTED_RESULTS_SIGMA_TOL,
+                    output_folder=current_bin_pth_dir_path,
+                    dllogger=dllogger,
+                )
+                synchronize()
+                results.append(result)
+            if is_main_process():
+                map_results, raw_results = results[0]
+                bbox_map = map_results.results["bbox"]['AP']
+                segm_map = map_results.results["segm"]['AP']
+                dllogger.log(step=(cfg.SOLVER.MAX_ITER, cfg.SOLVER.MAX_ITER / iters_per_epoch,),
+                             data={"BBOX_mAP": bbox_map, "MASK_mAP": segm_map})
+                dllogger.log(step=tuple(), data={"BBOX_mAP": bbox_map, "MASK_mAP": segm_map})
+        # ----------------------
 
 
     def run_all(self):
-        self.setup_objects()
         self.build_model()
         self.test_model()
-
-
-if __name__ == "__main__":
-    flow_runner = flowRunner()
-    flow_runner.run_all()
