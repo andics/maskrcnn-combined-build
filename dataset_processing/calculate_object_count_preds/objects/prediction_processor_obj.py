@@ -75,7 +75,7 @@ class predictionProcessor:
         #new_predictions_data: contains 5000 BoxLists, full of predictions (per image)
         total_num_images = len(self.new_predictions_data)
         for ind, img_predictions in enumerate(self.new_predictions_data):
-            self.logger.log(f"Working on image {ind}/{total_num_images}")
+            #self.logger.log(f"Working on image {ind}/{total_num_images}")
             #Empty cropped predictions will be discarded
             img_id = self.coco_dataset.id_to_img_map[ind]
             img_file_path = os.path.join(self.org_annotation_images_path,
@@ -101,7 +101,7 @@ class predictionProcessor:
             # Crop the bbox region
             #Cycle through all predictions for a given image and borderize them
             for i in range(len(rsz_predictions)):
-                self.logger.log(f"Working on prediction {i+1}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
+                #self.logger.log(f"Working on prediction {i+1}/{len(rsz_predictions)} on image {self.coco_dataset.coco.imgs[img_id]['file_name']}")
                 #Prediction mask before cropping
                 sing_pred_on_sing_img_mask = rsz_pred_masks_img_hight_width[i, :, :, :]
                 #Format [bbox_top_x_corner, bbox_top_y_corner, bbox_width, bbox_height]
@@ -116,6 +116,8 @@ class predictionProcessor:
                 #area of the binary mask inside the middle boundry
                 current_image_pred_mask_tot_calculated_area = np.count_nonzero(pred_mask_binary_np)
                 assert current_image_pred_mask_tot_calculated_area == pred_mask_binary_np.sum()
+
+                if current_image_pred_mask_tot_calculated_area == 0: continue
 
                 total_num_preds_grand += 1
                 if current_image_pred_mask_tot_calculated_area <= 32**2:

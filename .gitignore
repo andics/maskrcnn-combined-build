@@ -7,3 +7,5 @@ dataset_processing/generate_resolution_bin_annotations/logs/*
 *.pth
 **/core.*
 *.log
+*.pyc
+*.json
