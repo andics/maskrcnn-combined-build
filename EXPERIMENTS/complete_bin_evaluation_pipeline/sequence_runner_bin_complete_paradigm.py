@@ -153,30 +153,43 @@ class flowRunner:
         #This portion of the script generates the complete paths each new annotation and predictions file will assume
         self.generated_annotation_files_paths = []
         self.generated_predictions_files_paths = []
+        self.generated_test_sets_names = []
         for evaluation_folder in self.evaluation_foders:
             self.generated_annotation_files_paths.append(os.path.join(evaluation_folder,
                                                                       flowRunner._GENERATED_ANNOTATION_FILES_NAME))
             self.generated_predictions_files_paths.append(os.path.join(evaluation_folder,
                                                                       flowRunner._GENERATED_PRECITIONS_FILES_NAME))
+
+
+        for lower_threshold, upper_threshold in zip(self.bins_lower_threshold, self.bins_upper_threshold):
+            self.generated_test_sets_names.append(self.model_name + "_" + str(float(self.bin_spacing)) +
+                                                  "_" + str(self.middle_boundary) +
+                                                  str("{:.4f}".format(lower_threshold)) + "_" +
+                                                  str("{:.4f}".format(upper_threshold)) + "_eval")
+
         #---------------------------------
         logging.info('\n  -  '+ '\n  -  '.join(f'({l} | {u}) \n  -  Evaluation dir: {f}'
                                                f' \n  -  Annotation file: {a}'
-                                               f' \n  -  Predictions file {p}' for l, u, f, a, p in
+                                               f' \n  -  Predictions file: {p}'
+                                               f' \n  -  Test set name: {t}' for l, u, f, a, p, t in
                                                zip(self.bins_lower_threshold,
                                                 self.bins_upper_threshold,
                                                 self.evaluation_foders,
                                                 self.generated_annotation_files_paths,
-                                                self.generated_predictions_files_paths)))
+                                                self.generated_predictions_files_paths,
+                                                self.generated_test_sets_names)))
 
 
     def run_all(self):
         logging.info("Running per bin evaluation -->>")
         for lower_threshold, upper_threshold,\
-            evaluation_folder, gen_annotation_file_path, gen_prediction_file_path in zip(self.bins_lower_threshold,
+            evaluation_folder, gen_annotation_file_path,\
+            gen_prediction_file_path, gen_test_set_name in zip(self.bins_lower_threshold,
                                                                      self.bins_upper_threshold,
                                                                      self.evaluation_foders,
                                                                      self.generated_annotation_files_paths,
-                                                                     self.generated_predictions_files_paths):
+                                                                     self.generated_predictions_files_paths,
+                                                                     self.generated_test_sets_names):
             logging.info(f"Working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
             self.logger.add_temp_file_handler_and_remove_main_file_handler(evaluation_folder)
             #---ANNOTATION-PREP---
@@ -212,10 +225,14 @@ class flowRunner:
             #---BIN-EVALUATION---
             if not os.path.exists(os.path.join(evaluation_folder, "coco_results.json")):
                 tester_obj = testerObj(model_config_file = self.model_config_file,
-                                       pth_file_location = self.org_predictions_location,
+                                       current_bin_pth_dir_path = gen_prediction_file_path,
+                                       current_bin_annotation_file_path = gen_annotation_file_path,
+                                       current_bin_dataset_name = gen_test_set_name,
+                                       current_bin_images_path = self.images_location,
                                        utils_helper = self.utils_helper)
                 tester_obj.build_model()
                 tester_obj.test_model()
+                tester_obj.write_results_to_disk()
             else: logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
             #--------------------
             #-----------------
