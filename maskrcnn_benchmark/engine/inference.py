@@ -66,7 +66,10 @@ def inference(
         skip_eval=False,
         dllogger=None
 ):
+    #The following script will look for a predictions.pth file in the given output folder
+    #If none is found, it will infer the dataset on the model.
     # convert to a torch.device for efficiency
+
     device = torch.device(device)
     num_devices = (
         torch.distributed.get_world_size()
