@@ -34,7 +34,8 @@ class flowRunner:
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
     _GENERATED_ANNOTATION_FILES_NAME = "instances_val2017.json"
     _GENERATED_PRECITIONS_FILES_NAME = "predictions.pth"
-    _GENERATED_EVALUTION_FILES_NAME = "coco_results.json"
+    _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
+    _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
@@ -162,8 +163,8 @@ class flowRunner:
 
 
         for lower_threshold, upper_threshold in zip(self.bins_lower_threshold, self.bins_upper_threshold):
-            self.generated_test_sets_names.append(self.model_name + "_" + str(float(self.bin_spacing)) +
-                                                  "_" + str(self.middle_boundary) +
+            self.generated_test_sets_names.append("coco_2017_" + self.model_name + "_" + str(float(self.bin_spacing)) +
+                                                  "_" + str(self.middle_boundary) + "_" +
                                                   str("{:.4f}".format(lower_threshold)) + "_" +
                                                   str("{:.4f}".format(upper_threshold)) + "_eval")
 
@@ -192,6 +193,7 @@ class flowRunner:
                                                                      self.generated_test_sets_names):
             logging.info(f"Working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
             self.logger.add_temp_file_handler_and_remove_main_file_handler(evaluation_folder)
+            logging.info("Test: should be in bin-specific dir only")
             #---ANNOTATION-PREP---
             if not os.path.exists(gen_annotation_file_path):
                 annotation_processor_object = annotationProcessor(original_annotations_path= self.org_annotations_location,
@@ -223,14 +225,18 @@ class flowRunner:
             logging.info("Finished prediction file processing ->>")
             #---------------------------
             #---BIN-EVALUATION---
-            if not os.path.exists(os.path.join(evaluation_folder, "coco_results.json")):
+            if not os.path.exists(os.path.join(evaluation_folder, flowRunner._GENERATED_RESULTS_FILE_NAME)):
                 tester_obj = testerObj(model_config_file = self.model_config_file,
-                                       current_bin_pth_dir_path = gen_prediction_file_path,
+                                       current_bin_pth_dir_path = evaluation_folder,
                                        current_bin_annotation_file_path = gen_annotation_file_path,
                                        current_bin_dataset_name = gen_test_set_name,
                                        current_bin_images_path = self.images_location,
-                                       utils_helper = self.utils_helper)
+                                       utils_helper = self.utils_helper,
+                                       results_file_name = flow_runner._GENERATED_RESULTS_FILE_NAME,
+                                       results_file_verbose_name = flow_runner._GENERATED_RESULTS_VERBOSE_FILE_NAME)
                 tester_obj.build_model()
+                #TODO: Add a script which temporarily de-rails print statements to a file
+                #so that we see the AR metric
                 tester_obj.test_model()
                 tester_obj.write_results_to_disk()
             else: logging.info("Evaluation file exists. Moving to next bin (if any) -->>")

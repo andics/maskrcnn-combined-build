@@ -38,7 +38,8 @@ class testerObj:
     #From what I saw all else should remain the same
     def __init__(self, model_config_file, current_bin_pth_dir_path,
                  current_bin_annotation_file_path, current_bin_dataset_name,
-                 current_bin_images_path, utils_helper):
+                 current_bin_images_path, utils_helper, results_file_name,
+                 results_file_verbose_name):
 
         self.model_config_path = model_config_file
         self.current_bin_pth_dir_path = current_bin_pth_dir_path
@@ -46,6 +47,8 @@ class testerObj:
         self.current_bin_dataset_name = current_bin_dataset_name
         self.current_bin_images_path = current_bin_images_path
         self.utils_helper = utils_helper
+        self.results_file_name = results_file_name
+        self.results_file_verbose_name = results_file_verbose_name
 
     def build_model(self):
         #add function which returns the model as well as the established CFG file
@@ -59,9 +62,11 @@ class testerObj:
         num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
         distributed = num_gpus > 1
 
-        dllogger.init(backends=[])
+        try:
+            dllogger.init(backends=[])
+        except Exception as e:
+            logging.debug("DlLogger already initialized ...")
 
-        dllogger_initialized = True
         dllogger.log(step="PARAMETER", data={"gpu_count": num_gpus})
         # dllogger.log(step="PARAMETER", data={"environment_info": collect_env_info()})
         dllogger.log(step="PARAMETER", data={"config_path": self.model_config_path})
@@ -96,6 +101,7 @@ class testerObj:
         data_loaders_val = make_data_loader_custom(cfg = cfg,
                                                    current_bin_annotation_file_path = current_bin_annotation_file_path,
                                                    current_bin_images_path = current_bin_images_path,
+                                                   current_bin_dataset_name = current_bin_dataset_name,
                                                    is_train = False, is_distributed = distributed)
         self.results = []
         # -----MODIFICATION-----
@@ -117,7 +123,7 @@ class testerObj:
             synchronize()
             self.results.append(result)
         if is_main_process():
-            map_results, raw_results = results[0]
+            map_results, raw_results = self.results[0]
             bbox_map = map_results.results["bbox"]['AP']
             segm_map = map_results.results["segm"]['AP']
             dllogger.log(step=(cfg.SOLVER.MAX_ITER, cfg.SOLVER.MAX_ITER / iters_per_epoch,),
@@ -127,6 +133,8 @@ class testerObj:
 
     def write_results_to_disk(self):
         logging.info("About to write results to disk!")
+        _results_to_store_file_path = os.path.join(self.current_bin_pth_dir_path, self.results_file_name)
+        self.utils_helper.write_data_to_json(_results_to_store_file_path, self.results[0][0].results)
         # ----------------------
 
 

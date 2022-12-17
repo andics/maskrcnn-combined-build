@@ -48,7 +48,7 @@ class loggerObj():
             print("General log dir did not exist; created one!")
 
         #Create a root logger
-        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
+        logger_main = logging.getLogger()
 
         self.log_file_current = os.path.join(self.logs_path, self.log_file_name)
         self.main_log_file_handler = logging.FileHandler(self.log_file_current)
@@ -75,12 +75,12 @@ class loggerObj():
         self._tmp_log_file_handler.setFormatter(formatter)
         self._tmp_log_file_handler.setLevel(logging.DEBUG)
 
-        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
+        logger_main = logging.getLogger()
         logger_main.removeHandler(self.main_log_file_handler)
         logger_main.addHandler(self._tmp_log_file_handler)
 
 
     def remove_temp_file_handler_and_add_main_file_handler(self):
-        logger_main = logging.getLogger("maskrcnn_benchmark.inference")
+        logger_main = logging.getLogger()
         logger_main.removeHandler(self._tmp_log_file_handler)
         logger_main.addHandler(self.main_log_file_handler)
