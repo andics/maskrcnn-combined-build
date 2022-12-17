@@ -32,7 +32,8 @@ class predictionProcessor:
                  middle_boundary,
                  model_cfg_path,
                  utils_helper,
-                 mask_logit_threshold):
+                 mask_logit_threshold,
+                 summary_file_name):
         ''':param org_predictions_location - path to a .pth file
         :param new_predictions_path - path to a .pth file
         :param area_threshold_array - E.g. (0.0, 0.1)'''
@@ -45,6 +46,7 @@ class predictionProcessor:
         self.model_cfg_path = model_cfg_path
         self.utils_helper = utils_helper
         self.mask_logit_threshold = mask_logit_threshold
+        self.summary_file_name = summary_file_name
 
 
     def setup_objects_and_misk_variables(self):
@@ -277,6 +279,18 @@ class predictionProcessor:
         torch.save(self.new_predictions_data, self.new_predictions_path)
         logging.info(f"Successfully saved predictions for bin {self.area_threshold_array} to disk. "
                         "Moving to next bin (if any)...")
+
+
+    def summarize_prediction_file(self):
+        _dict_to_write = {"org_predictions_number": self.total_num_preds_before_filter,
+                          "after_filtering_predictions_number": self.total_num_preds_after_filter,
+                          "small_predictions": self.total_num_preds_after_filter_small,
+                          "medium_predictions": self.total_num_preds_after_filter_medium,
+                          "large_predictions": self.total_num_preds_after_filter_large}
+        _current_bin_evaluation_dir = os.path.dirname(os.path.abspath(self.new_predictions_path))
+        _location_to_save_summary_file = os.path.join(_current_bin_evaluation_dir, self.summary_file_name)
+
+        self.utils_helper.write_data_to_json(_location_to_save_summary_file, _dict_to_write)
 
 
     def _binary_mask_to_compressed_rle(self, binary_mask):

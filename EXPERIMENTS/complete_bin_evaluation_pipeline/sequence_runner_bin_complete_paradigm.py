@@ -33,7 +33,9 @@ class flowRunner:
     _MASKRCNN_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1])
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
     _GENERATED_ANNOTATION_FILES_NAME = "instances_val2017.json"
-    _GENERATED_PRECITIONS_FILES_NAME = "predictions.pth"
+    _GENERATED_ANNOTATION_FILES_SUMMARIES = "instances_val2017_summary.json"
+    _GENERATED_PREDICTIONS_FILES_NAME = "predictions.pth"
+    _GENERATED_PREDICTION_FILES_SUMMARIES = "predictions_summary.json"
     _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
     _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
@@ -159,7 +161,7 @@ class flowRunner:
             self.generated_annotation_files_paths.append(os.path.join(evaluation_folder,
                                                                       flowRunner._GENERATED_ANNOTATION_FILES_NAME))
             self.generated_predictions_files_paths.append(os.path.join(evaluation_folder,
-                                                                      flowRunner._GENERATED_PRECITIONS_FILES_NAME))
+                                                                       flowRunner._GENERATED_PREDICTIONS_FILES_NAME))
 
 
         for lower_threshold, upper_threshold in zip(self.bins_lower_threshold, self.bins_upper_threshold):
@@ -199,11 +201,13 @@ class flowRunner:
                 annotation_processor_object = annotationProcessor(original_annotations_path= self.org_annotations_location,
                                                                   new_annotations_file_path = gen_annotation_file_path,
                                                                   filter_threshold_array = (lower_threshold, upper_threshold),
-                                                                  middle_boundary= self.middle_boundary,
-                                                                  utils_helper= self.utils_helper)
+                                                                  middle_boundary = self.middle_boundary,
+                                                                  utils_helper = self.utils_helper,
+                                                                  summary_file_name = flowRunner._GENERATED_ANNOTATION_FILES_SUMMARIES)
                 annotation_processor_object.read_annotations()
                 annotation_processor_object.filter_annotations_w_wrong_area_ratio()
                 annotation_processor_object.write_new_annotations_to_disk()
+                annotation_processor_object.summarize_annotation_file()
             else: logging.info("Bin annotation file exists. Moving to prediction file processing -->>")
             #---PREDICTION-PROCESSING---
             if not os.path.exists(gen_prediction_file_path):
@@ -216,11 +220,13 @@ class flowRunner:
                     middle_boundary = self.middle_boundary,
                     model_cfg_path = self.model_config_file,
                     utils_helper = self.utils_helper,
-                    mask_logit_threshold = 0.5 if flowRunner._FILTER_MASK_LOGITS else 0.0)
+                    mask_logit_threshold = 0.5 if flowRunner._FILTER_MASK_LOGITS else 0.0,
+                    summary_file_name = flowRunner._GENERATED_PREDICTION_FILES_SUMMARIES)
                 prediction_processor_object.setup_objects_and_misk_variables()
                 prediction_processor_object.read_predictions()
                 prediction_processor_object.filter_predictions_w_wrong_area_ratio()
                 prediction_processor_object.write_new_predictions_to_disk()
+                prediction_processor_object.summarize_prediction_file()
             else: logging.info("Bin prediction file exists. Moving to evaluation -->>")
             logging.info("Finished prediction file processing ->>")
             #---------------------------

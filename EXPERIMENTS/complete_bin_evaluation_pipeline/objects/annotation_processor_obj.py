@@ -23,7 +23,8 @@ class annotationProcessor:
                  new_annotations_file_path,
                  filter_threshold_array,
                  middle_boundary,
-                 utils_helper):
+                 utils_helper,
+                 summary_file_name):
         ''':param original_annotations_path - path to .json file
         :param new_annotations_file_path - path to .json file (to be created)
         :param filter_threshold_array - E.g. (0.0, 0.1)
@@ -34,6 +35,7 @@ class annotationProcessor:
         self.filter_threshold_array = filter_threshold_array
         self.middle_boundary = middle_boundary
         self.utils_helper = utils_helper
+        self.summary_file_name = summary_file_name
 
 
     def read_annotations(self):
@@ -52,21 +54,21 @@ class annotationProcessor:
 
         logging.debug(f"Working on annotations bin {self.filter_threshold_array}")
 
-        _anns_len = len(self.new_annotations_data["annotations"])
+        self.original_anns_len = len(self.new_annotations_data["annotations"])
         self.total_num_preds_small = 0
         self.total_num_preds_medium = 0
         self.total_num_preds_large = 0
         self.ann_indices_to_keep = []
         for i, annotation in tqdm(enumerate(self.new_annotations_data["annotations"]),
-                                  total = _anns_len,
+                                  total = self.original_anns_len,
                                   desc ="Progress for filtering annotations"):
             self._bin_check_this_annotation(annotation, i)
             if int(i+1)%100==0:
-                logging.debug(f"Processed {i+1}/{_anns_len} annotations from {self.filter_threshold_array} bin")
+                logging.debug(f"Processed {i+1}/{self.original_anns_len} annotations from {self.filter_threshold_array} bin")
 
         self.new_annotations_data["annotations"] = [self.new_annotations_data["annotations"][index] for index in
                                                     self.ann_indices_to_keep]
-        logging.info(f"  -  Annotations left at the end: {len(self.new_annotations_data['annotations'])}/{_anns_len}")
+        logging.info(f"  -  Annotations left at the end: {len(self.new_annotations_data['annotations'])}/{self.original_anns_len}")
         logging.info(f"  -  Small annotations: {self.total_num_preds_small}")
         logging.info(f"  -  Medium annotations: {self.total_num_preds_medium}")
         logging.info(f"  -  Large annotations: {self.total_num_preds_large}")
@@ -77,6 +79,16 @@ class annotationProcessor:
         logging.info(f"Successfully saved annotations for bin {self.filter_threshold_array} to disk. "
                         "Moving to next bin (if any)...")
 
+    def summarize_annotation_file(self):
+        _dict_to_write = {"org_annotations_number": self.original_anns_len,
+                          "after_filtering_annotations_number": len(self.new_annotations_data['annotations']),
+                          "small_annotations": self.total_num_preds_small,
+                          "medium_annotations": self.total_num_preds_medium,
+                          "large_annotations": self.total_num_preds_large}
+        _current_bin_evaluation_dir = os.path.dirname(os.path.abspath(self.new_annotations_file_path))
+        _location_to_save_summary_file = os.path.join(_current_bin_evaluation_dir, self.summary_file_name)
+
+        self.utils_helper.write_data_to_json(_location_to_save_summary_file, _dict_to_write)
 
     def _calculate_high_res_bbox(self, image_array):
         '''
