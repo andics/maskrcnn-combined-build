@@ -183,7 +183,8 @@ class COCO_predictor(object):
         if self.show_bboxes:
             result = self.overlay_boxes(result, top_predictions)
 
-
+        '''
+        Problematic code. Used just for visual. so not vital:
         if self.cfg.MODEL.MASK_ON:
             result = self.overlay_mask(result, top_predictions)
         result, prediction_dictionary = self.generate_class_names(result, top_predictions)
@@ -191,9 +192,10 @@ class COCO_predictor(object):
 
         if self.display_total_predictions:
             prediction_dictionary.append("Total : " + str(total_predictions))
+        '''
 
+        return None
 
-        return result, prediction_dictionary
 
     def compute_prediction(self, image_model_acceptable_format, image_tensor_like):
         """

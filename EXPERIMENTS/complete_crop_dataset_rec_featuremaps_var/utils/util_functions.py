@@ -283,6 +283,7 @@ class Utilities_helper(object):
         :param plot_size: contains number of rows [0] and number of columns [1]
         :return: None
         '''
+        plt.ion()
         fig = plt.figure(figsize=(10, 7))
 
         # setting values to rows and column variables
@@ -303,7 +304,7 @@ class Utilities_helper(object):
         plt.show()
 
 
-    def display_multi_image_collage_and_save(self, images_info_bundle, plot_size):
+    def display_multi_image_collage_and_save(self, images_info_bundle, plot_size, path_to_save):
         '''
         :param images_info_bundle: Expected to be a Tuple of Tuples, each sub-tuple containing the Title of the image [1]
         and the image itself [0] (in cv2 format)
@@ -311,6 +312,7 @@ class Utilities_helper(object):
         :return: None
         '''
         fig = plt.figure(figsize=(10, 7))
+        plt.ioff()
 
         # setting values to rows and column variables
         rows = plot_size[0]
@@ -327,4 +329,4 @@ class Utilities_helper(object):
                 plt.title(image_tuple[1])
                 counter += 1
 
-        plt.show()
+        plt.savefig()
