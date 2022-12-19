@@ -74,6 +74,8 @@ class flowRunner:
 
 
     def run_all(self):
+        self.image_processor.load_model()
+        self.image_processor.attach_hooks_to_model()
         self.image_processor.read_all_images_in_org_dataset()
         self.image_processor.process_all_images()
 
