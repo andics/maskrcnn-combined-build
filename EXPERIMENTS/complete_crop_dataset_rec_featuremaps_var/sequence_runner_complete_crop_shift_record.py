@@ -27,6 +27,8 @@ class flowRunner:
     _LOGS_SUBDIR = "logs"
     _LOG_LEVEL = logging.DEBUG
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
+    #From to and bottom, separately
+    _DEFAULT_VERTICAL_CROPPING_PERCENTAGE = 0.05
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='Potential arguments for script')
@@ -79,6 +81,7 @@ class flowRunner:
         self.image_processor.read_all_images_in_org_dataset()
         self.image_processor.process_all_images()
 
+
     def setup_objects_and_variables(self):
         self.utils_helper = Utilities_helper()
 
@@ -98,7 +101,8 @@ class flowRunner:
         self.image_processor = imageAndPredictionProcessor(utils_helper=self.utils_helper, org_dataset_folder=self.dataset_locations,
                                                            new_dataset_folder=self.new_dataset_location, lower_lengths=self.lower_lengths,
                                                            upper_lengths= self.upper_lengths,
-                                                           model_config_path=self.model_config_path)
+                                                           model_config_path=self.model_config_path,
+                                                           default_vertical_cropping_percentage = flowRunner._DEFAULT_VERTICAL_CROPPING_PERCENTAGE)
 
 
 if __name__ == "__main__":

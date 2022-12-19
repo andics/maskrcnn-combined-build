@@ -32,13 +32,14 @@ class imageAndPredictionProcessor:
     _VALID_IMG_EXT = ['jpg', 'png']
 
     def __init__(self, org_dataset_folder, new_dataset_folder, utils_helper,
-                 lower_lengths, upper_lengths, model_config_path):
+                 lower_lengths, upper_lengths, model_config_path, default_vertical_cropping_percentage):
         self.org_dataset_folder = org_dataset_folder
         self.new_dataset_folder = new_dataset_folder
         self.utils_helper = utils_helper
         self.lower_lengths = lower_lengths
         self.upper_lengths = upper_lengths
         self.model_config_path = model_config_path
+        self.default_vertical_cropping_percentage = default_vertical_cropping_percentage
 
     def load_model(self):
         cfg.merge_from_file(self.model_config_path)
@@ -102,6 +103,8 @@ class imageAndPredictionProcessor:
                                                                      "predictions_0_vis.jpg")
             tensor_plot_1_centered_cropped_and_pasted_save_dir = os.path.join(current_img_general_storage_dir,
                                                                      "predictions_1_vis.jpg")
+            img_collage_plot_save_path =  os.path.join(current_img_general_storage_dir,
+                                                       "visual_comp.jpg")
             #-----------------------------
 
             #---IMAGE-PROCESSING-AND-SAVING---
@@ -141,7 +144,7 @@ class imageAndPredictionProcessor:
             #-------------------------------
 
             if imageAndPredictionProcessor._DEBUGGING:
-                self.utils_helper.display_multi_image_collage(((img_img_format_0_shifted, f"Image org 0"),
+                self.utils_helper.display_multi_image_collage_and_save(((img_img_format_0_shifted, f"Image org 0"),
                                                                (img_img_format_1_centered, f"Image org 1"),
                                                                (img_img_format_0_shifted_cropped_and_pasted_PIL_format
                                                                 , f"Image cropped 0"),
@@ -151,9 +154,10 @@ class imageAndPredictionProcessor:
                                                                 , f"Img 0 tensor 3"),
                                                                (tensor_1_current_img.numpy()[3, :, :]
                                                                 , f"Img 1 tensor 3"),),
-                                                              [3, 2])
+                                                              [3, 2], img_collage_plot_save_path)
 
             logging.info(f"Image {org_img_file_name} successfully processed! {i+1}/{total_img_num}")
+
 
         logging.info("Dataset shifting complete!")
 
@@ -176,12 +180,22 @@ class imageAndPredictionProcessor:
         _crop_img_lower_length_index = math.floor(org_img_width * lower_length)
         _crop_img_upper_length_index = math.floor(org_img_width * upper_length)
         _cropped_piece_length = int(_crop_img_upper_length_index - _crop_img_lower_length_index)
+
+        # This is the upper pat of the image
+        _crop_img_lower_height_index = math.floor(org_img_height * self.default_vertical_cropping_percentage)
+        # This is the lower part of the image
+        _crop_img_upper_height_index = math.floor(org_img_height * (1-self.default_vertical_cropping_percentage))
+
         # Location to place pixels in clean image
         _paste_img_lower_length_index = math.floor((org_img_width - _cropped_piece_length) / 2)
         _paste_img_upper_length_index = _paste_img_lower_length_index + _cropped_piece_length
+        _paste_img_lower_height_index = _crop_img_lower_height_index
+        _paste_img_upper_height_index = _crop_img_upper_height_index
 
-        img_np_format_cropped_and_pasted[:, _paste_img_lower_length_index:_paste_img_upper_length_index, :] = \
-            img_np_format[:, _crop_img_lower_length_index:_crop_img_upper_length_index, :]
+        img_np_format_cropped_and_pasted[_paste_img_lower_height_index:_paste_img_upper_height_index,
+        _paste_img_lower_length_index:_paste_img_upper_length_index, :] = \
+            img_np_format[_crop_img_lower_height_index:_crop_img_upper_height_index,
+            _crop_img_lower_length_index:_crop_img_upper_length_index, :]
 
         img_img_format_shifted = Image.fromarray(img_np_format_cropped_and_pasted)
         return img_img_format_shifted
