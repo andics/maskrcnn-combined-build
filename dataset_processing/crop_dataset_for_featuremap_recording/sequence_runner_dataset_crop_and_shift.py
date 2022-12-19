@@ -6,14 +6,13 @@ from pathlib import Path
 try:
     path_main = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1])
     print(path_main)
-    sys.path.remove('/workspace/object_detection')
     sys.path.append(path_main)
     os.chdir(path_main)
+    sys.path.remove('/workspace/object_detection')
     print("Environmental paths updated successfully!")
 except Exception:
     print("Tried to edit environmental paths but was unsuccessful!")
 
-from dataset_processing.crop_dataset_for_featuremap_recording.objects.logger_obj import Logger
 from dataset_processing.crop_dataset_for_featuremap_recording.utils.util_functions import Utilities_helper
 from dataset_processing.crop_dataset_for_featuremap_recording.objects.image_processor_obj import imageProcessor
 
@@ -31,20 +30,22 @@ class flowRunner:
                             type=str,
                             required = False,
                             help='The location where the dataset to be shifted is located',
-                            default='/home/projects/bagon/shared/coco/images/val2017')
+                            default='w:/bagon/dannyh/data/coco_filt/val2017/Variable_shifted_h_0.5_v_1.0')
         parser.add_argument('-ndbl', '--new-dataset-base-location', nargs='?',
                             type=str,
                             required = False,
                             help='The new location where the shifted dataset will be located',
-                            default='/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/datasets_coco_2017_center_shifted')
+                            default='w:/bagon/andreyg/Projects/Variable_Resolution/Datasets/dataset_coco_2017_cropped_n_centered')
         parser.add_argument('-ll', '--lower-length', nargs='?',
                             type=float,
-                            required = True,
+                            default = 0.05,
+                            required = False,
                             help='The horizontal shifting to be performed on the image -'
                                  ' counted from the top left corner as a ratio of the width')
         parser.add_argument('-up', '--upper-length', nargs='?',
                             type=float,
-                            required = True,
+                            default = 0.25,
+                            required = False,
                             help='The vertical shifting to be performed on the image -'
                                  ' counted from the top left corner as a ratio of the height')
 
@@ -67,8 +68,8 @@ class flowRunner:
 
         self.new_dataset_location = os.path.join(self.new_dataset_base_location,
                                                  self.utils_helper.extract_folder_name_from_path(self.dataset_location) +
-                                                 "_shifted_h_" + str(self.horizontal_shift) + "_v_"
-                                                 + str(self.vertical_shift))
+                                                 "_shifted_h_" + str(self.lower_length) + "_v_"
+                                                 + str(self.upper_length))
         self.utils_helper.check_dir_and_make_if_na(self.new_dataset_location)
 
         self.image_processor = imageProcessor(utils_helper=self.utils_helper, org_dataset_folder=self.dataset_location,
