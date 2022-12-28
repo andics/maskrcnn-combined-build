@@ -83,6 +83,12 @@ class flowRunner:
                                  '[1024x4x1]: final compressed tensor',
                             default=True
                             )
+        parser.add_argument('-batchnorm', '--batch-norm', nargs='?',
+                            type=bool,
+                            required=False,
+                            help='Whether to take the Tensors after batch norm (True), or before  batch norm (False)',
+                            default=True
+                            )
 
 
         args = parser.parse_args()
@@ -94,6 +100,7 @@ class flowRunner:
         self.experiment_name = args.experiment_name
         self.tensor_depth = args.depth
         self.compress_tensors = args.compress
+        self.batch_norm = args.batch_norm
 
         self.objects_setup_complete = False
         self.setup_objects_and_variables()
@@ -114,7 +121,9 @@ class flowRunner:
                                                  + "_" + str(self.upper_lengths[0]) + "_centered_"
                                                  + str(self.lower_lengths[1]) + "_" + str(self.upper_lengths[1]) +
                                                  f"_{self.tensor_depth}" +
-                                                 "_compressed" if self.compress_tensors else "_uncompressed")
+                                                 "_compressed" if self.compress_tensors else "_uncompressed" +
+                                                 "_bn" if self.batch_norm else "_conv")
+
         self.utils_helper.check_dir_and_make_if_na(self.new_dataset_location)
         self.logger = loggerObj(#logs_subdir = self.new_dataset_base_location,
                                 logs_subdir=self.new_dataset_location,
@@ -129,6 +138,7 @@ class flowRunner:
                                                            model_config_path=self.model_config_path,
                                                            tensor_depth = self.tensor_depth,
                                                            compress_tensors = self.compress_tensors,
+                                                           batch_norm = self.batch_norm,
                                                            default_vertical_cropping_percentage = flowRunner._DEFAULT_VERTICAL_CROPPING_PERCENTAGE)
 
 

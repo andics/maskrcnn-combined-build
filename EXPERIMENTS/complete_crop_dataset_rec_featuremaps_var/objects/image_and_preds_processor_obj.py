@@ -32,7 +32,8 @@ class imageAndPredictionProcessor:
     _VALID_IMG_EXT = ['jpg', 'png']
 
     def __init__(self, org_dataset_folder, new_dataset_folder, utils_helper,
-                 lower_lengths, upper_lengths, model_config_path, tensor_depth, compress_tensors
+                 lower_lengths, upper_lengths, model_config_path, tensor_depth,
+                 compress_tensors, batch_norm
                  , default_vertical_cropping_percentage):
         self.org_dataset_folder = org_dataset_folder
         self.new_dataset_folder = new_dataset_folder
@@ -42,6 +43,7 @@ class imageAndPredictionProcessor:
         self.model_config_path = model_config_path
         self.tensor_depth = tensor_depth
         self.compress_tensors = compress_tensors
+        self.batch_norm = batch_norm
         self.default_vertical_cropping_percentage = default_vertical_cropping_percentage
 
     def load_model(self):
@@ -57,12 +59,22 @@ class imageAndPredictionProcessor:
 
     def attach_hooks_to_model(self):
         if self.tensor_depth == "layer3":
-            self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
+            if self.batch_norm:
+                self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
                 _modules.get('22')._modules.get('bn3')
+            else:
+                self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
+                _modules.get('22')._modules.get('conv3')
+
             self.hook_module = self._module_backbone_layer3_last_bn.register_forward_hook(hook_module_forward_activation_function)
             logging.info("Added tensor hook to Layer 3")
         elif self.tensor_depth == "stem":
-            self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('bn1')
+        elif self.tensor_depth == "stem":
+            if self.batch_norm:
+                self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('bn1')
+            else:
+                self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('conv1')
+
             self.hook_module = self._stem_module.register_forward_hook(hook_module_forward_activation_function)
             logging.info("Added tensor hook to STEM")
 
