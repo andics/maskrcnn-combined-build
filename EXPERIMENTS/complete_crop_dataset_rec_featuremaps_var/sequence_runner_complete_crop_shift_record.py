@@ -73,21 +73,20 @@ class flowRunner:
                             help='The location from which the tensor will be extracted: stem or layer3',
                             default='stem')
         parser.add_argument('-compress', '--compress', nargs='?',
-                            type=bool,
-                            required=False,
+                            type=lambda x:bool(strtobool(x)),
+                            const=True,
+                            default=True,
                             help='Whether to record the full featuremaps in each .pth file or to record, in this order:'
                                  '[1024x50x50]: original tensor'
                                  '[slice, 0, 0]: slice mean activation'
                                  '[slice, 1, 0]: slice median activation'
                                  '[slice, 2, 0]: slice max activation'
                                  '[slice, 3, 0]: slice st. dev. activation'
-                                 '[1024x4x1]: final compressed tensor',
-                            default=True
-                            )
+                                 '[1024x4x1]: final compressed tensor')
         parser.add_argument('-batchnorm', '--batchnorm', nargs='?',
                             type=lambda x:bool(strtobool(x)),
-                            default=False,
-                            action='store_true',
+                            const=True,
+                            default=True,
                             help='Whether to take the Tensors after batch norm (True), or before  batch norm (False)')
 
         args = parser.parse_args()
