@@ -329,4 +329,4 @@ class Utilities_helper(object):
                 plt.title(image_tuple[1])
                 counter += 1
 
-        plt.savefig()
+        plt.savefig(path_to_save)
