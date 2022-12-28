@@ -20,7 +20,7 @@ from EXPERIMENTS.complete_crop_dataset_rec_featuremaps_var.objects.predictor_cus
 
 featuremap_current = []
 
-def hook_module_backbone_layer3_last_bn(m, i, o):
+def hook_module_forward_activation_function(m, i, o):
     global featuremap_current
 
     featuremap_current = []
@@ -32,13 +32,15 @@ class imageAndPredictionProcessor:
     _VALID_IMG_EXT = ['jpg', 'png']
 
     def __init__(self, org_dataset_folder, new_dataset_folder, utils_helper,
-                 lower_lengths, upper_lengths, model_config_path, default_vertical_cropping_percentage):
+                 lower_lengths, upper_lengths, model_config_path, tensor_depth
+                 , default_vertical_cropping_percentage):
         self.org_dataset_folder = org_dataset_folder
         self.new_dataset_folder = new_dataset_folder
         self.utils_helper = utils_helper
         self.lower_lengths = lower_lengths
         self.upper_lengths = upper_lengths
         self.model_config_path = model_config_path
+        self.tensor_depth = tensor_depth
         self.default_vertical_cropping_percentage = default_vertical_cropping_percentage
 
     def load_model(self):
@@ -53,9 +55,15 @@ class imageAndPredictionProcessor:
 
 
     def attach_hooks_to_model(self):
-        self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
-            _modules.get('22')._modules.get('bn3')
-        self.hook_module = self._module_backbone_layer3_last_bn.register_forward_hook(hook_module_backbone_layer3_last_bn)
+        if self.tensor_depth == "layer3":
+            self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
+                _modules.get('22')._modules.get('bn3')
+            self.hook_module = self._module_backbone_layer3_last_bn.register_forward_hook(hook_module_forward_activation_function)
+            logging.info("Added tensor hook to Layer 3")
+        elif self.tensor_depth == "stem":
+            self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('bn1')
+            self.hook_module = self._stem_module.register_forward_hook(hook_module_forward_activation_function)
+            logging.info("Added tensor hook to STEM")
 
     def read_all_images_in_org_dataset(self):
         dir_path = self.org_dataset_folder[0]
@@ -84,7 +92,8 @@ class imageAndPredictionProcessor:
             org_img_file_name, org_img_ext = self.utils_helper.extract_filename_and_ext(org_img_complete_path_dataset_0_shifted)
             current_img_general_storage_dir = os.path.join(self.new_dataset_folder,
                                         org_img_file_name)
-            if os.path.exists(current_img_general_storage_dir):
+            if os.path.exists(os.path.join(current_img_general_storage_dir,
+                                                       "visual_comp.jpg")):
                 logging.info(f"Folder for image {org_img_file_name} exists here: \n {current_img_general_storage_dir}"
                              "\nProceeding...")
                 continue
@@ -160,6 +169,7 @@ class imageAndPredictionProcessor:
 
 
         logging.info("Dataset shifting complete!")
+        self.hook_module.remove()
 
 
     def crop_and_paste_image(self, original_image, lower_length, upper_length):
