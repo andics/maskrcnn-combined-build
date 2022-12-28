@@ -76,10 +76,10 @@ class flowRunner:
                             required=False,
                             help='Whether to record the full featuremaps in each .pth file or to record, in this order:'
                                  '[1024x50x50]: original tensor'
-                                 '[slice, 1, 1]: slice average activation'
-                                 '[slice, 2, 1]: slice median activation'
-                                 '[slice, 3, 1]: slice max activation'
-                                 '[slice, 4, 1]: slice st. dev. activation'
+                                 '[slice, 0, 0]: slice mean activation'
+                                 '[slice, 1, 0]: slice median activation'
+                                 '[slice, 2, 0]: slice max activation'
+                                 '[slice, 3, 0]: slice st. dev. activation'
                                  '[1024x4x1]: final compressed tensor',
                             default=True
                             )
@@ -109,13 +109,6 @@ class flowRunner:
     def setup_objects_and_variables(self):
         self.utils_helper = Utilities_helper()
 
-        self.logger = loggerObj(#logs_subdir = self.new_dataset_base_location,
-                                logs_subdir=flowRunner._FLOW_RUNNER_PARENT_DIR_ABSOLUTE,
-                                log_file_name = "log",
-                                utils_helper = self.utils_helper,
-                                log_level=flowRunner._LOG_LEVEL)
-        logging.info("Successfully setup logger!")
-
         self.new_dataset_location = os.path.join(self.new_dataset_base_location,
                                                  self.experiment_name + "_shifted_" + str(self.lower_lengths[0])
                                                  + "_" + str(self.upper_lengths[0]) + "_centered_"
@@ -123,6 +116,12 @@ class flowRunner:
                                                  f"_{self.tensor_depth}" +
                                                  "_compressed" if self.compress_tensors else "_uncompressed")
         self.utils_helper.check_dir_and_make_if_na(self.new_dataset_location)
+        self.logger = loggerObj(#logs_subdir = self.new_dataset_base_location,
+                                logs_subdir=self.new_dataset_location,
+                                log_file_name = "log",
+                                utils_helper = self.utils_helper,
+                                log_level=flowRunner._LOG_LEVEL)
+        logging.info("Successfully setup logger!")
 
         self.image_processor = imageAndPredictionProcessor(utils_helper=self.utils_helper, org_dataset_folder=self.dataset_locations,
                                                            new_dataset_folder=self.new_dataset_location, lower_lengths=self.lower_lengths,

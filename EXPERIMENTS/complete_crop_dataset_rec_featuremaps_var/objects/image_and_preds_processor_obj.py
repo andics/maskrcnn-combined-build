@@ -216,8 +216,24 @@ class imageAndPredictionProcessor:
 
     def compress_tensor(self, tensor):
         if self.compress_tensors:
-            pass
-            logging.info("About to process tensor!")
+            logging.info("About to compress tensor...")
+            num_channels = tensor.shape[0]
+            numpy_array_to_fill = np.zeros((num_channels, 4, 1), dtype=np.float32)
+            for i in range(num_channels):
+                current_layer_featuremap_numpy = tensor[i, :, :].numpy()
+                current_layer_featuremap_mean = np.mean(current_layer_featuremap_numpy)
+                current_layer_featuremap_median = np.median(current_layer_featuremap_numpy)
+                current_layer_featuremap_max = np.max(current_layer_featuremap_numpy)
+                current_layer_featuremap_std = np.std(current_layer_featuremap_numpy)
+
+                numpy_array_to_fill[i, 0, 0] = current_layer_featuremap_mean
+                numpy_array_to_fill[i, 1, 0] = current_layer_featuremap_median
+                numpy_array_to_fill[i, 2, 0] = current_layer_featuremap_max
+                numpy_array_to_fill[i, 3, 0] = current_layer_featuremap_std
+
+                #self.utils_helper.display_multi_image_collage(((current_layer_featuremap_numpy, f"Extracted featuremap"),),[1,1])
+
+            return torch.tensor(numpy_array_to_fill)
         else:
             return tensor
 
