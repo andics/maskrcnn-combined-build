@@ -32,7 +32,7 @@ class imageAndPredictionProcessor:
     _VALID_IMG_EXT = ['jpg', 'png']
 
     def __init__(self, org_dataset_folder, new_dataset_folder, utils_helper,
-                 lower_lengths, upper_lengths, model_config_path, tensor_depth
+                 lower_lengths, upper_lengths, model_config_path, tensor_depth, compress_tensors
                  , default_vertical_cropping_percentage):
         self.org_dataset_folder = org_dataset_folder
         self.new_dataset_folder = new_dataset_folder
@@ -41,6 +41,7 @@ class imageAndPredictionProcessor:
         self.upper_lengths = upper_lengths
         self.model_config_path = model_config_path
         self.tensor_depth = tensor_depth
+        self.compress_tensors = compress_tensors
         self.default_vertical_cropping_percentage = default_vertical_cropping_percentage
 
     def load_model(self):
@@ -142,13 +143,15 @@ class imageAndPredictionProcessor:
             logging.info(f"Feeding image 0 into model")
             self.model_predictor.run_on_opencv_image(img_img_format_0_shifted_cropped_and_pasted_PIL_format)
             tensor_0_current_img = copy.deepcopy(featuremap_current)
-            self.save_featuremap_to_disk(tensor_0_current_img, tensor_0_shifted_cropped_and_pasted_save_dir)
+            tensor_0_current_img_processed = self.compress_tensor(tensor_0_current_img)
+            self.save_featuremap_to_disk(tensor_0_current_img_processed, tensor_0_shifted_cropped_and_pasted_save_dir)
             logging.info(f"Saved image 0 into general save folder")
 
             logging.info(f"Feeding image 1 into model")
             self.model_predictor.run_on_opencv_image(img_img_format_1_centered_cropped_and_pasted_PIL_format)
             tensor_1_current_img = copy.deepcopy(featuremap_current)
-            self.save_featuremap_to_disk(tensor_1_current_img, tensor_1_centered_cropped_and_pasted_save_dir)
+            tensor_1_current_img_processed = self.compress_tensor(tensor_1_current_img)
+            self.save_featuremap_to_disk(tensor_1_current_img_processed, tensor_1_centered_cropped_and_pasted_save_dir)
             logging.info(f"Saved image 1 into general save folder")
             #-------------------------------
 
@@ -209,6 +212,14 @@ class imageAndPredictionProcessor:
 
         img_img_format_shifted = Image.fromarray(img_np_format_cropped_and_pasted)
         return img_img_format_shifted
+
+
+    def compress_tensor(self, tensor):
+        if self.compress_tensors:
+            pass
+            logging.info("About to process tensor!")
+        else:
+            return tensor
 
 
     def save_featuremap_to_disk(self, data, location_to_save):

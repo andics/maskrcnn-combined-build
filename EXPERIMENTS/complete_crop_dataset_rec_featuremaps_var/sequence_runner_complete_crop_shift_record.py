@@ -71,6 +71,18 @@ class flowRunner:
                             required = False,
                             help='The location from which the tensor will be extracted: stem or layer3',
                             default='stem')
+        parser.add_argument('-compress', '--compress', nargs='?',
+                            type=bool,
+                            required=False,
+                            help='Whether to record the full featuremaps in each .pth file or to record, in this order:'
+                                 '[1024x50x50]: original tensor'
+                                 '[slice, 1, 1]: slice average activation'
+                                 '[slice, 2, 1]: slice median activation'
+                                 '[slice, 3, 1]: slice max activation'
+                                 '[slice, 4, 1]: slice st. dev. activation'
+                                 '[1024x4x1]: final compressed tensor',
+                            default=True
+                            )
 
 
         args = parser.parse_args()
@@ -81,6 +93,7 @@ class flowRunner:
         self.model_config_path = args.model_config_path
         self.experiment_name = args.experiment_name
         self.tensor_depth = args.depth
+        self.compress_tensors = args.compress
 
         self.objects_setup_complete = False
         self.setup_objects_and_variables()
@@ -107,7 +120,8 @@ class flowRunner:
                                                  self.experiment_name + "_shifted_" + str(self.lower_lengths[0])
                                                  + "_" + str(self.upper_lengths[0]) + "_centered_"
                                                  + str(self.lower_lengths[1]) + "_" + str(self.upper_lengths[1]) +
-                                                 f"_{self.tensor_depth}")
+                                                 f"_{self.tensor_depth}" +
+                                                 "_compressed" if self.compress_tensors else "_uncompressed")
         self.utils_helper.check_dir_and_make_if_na(self.new_dataset_location)
 
         self.image_processor = imageAndPredictionProcessor(utils_helper=self.utils_helper, org_dataset_folder=self.dataset_locations,
@@ -115,6 +129,7 @@ class flowRunner:
                                                            upper_lengths= self.upper_lengths,
                                                            model_config_path=self.model_config_path,
                                                            tensor_depth = self.tensor_depth,
+                                                           compress_tensors = self.compress_tensors,
                                                            default_vertical_cropping_percentage = flowRunner._DEFAULT_VERTICAL_CROPPING_PERCENTAGE)
 
 
