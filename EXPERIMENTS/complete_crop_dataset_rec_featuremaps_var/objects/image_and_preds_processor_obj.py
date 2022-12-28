@@ -60,19 +60,22 @@ class imageAndPredictionProcessor:
     def attach_hooks_to_model(self):
         if self.tensor_depth == "layer3":
             if self.batch_norm:
+                logging.info("Attaching to batch norm ...")
                 self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
                 _modules.get('22')._modules.get('bn3')
             else:
+                logging.info("Attaching to conv ...")
                 self._module_backbone_layer3_last_bn = self.model._modules.get('backbone')._modules.get('body')._modules.get('layer3').\
                 _modules.get('22')._modules.get('conv3')
 
             self.hook_module = self._module_backbone_layer3_last_bn.register_forward_hook(hook_module_forward_activation_function)
             logging.info("Added tensor hook to Layer 3")
         elif self.tensor_depth == "stem":
-        elif self.tensor_depth == "stem":
             if self.batch_norm:
+                logging.info("Attaching to batch norm ...")
                 self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('bn1')
             else:
+                logging.info("Attaching to conv ...")
                 self._stem_module = self.model._modules.get('backbone')._modules.get('body')._modules.get('stem')._modules.get('conv1')
 
             self.hook_module = self._stem_module.register_forward_hook(hook_module_forward_activation_function)

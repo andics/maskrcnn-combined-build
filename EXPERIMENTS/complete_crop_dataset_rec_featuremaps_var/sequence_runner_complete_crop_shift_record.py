@@ -2,6 +2,7 @@ import sys
 import os
 import subprocess
 from pathlib import Path
+from distutils.util import strtobool
 
 try:
     path_main = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1])
@@ -83,13 +84,11 @@ class flowRunner:
                                  '[1024x4x1]: final compressed tensor',
                             default=True
                             )
-        parser.add_argument('-batchnorm', '--batch-norm', nargs='?',
-                            type=bool,
-                            required=False,
-                            help='Whether to take the Tensors after batch norm (True), or before  batch norm (False)',
-                            default=True
-                            )
-
+        parser.add_argument('-batchnorm', '--batchnorm', nargs='?',
+                            type=lambda x:bool(strtobool(x)),
+                            default=False,
+                            action='store_true',
+                            help='Whether to take the Tensors after batch norm (True), or before  batch norm (False)')
 
         args = parser.parse_args()
         self.dataset_locations = args.dataset_locations
@@ -100,7 +99,7 @@ class flowRunner:
         self.experiment_name = args.experiment_name
         self.tensor_depth = args.depth
         self.compress_tensors = args.compress
-        self.batch_norm = args.batch_norm
+        self.batch_norm = args.batchnorm
 
         self.objects_setup_complete = False
         self.setup_objects_and_variables()
