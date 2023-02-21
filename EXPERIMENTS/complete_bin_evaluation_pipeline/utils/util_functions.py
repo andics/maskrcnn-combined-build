@@ -3,6 +3,7 @@ import json
 import glob
 import geopandas as gpd
 import logging
+import re
 import yaml
 
 import shutil
@@ -82,6 +83,17 @@ class Utilities_helper(object):
     def write_data_to_json(self, json_path, data):
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
+
+    def extract_floats_and_nums_from_string(self, string):
+        p = '[\d]+[.,\d]+|[\d]*[.][\d]+|[\d]+'
+
+        nums_to_return = []
+        if re.search(p, string) is not None:
+            for catch in re.finditer(p, string):
+                nums_to_return.append(catch[0])
+
+        return nums_to_return
+
 
     def get_last_checkpoint_in_dir(self, checkpoint_dir, accepted_extensions = "*.pth"):
         save_file_dir = os.path.join(checkpoint_dir, "last_checkpoint")

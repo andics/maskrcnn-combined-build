@@ -1,8 +1,9 @@
 import sys
 import os
 import logging
-import subprocess
+import json
 import numpy as np
+import csv
 from pathlib import Path
 
 try:
@@ -38,6 +39,7 @@ class flowRunner:
     _GENERATED_PREDICTION_FILES_SUMMARIES = "predictions_summary.json"
     _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
     _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
+    _GENERATED_HIGH_LVL_RESULTS_FILE_NAME = "eval_across_bins.csv"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
@@ -150,14 +152,14 @@ class flowRunner:
         logging.info("Bin pairs setup complete -->>")
 
         #---SETUP-EVALUATION-FOLDER-NAMES---
-        self.evaluation_foders = []
+        self.evaluation_folders = []
         for lower_threshold, upper_threshold in zip(self.bins_lower_threshold, self.bins_upper_threshold):
             _current_dir = os.path.join(self.experiment_dir, str("{:.4f}".format(lower_threshold))
                                         + "_" + str("{:.4f}".format(upper_threshold))
                                         + "_eval")
             _current_dir = os.path.normpath(_current_dir)
             self.utils_helper.check_dir_and_make_if_na(_current_dir)
-            self.evaluation_foders.append(_current_dir)
+            self.evaluation_folders.append(_current_dir)
         logging.info("Setup individual bin evaluation folders -->>")
         #-----------------------------------
 
@@ -166,7 +168,7 @@ class flowRunner:
         self.generated_annotation_files_paths = []
         self.generated_predictions_files_paths = []
         self.generated_test_sets_names = []
-        for evaluation_folder in self.evaluation_foders:
+        for evaluation_folder in self.evaluation_folders:
             self.generated_annotation_files_paths.append(os.path.join(evaluation_folder,
                                                                       flowRunner._GENERATED_ANNOTATION_FILES_NAME))
             self.generated_predictions_files_paths.append(os.path.join(evaluation_folder,
@@ -179,17 +181,21 @@ class flowRunner:
                                                   str("{:.4f}".format(lower_threshold)) + "_" +
                                                   str("{:.4f}".format(upper_threshold)) + "_eval")
 
+        self.eval_across_bins_csv_file_path = os.path.join(self.experiment_dir,
+                                                           flowRunner._GENERATED_HIGH_LVL_RESULTS_FILE_NAME)
+
         #---------------------------------
         logging.info('\n  -  '+ '\n  -  '.join(f'({l} | {u}) \n  -  Evaluation dir: {f}'
                                                f' \n  -  Annotation file: {a}'
                                                f' \n  -  Predictions file: {p}'
                                                f' \n  -  Test set name: {t}' for l, u, f, a, p, t in
                                                zip(self.bins_lower_threshold,
-                                                self.bins_upper_threshold,
-                                                self.evaluation_foders,
-                                                self.generated_annotation_files_paths,
-                                                self.generated_predictions_files_paths,
-                                                self.generated_test_sets_names)))
+                                                   self.bins_upper_threshold,
+                                                   self.evaluation_folders,
+                                                   self.generated_annotation_files_paths,
+                                                   self.generated_predictions_files_paths,
+                                                   self.generated_test_sets_names)))
+        logging.info(f"  -  CSV file with eval across bins: {self.eval_across_bins_csv_file_path}")
 
 
     def run_all(self):
@@ -198,7 +204,7 @@ class flowRunner:
             evaluation_folder, gen_annotation_file_path,\
             gen_prediction_file_path, gen_test_set_name in zip(self.bins_lower_threshold,
                                                                      self.bins_upper_threshold,
-                                                                     self.evaluation_foders,
+                                                                     self.evaluation_folders,
                                                                      self.generated_annotation_files_paths,
                                                                      self.generated_predictions_files_paths,
                                                                      self.generated_test_sets_names):
@@ -227,7 +233,7 @@ class flowRunner:
                     annotation_file_location = gen_annotation_file_path,
                     area_threshold_array = (lower_threshold, upper_threshold),
                     middle_boundary = self.middle_boundary,
-                    filter_preds = self.filter_preds
+                    filter_preds = self.filter_preds,
                     model_cfg_path = self.model_config_file,
                     utils_helper = self.utils_helper,
                     mask_logit_threshold = 0.5 if flowRunner._FILTER_MASK_LOGITS else 0.0,
@@ -262,7 +268,43 @@ class flowRunner:
             logging.info(f"Finished working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
 
 
+    def summarize_results_csv(self):
+        if os.path.exists(self.eval_across_bins_csv_file_path):
+            logging.info("CSV file with eval across bins already exists!")
+            return
+
+            # Open the CSV file for writing
+        with open(self.eval_across_bins_csv_file_path, "w", newline="") as csv_file:
+            # Create a writer object to write to the CSV file
+            writer = csv.writer(csv_file)
+
+            # Write the header row to the CSV file
+            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AP"])
+            for folder in self.evaluation_folders:
+                folder_name = os.path.basename(os.path.normpath(folder))
+                #Extract the bin from the folder name
+                lower_threshold, upper_threshold = self.utils_helper.extract_floats_and_nums_from_string(folder_name)
+                potential_eval_storage_file = os.path.join(folder, flowRunner._GENERATED_RESULTS_FILE_NAME)
+                assert(os.path.exists(potential_eval_storage_file))
+
+                #Extract the value of the evaluation metric
+                # Write the data to the CSV file
+                try:
+                    with open(potential_eval_storage_file) as json_results_file:
+                        json_data = json.load(json_results_file)
+                    avg_precision = json_data["bbox"]["AP"]
+                    to_store_in_csv = [str(lower_threshold), str(upper_threshold),
+                                       str(lower_threshold)+"-"+str(upper_threshold),
+                                       avg_precision]
+                    writer.writerow(to_store_in_csv)
+                except Exception as e:
+                    logging.critical(f"Error received while generating the .CSV file: {e.with_traceback()}")
+                    return
+        logging.info("Finished generating high-level .csv file")
+
+
 if __name__ == "__main__":
     flow_runner = flowRunner()
     flow_runner.setup_objects_and_file_structure()
     flow_runner.run_all()
+    flow_runner.summarize_results_csv()
