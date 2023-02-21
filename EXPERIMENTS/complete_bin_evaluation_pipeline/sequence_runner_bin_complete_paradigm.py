@@ -43,7 +43,7 @@ class flowRunner:
     _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
     _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
     _GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
-    _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.csv"
+    _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.png"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
@@ -315,7 +315,7 @@ class flowRunner:
 
         data = pd.read_csv(self.eval_across_bins_csv_file_path)
         # Get the x and y data from the Pandas DataFrame
-        x_data = data.iloc[:, 2]  # third column
+        x_data = data.iloc[:, 0]  # first column
         y_data = data.iloc[:, 3]  # fourth column
 
         # Create a new figure and axis for the plot
@@ -323,11 +323,12 @@ class flowRunner:
         # Plot the data as a line plot
         ax.plot(x_data, y_data, marker='o', linestyle='--')
         # Set the axis labels and title
-        ax.set_xlabel('X Label')
-        ax.set_ylabel('Y Label')
-        ax.set_title('My Plot')
+        ax.set_xlabel('Bins (lower-thresh)')
+        ax.set_ylabel('AP (IoU=0.50:0.95), maxDets=100')
+        ax.set_title('Performance graph')
         # Save the plot as a PNG image
         fig.savefig(self.eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
+        logging.info(f"Finished generating plot image!")
 
 
 if __name__ == "__main__":
@@ -335,3 +336,4 @@ if __name__ == "__main__":
     flow_runner.setup_objects_and_file_structure()
     flow_runner.run_all()
     flow_runner.summarize_results_csv()
+    flow_runner.generate_results_graph_photo()
