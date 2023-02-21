@@ -74,6 +74,14 @@ class flowRunner:
                                  '0.9-1.0'
                                  'IMPORTANT: This parameter is also appended to the name of the'
                                  'folder in which this experiment is stored')
+        parser.add_argument('-dfp', '--don-filter-preds', nargs='?',
+                            type=float,
+                            default=False,
+                            action="store_true",
+                            help='Whether to filter the prediction files (False),'
+                                 ' or only the annotation files (True).'
+                                 'This measure was implemented due to suspected bias in the eval'
+                                 'stemming from the different number of objects in each pred. bin')
         parser.add_argument('-oal', '--org-annotations-location', nargs='?',
                             type=str,
                             default = os.path.normpath(os.path.join(flowRunner._MASKRCNN_PARENT_DIR_ABSOLUTE,
@@ -106,6 +114,7 @@ class flowRunner:
         self.model_config_file = self.args.model_config_file
         self.middle_boundary = self.args.middle_boundary[0]
         self.bin_spacing = self.args.bin_spacing
+        self.filter_preds = not self.args.don_filter_preds
         self.org_annotations_location = self.args.org_annotations_location
         self.images_location = self.args.images_location
         self.org_predictions_location = self.args.org_predictions_location
@@ -218,6 +227,7 @@ class flowRunner:
                     annotation_file_location = gen_annotation_file_path,
                     area_threshold_array = (lower_threshold, upper_threshold),
                     middle_boundary = self.middle_boundary,
+                    filter_preds = self.filter_preds
                     model_cfg_path = self.model_config_file,
                     utils_helper = self.utils_helper,
                     mask_logit_threshold = 0.5 if flowRunner._FILTER_MASK_LOGITS else 0.0,

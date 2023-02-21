@@ -30,6 +30,7 @@ class predictionProcessor:
                  annotation_file_location,
                  area_threshold_array,
                  middle_boundary,
+                 filter_preds,
                  model_cfg_path,
                  utils_helper,
                  mask_logit_threshold,
@@ -43,6 +44,7 @@ class predictionProcessor:
         self.annotation_file_location = annotation_file_location
         self.area_threshold_array = area_threshold_array
         self.middle_boundary = middle_boundary
+        self.filter_preds = filter_preds
         self.model_cfg_path = model_cfg_path
         self.utils_helper = utils_helper
         self.mask_logit_threshold = mask_logit_threshold
@@ -230,7 +232,16 @@ class predictionProcessor:
                     _to_keep_pred = True
                     logging.debug(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was kept")
                 else:
-                    logging.debug(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was deleted")
+                    #Adding a mechanism for keeping preds with wrong ratio
+                    #This is used to ensure that num. objects in the preds file is uniform for evaluation
+                    #(To possibly reduce bias)
+                    if self.filter_preds:
+                        logging.debug(f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was deleted")
+                    else:
+                        _to_keep_pred = True
+                        logging.debug(
+                            f"Prediction {i} on image {self.coco_dataset.coco.imgs[img_id]['file_name']} was kept"
+                            f"(due to non-filtration flag)")
 
                 if _to_keep_pred:
                     pred_inds_to_keep.append(i)
