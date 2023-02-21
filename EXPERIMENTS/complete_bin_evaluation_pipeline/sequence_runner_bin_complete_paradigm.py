@@ -76,8 +76,7 @@ class flowRunner:
                                  '0.9-1.0'
                                  'IMPORTANT: This parameter is also appended to the name of the'
                                  'folder in which this experiment is stored')
-        parser.add_argument('-dfp', '--don-filter-preds', nargs='?',
-                            type=float,
+        parser.add_argument('-dfp', '--don-filter-preds',
                             default=False,
                             action="store_true",
                             help='Whether to filter the prediction files (False),'

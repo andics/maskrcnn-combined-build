@@ -114,13 +114,16 @@ class flowRunner:
     def setup_objects_and_variables(self):
         self.utils_helper = Utilities_helper()
 
+        _compression_suffix = "_compressed" if self.compress_tensors else "_uncompressed"
+        _bn_or_conv_suffix = "_bn" if self.batch_norm else "_conv"
+
         self.new_dataset_location = os.path.join(self.new_dataset_base_location,
                                                  self.experiment_name + "_shifted_" + str(self.lower_lengths[0])
                                                  + "_" + str(self.upper_lengths[0]) + "_centered_"
                                                  + str(self.lower_lengths[1]) + "_" + str(self.upper_lengths[1]) +
                                                  f"_{self.tensor_depth}" +
-                                                 "_compressed" if self.compress_tensors else "_uncompressed" +
-                                                 "_bn" if self.batch_norm else "_conv")
+                                                 _compression_suffix +
+                                                 _bn_or_conv_suffix)
 
         self.utils_helper.check_dir_and_make_if_na(self.new_dataset_location)
         self.logger = loggerObj(#logs_subdir = self.new_dataset_base_location,
