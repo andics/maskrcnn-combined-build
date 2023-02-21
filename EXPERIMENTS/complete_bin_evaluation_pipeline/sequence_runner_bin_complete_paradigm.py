@@ -4,6 +4,9 @@ import logging
 import json
 import numpy as np
 import csv
+import matplotlib.pyplot as plt
+import pandas as pd
+
 from pathlib import Path
 
 try:
@@ -39,7 +42,8 @@ class flowRunner:
     _GENERATED_PREDICTION_FILES_SUMMARIES = "predictions_summary.json"
     _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
     _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
-    _GENERATED_HIGH_LVL_RESULTS_FILE_NAME = "eval_across_bins.csv"
+    _GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
+    _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.csv"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
@@ -182,7 +186,9 @@ class flowRunner:
                                                   str("{:.4f}".format(upper_threshold)) + "_eval")
 
         self.eval_across_bins_csv_file_path = os.path.join(self.experiment_dir,
-                                                           flowRunner._GENERATED_HIGH_LVL_RESULTS_FILE_NAME)
+                                                           flowRunner._GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME)
+        self.eval_across_bins_graph_file_path = os.path.join(self.experiment_dir,
+                                                             flowRunner._GENERATED_HIGH_LVL_GRAPH_FILE_NAME)
 
         #---------------------------------
         logging.info('\n  -  '+ '\n  -  '.join(f'({l} | {u}) \n  -  Evaluation dir: {f}'
@@ -301,6 +307,28 @@ class flowRunner:
                     logging.critical(f"Error received while generating the .CSV file: {e.with_traceback()}")
                     return
         logging.info("Finished generating high-level .csv file")
+
+    def generate_results_graph_photo(self):
+        # This function takes the generated .csv file and outputs a photo of the model performance graph
+        if os.path.exists(self.eval_across_bins_graph_file_path):
+            logging.info("CSV file with eval across bins already exists!")
+            return
+
+        data = pd.read_csv(self.eval_across_bins_csv_file_path)
+        # Get the x and y data from the Pandas DataFrame
+        x_data = data.iloc[:, 2]  # third column
+        y_data = data.iloc[:, 3]  # fourth column
+
+        # Create a new figure and axis for the plot
+        fig, ax = plt.subplots()
+        # Plot the data as a line plot
+        ax.plot(x_data, y_data, marker='o', linestyle='--')
+        # Set the axis labels and title
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_title('My Plot')
+        # Save the plot as a PNG image
+        fig.savefig(self.eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
 
 
 if __name__ == "__main__":
