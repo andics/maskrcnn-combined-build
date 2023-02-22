@@ -137,6 +137,19 @@ class testerObj:
         self.utils_helper.write_data_to_json(_results_to_store_file_path, self.results[0][0].results)
         # ----------------------
 
+    def change_pth_filename(self, original_name, name_to_change_to):
+        # This function is used to change the name of the auto-generated coco predictions .pth file
+        # The reason is that otherwise there may be conflict when a new .pth file is generated during the
+        # annotations nomalization
+        self.auto_generated_coco_pth_file_path = os.path.join(self.current_bin_pth_dir_path, original_name)
+        self.auto_generated_coco_pth_new_name_file_path = os.path.join(self.current_bin_pth_dir_path,
+                                                                       name_to_change_to)
+
+        os.rename(self.auto_generated_coco_pth_file_path,
+                  self.auto_generated_coco_pth_new_name_file_path)
+
+        logging.info(f"Renamed default {original_name} file to {name_to_change_to}")
+
 
     def run_all(self):
         self.build_model()

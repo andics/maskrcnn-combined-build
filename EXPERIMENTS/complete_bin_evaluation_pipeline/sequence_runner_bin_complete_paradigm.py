@@ -23,6 +23,7 @@ except Exception:
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.logger_obj import loggerObj
 from EXPERIMENTS.complete_bin_evaluation_pipeline.utils.util_functions import Utilities_helper
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.annotation_processor_obj import annotationProcessor
+from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.misk_annotation_processor_obj import miskAnnotationProcessor
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.prediction_processor_obj import predictionProcessor
 from EXPERIMENTS.complete_bin_evaluation_pipeline.objects.tester_obj import testerObj
 
@@ -40,14 +41,26 @@ class flowRunner:
     _GENERATED_ANNOTATION_FILES_SUMMARIES = "instances_val2017_summary.json"
     _GENERATED_PREDICTIONS_FILES_NAME = "predictions.pth"
     _GENERATED_PREDICTION_FILES_SUMMARIES = "predictions_summary.json"
-    _GENERATED_RESULTS_FILE_NAME = "coco_results.json"
-    _GENERATED_RESULTS_VERBOSE_FILE_NAME = "coco_results.txt"
+    _GENERATED_RESULTS_FILE_NAME = "coco_results_original.json"
+    _GENERATED_RESULTS_TXT_FILE_NAME = "coco_results_original.txt"
+    _GENERATED_RESULTS_PTH_FILE_NAME = "coco_results_original.pth"
     _GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
     _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.png"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
     #If FALSE: predictions regardless of their mask logits score will be kept
     #If TRUE: only predictions having at least 1 mask logit score > 0.5 will be kept
     _FILTER_MASK_LOGITS = False
+
+    #Misk functionality defaults
+    #Those variables are made to have an indicator at their end, to signify against how many
+    #objects was the model evaluated (in annotation file)
+    _GENERATED_ANNOTATION_SUBSAMPLE_FILES_NAME_TMPL = "instances_val2017_%s.json"
+    _GENERATED_ANNOTATION_SUBSAMPLE_SUMMARY_FILES_NAME_TMPL = "instances_val2017_%s_summary.json"
+    _GENERATED_SUBSAMPLE_RESULTS_FILE_NAME_TMPL = "coco_results_on_%s.json"
+    _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL = "coco_results_on_%s.txt"
+    _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL = "coco_results_on_%s.pth"
+    _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL = "eval_across_bins_on_%s.csv"
+    _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='Potential arguments for complete resolution-bin evaluation pipeline')
@@ -80,13 +93,31 @@ class flowRunner:
                                  '0.9-1.0'
                                  'IMPORTANT: This parameter is also appended to the name of the'
                                  'folder in which this experiment is stored')
-        parser.add_argument('-dfp', '--don-filter-preds',
-                            default=False,
-                            action="store_true",
-                            help='Whether to filter the prediction files (False),'
-                                 ' or only the annotation files (True).'
+        parser.add_argument('-fp', '--filter-preds', nargs='?',
+                            type=str,
+                            default="True",
+                            help='Whether to filter the prediction files (True),'
+                                 ' or only the annotation files (False).'
                                  'This measure was implemented due to suspected bias in the eval'
                                  'stemming from the different number of objects in each pred. bin')
+        parser.add_argument('-pan', '--perform-annotation-normalization', nargs='?',
+                            type=str,
+                            default="False",
+                            help='The annotation normalization includes taking the smallest number of objects'
+                                 'present in each annotation file after filtering, and selecting from ALL'
+                                 'other annotation files a random subset of the same number of objects.'
+                                 'Thereafter, preforming the evaluation on this subset.')
+        parser.add_argument('-paf', '--annotation-normalization-factor', nargs='?',
+                            default=0.9,
+                            type=float,
+                            required = False,
+                            help='The smallest number of annotations present in single bin will'
+                                 'be the size of the subsample we randomly extract from each other bin'
+                                 'in order to normalize the annotations. However, we multiply this size by the'
+                                 'normalization ratio: so that there is some randomness in the smallest'
+                                 ' annotation also. '
+                                 'However, this parameter can also be an integer > 1. Then: exactly that '
+                                 'many random objects will be picked from each annotation bin')
         parser.add_argument('-oal', '--org-annotations-location', nargs='?',
                             type=str,
                             default = os.path.normpath(os.path.join(flowRunner._MASKRCNN_PARENT_DIR_ABSOLUTE,
@@ -112,20 +143,36 @@ class flowRunner:
                             required = False,
                             help='The location in which the newly generated annotation file'
                                  ' as well as the newly generated predictions file will be stored')
+        parser.add_argument('-efi', '--experiment-folder-identificator', nargs='?',
+                            type=str,
+                            default = "vanilla",
+                            required = False,
+                            help='As the amount of tunable parameters of this script grows, it is needed'
+                                 'to have some idea of what an experiment folder contains. This variable'
+                                 'allows one to append any string the the final experiment folder name')
 
         self.args = parser.parse_args()
+        assert(self.args.perform_annotation_normalization == "True" or
+               self.args.perform_annotation_normalization == "False")
+        assert(self.args.filter_preds == "True" or
+               self.args.filter_preds == "False")
 
         self.model_name = self.args.model_name
         self.model_config_file = self.args.model_config_file
         self.middle_boundary = self.args.middle_boundary[0]
         self.bin_spacing = self.args.bin_spacing
-        self.filter_preds = not self.args.don_filter_preds
+        self.filter_preds = True if self.args.filter_preds == "True" else False
+        self.perform_annotation_norm = True if self.args.perform_annotation_normalization == "True" else False
+        self.annotation_normalization_factor = self.args.annotation_normalization_factor
         self.org_annotations_location = self.args.org_annotations_location
         self.images_location = self.args.images_location
         self.org_predictions_location = self.args.org_predictions_location
         self.parent_storage_location = self.args.parent_storage_location
+        self.experiment_folder_identificator = self.args.experiment_folder_identificator
 
-        self.experiment_name = self.model_name + "_" + str(float(self.bin_spacing)) + "_" + str(self.middle_boundary)
+        self.experiment_name = self.model_name + "_" + str(float(self.bin_spacing)) + "_" +\
+                               str(self.middle_boundary) + "_" + self.experiment_folder_identificator
+
         self.main_file_dir = str(Path(os.path.dirname(os.path.realpath(__file__))))
         self.objects_setup_complete = False
 
@@ -201,10 +248,17 @@ class flowRunner:
                                                    self.generated_predictions_files_paths,
                                                    self.generated_test_sets_names)))
         logging.info(f"  -  CSV file with eval across bins: {self.eval_across_bins_csv_file_path}")
+        logging.info(f"  -  Filtering predictions: {str(self.filter_preds)}")
+        logging.info(f"  -  Running normalized annotation eval (misk): {str(self.perform_annotation_norm)}")
 
 
-    def run_all(self):
+    def run_all_vanilla(self):
+        # A function which runs the typical per-bin evaluation:
+        # 1. Filter annotation files
+        # 2. Filter pred files (or not, based on args.don-filter-preds)
+        # 3. Run classic evaluation with filtered components
         logging.info("Running per bin evaluation -->>")
+
         for lower_threshold, upper_threshold,\
             evaluation_folder, gen_annotation_file_path,\
             gen_prediction_file_path, gen_test_set_name in zip(self.bins_lower_threshold,
@@ -260,26 +314,104 @@ class flowRunner:
                                        current_bin_images_path = self.images_location,
                                        utils_helper = self.utils_helper,
                                        results_file_name = flow_runner._GENERATED_RESULTS_FILE_NAME,
-                                       results_file_verbose_name = flow_runner._GENERATED_RESULTS_VERBOSE_FILE_NAME)
+                                       results_file_verbose_name = flow_runner._GENERATED_RESULTS_TXT_FILE_NAME)
                 tester_obj.build_model()
                 #TODO: Add a script which temporarily de-rails print statements to a file
                 #so that we see the AR metric
                 tester_obj.test_model()
                 tester_obj.write_results_to_disk()
+                tester_obj.change_pth_filename("coco_results.pth", flowRunner._GENERATED_RESULTS_PTH_FILE_NAME)
             else: logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
             #--------------------
             #-----------------
             self.logger.remove_temp_file_handler_and_add_main_file_handler()
             logging.info(f"Finished working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
 
+        self.summarize_results_csv(self.eval_across_bins_csv_file_path, flowRunner._GENERATED_RESULTS_FILE_NAME)
+        self.generate_results_graph_photo(self.eval_across_bins_graph_file_path, self.eval_across_bins_csv_file_path)
 
-    def summarize_results_csv(self):
-        if os.path.exists(self.eval_across_bins_csv_file_path):
+
+    def run_all_misk(self):
+        # This function runs:
+        # 1. Reading of the smallest number of annotations present in the filt ann files
+        # 2. Selects & saves a random subset of all of them in new annotation files
+        # 3. Runs the evaluation of the prediction files across the new annotation files
+        if self.perform_annotation_norm:
+            self.misk_annotation_processor_obj = miskAnnotationProcessor(bins_lower_th_array = self.bins_lower_threshold,
+                                                                         bins_upper_th_array = self.bins_upper_threshold,
+                                                                         bins_annotations_paths_array = self.generated_annotation_files_paths,
+                                                                         bins_paths_array = self.evaluation_folders,
+                                                                         ann_summary_file_name = flowRunner._GENERATED_ANNOTATION_FILES_SUMMARIES,
+                                                                         utils_helper = self.utils_helper,
+                                                                         normalization_factor = self.annotation_normalization_factor,
+                                                                         ann_subset_files_name_template = flowRunner._GENERATED_ANNOTATION_SUBSAMPLE_FILES_NAME_TMPL,
+                                                                         ann_subset_files_summary_name_template = flowRunner._GENERATED_ANNOTATION_SUBSAMPLE_SUMMARY_FILES_NAME_TMPL)
+            self.misk_annotation_processor_obj.read_all_nums_objects()
+            self.misk_annotation_processor_obj.eval_normalization_factor()
+            self.misk_ann_subsample_size = self.misk_annotation_processor_obj.target_subsample_number
+            self.misk_annotation_processor_obj.generate_new_annotation_files_with_subsamples()
+
+            self.normalized_annotations_paths_array = self.misk_annotation_processor_obj.ann_subset_file_paths_array
+
+            #---MISK-VARIABLE-SETTING---
+            misk_results_json_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_RESULTS_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+            misk_results_txt_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+            misk_results_pth_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+            misk_csv_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+            misk_graph_photo_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+
+            misk_csv_filepath = os.path.join(self.experiment_dir, misk_csv_filename)
+            misk_graph_photo_filepath = os.path.join(self.experiment_dir, misk_graph_photo_filename)
+            #------------------------
+
+            #---RUN-TESTING-SCRIPT---
+            for lower_threshold, upper_threshold, \
+                evaluation_folder, gen_annotation_file_path, \
+                gen_prediction_file_path, gen_test_set_name in zip(self.bins_lower_threshold,
+                                                                   self.bins_upper_threshold,
+                                                                   self.evaluation_folders,
+                                                                   self.normalized_annotations_paths_array,
+                                                                   self.generated_predictions_files_paths,
+                                                                   self.generated_test_sets_names):
+                logging.info(f"Working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
+                self.logger.add_temp_file_handler_and_remove_main_file_handler(evaluation_folder)
+                logging.info("Proceeding to normalized annotation evaluation ...")
+                # ---------------------------
+                # ---BIN-EVALUATION---
+                if not os.path.exists(os.path.join(evaluation_folder, flowRunner._GENERATED_RESULTS_FILE_NAME)):
+                    tester_obj = testerObj(model_config_file=self.model_config_file,
+                                           current_bin_pth_dir_path=evaluation_folder,
+                                           current_bin_annotation_file_path=gen_annotation_file_path,
+                                           current_bin_dataset_name=gen_test_set_name,
+                                           current_bin_images_path=self.images_location,
+                                           utils_helper=self.utils_helper,
+                                           results_file_name=misk_results_json_filename,
+                                           results_file_verbose_name=misk_results_txt_filename)
+                    tester_obj.build_model()
+                    # TODO: Add a script which temporarily de-rails print statements to a file
+                    # so that we see the AR metric
+                    tester_obj.test_model()
+                    tester_obj.write_results_to_disk()
+                    tester_obj.change_pth_filename("coco_results.pth", misk_results_pth_filename)
+                else:
+                    logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
+
+            self.summarize_results_csv(misk_csv_filepath, misk_results_json_filename)
+            self.generate_results_graph_photo(misk_graph_photo_filepath, misk_csv_filepath)
+
+
+    def summarize_results_csv(self, eval_across_bins_csv_file_path, potential_results_file_name):
+        if os.path.exists(eval_across_bins_csv_file_path):
             logging.info("CSV file with eval across bins already exists!")
             return
 
             # Open the CSV file for writing
-        with open(self.eval_across_bins_csv_file_path, "w", newline="") as csv_file:
+        with open(eval_across_bins_csv_file_path, "w", newline="") as csv_file:
             # Create a writer object to write to the CSV file
             writer = csv.writer(csv_file)
 
@@ -289,7 +421,7 @@ class flowRunner:
                 folder_name = os.path.basename(os.path.normpath(folder))
                 #Extract the bin from the folder name
                 lower_threshold, upper_threshold = self.utils_helper.extract_floats_and_nums_from_string(folder_name)
-                potential_eval_storage_file = os.path.join(folder, flowRunner._GENERATED_RESULTS_FILE_NAME)
+                potential_eval_storage_file = os.path.join(folder, potential_results_file_name)
                 assert(os.path.exists(potential_eval_storage_file))
 
                 #Extract the value of the evaluation metric
@@ -307,13 +439,14 @@ class flowRunner:
                     return
         logging.info("Finished generating high-level .csv file")
 
-    def generate_results_graph_photo(self):
+
+    def generate_results_graph_photo(self, eval_across_bins_graph_file_path, eval_across_bins_csv_file_path):
         # This function takes the generated .csv file and outputs a photo of the model performance graph
-        if os.path.exists(self.eval_across_bins_graph_file_path):
+        if os.path.exists(eval_across_bins_graph_file_path):
             logging.info("CSV file with eval across bins already exists!")
             return
 
-        data = pd.read_csv(self.eval_across_bins_csv_file_path)
+        data = pd.read_csv(eval_across_bins_csv_file_path)
         # Get the x and y data from the Pandas DataFrame
         x_data = data.iloc[:, 0]  # first column
         y_data = data.iloc[:, 3]  # fourth column
@@ -327,13 +460,12 @@ class flowRunner:
         ax.set_ylabel('AP (IoU=0.50:0.95), maxDets=100')
         ax.set_title('Performance graph')
         # Save the plot as a PNG image
-        fig.savefig(self.eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
+        fig.savefig(eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
         logging.info(f"Finished generating plot image!")
 
 
 if __name__ == "__main__":
     flow_runner = flowRunner()
     flow_runner.setup_objects_and_file_structure()
-    flow_runner.run_all()
-    flow_runner.summarize_results_csv()
-    flow_runner.generate_results_graph_photo()
+    flow_runner.run_all_vanilla()
+    flow_runner.run_all_misk()

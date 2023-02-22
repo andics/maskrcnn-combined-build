@@ -66,6 +66,8 @@ class predictionProcessor:
                                         root=self.images_location,
                                         cfg=cfg, remove_images_without_annotations=False)
 
+        logging.warning(f"Filtering predictions is set to: {self.filter_preds}!")
+
 
     def read_predictions(self):
         self.org_predictions_data = torch.load(self.org_predictions_path)
