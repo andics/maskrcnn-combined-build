@@ -358,15 +358,15 @@ class flowRunner:
 
             #---MISK-VARIABLE-SETTING---
             misk_results_json_filename = flowRunner. \
-                _GENERATED_SUBSAMPLE_RESULTS_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+                _GENERATED_SUBSAMPLE_RESULTS_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_results_txt_filename = flowRunner. \
-                _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+                _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_results_pth_filename = flowRunner. \
-                _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+                _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_csv_filename = flowRunner. \
-                _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+                _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_graph_photo_filename = flowRunner. \
-                _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL.format(str(self.misk_ann_subsample_size))
+                _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
 
             misk_csv_filepath = os.path.join(self.experiment_dir, misk_csv_filename)
             misk_graph_photo_filepath = os.path.join(self.experiment_dir, misk_graph_photo_filename)
@@ -386,7 +386,7 @@ class flowRunner:
                 logging.info("Proceeding to normalized annotation evaluation ...")
                 # ---------------------------
                 # ---BIN-EVALUATION---
-                if not os.path.exists(os.path.join(evaluation_folder, flowRunner._GENERATED_RESULTS_FILE_NAME)):
+                if not os.path.exists(os.path.join(evaluation_folder, misk_results_json_filename)):
                     tester_obj = testerObj(model_config_file=self.model_config_file,
                                            current_bin_pth_dir_path=evaluation_folder,
                                            current_bin_annotation_file_path=gen_annotation_file_path,

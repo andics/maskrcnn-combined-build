@@ -38,6 +38,7 @@ class miskAnnotationProcessor:
         self.ann_subset_file_paths_array = []
         self.ann_subset_summary_file_paths_array = []
 
+
     def read_all_nums_objects(self, ):
         #This function reads the number of objects in ann bins and stores in array
 
@@ -52,6 +53,7 @@ class miskAnnotationProcessor:
                 np.append(self.num_filtered_annotations_in_each_bin_array,
                           int(json_data["after_filtering_annotations_number"]))
 
+
     def eval_normalization_factor(self):
         # Use the normaliztion factor to determine if we shouuld select min, or a fixed number
 
@@ -59,21 +61,18 @@ class miskAnnotationProcessor:
 
         if self.normalization_factor <= 1:
             self.smallest_num_annotations = self.num_filtered_annotations_in_each_bin_array.min()
-            self.target_subsample_number = round(self.smallest_num_annotations * \
-                                                 self.normalization_factor)
+            self.target_subsample_number = int(round(self.smallest_num_annotations * \
+                                                 self.normalization_factor))
         else:
-            self.target_subsample_number = self.normalization_factor
+            self.target_subsample_number = int(self.normalization_factor)
 
 
     def generate_new_annotation_files_with_subsamples(self):
         for bin_lower_th, bin_upper_th,\
             bin_path, bin_annotation_file_path in zip(self.bins_lower_th_array, self.bins_upper_th_array,
                                                       self.bins_paths_array, self.bins_annotations_paths_array):
-            annotation_subset_file_name = self.generated_annotation_subset_files_name_template.format(
-                str(self.target_subsample_number))
-            annotation_subset_summary_file_name = self.generated_annotation_subset_files_summary_name_template.format(
-                str(self.target_subsample_number)
-            )
+            annotation_subset_file_name = self.generated_annotation_subset_files_name_template % str(self.target_subsample_number)
+            annotation_subset_summary_file_name = self.generated_annotation_subset_files_summary_name_template % str(self.target_subsample_number)
 
             ann_subset_file_path = os.path.join(bin_path, annotation_subset_file_name)
             ann_subset_summary_file_path = os.path.join(bin_path, annotation_subset_summary_file_name)
@@ -98,7 +97,7 @@ class miskAnnotationProcessor:
                                       target_subsample_number):
         if os.path.exists(ann_subset_file_path):
             logging.info(f"Normalised annotation file"
-                        f" for bin {bin_annotation_file_path} already exists!. Skipping...")
+                        f" for bin {ann_subset_file_path} already exists!. Skipping...")
             return
 
         with open(bin_annotation_file_path) as json_file:
