@@ -180,18 +180,18 @@ class predictionProcessor:
                         sing_pred_on_sing_img_mask_after_logit_filt.max() == 0.0:
                     logging.critical("We got a zero segmentation mask before we even started! Check what is happening."
                                      f"Prediction score: {sing_pred_on_sing_img_score}")
-                    exit()
+                    #exit()
 
                 #-CHECK: that the resizing of the BoxList DOES NOT affect the segmentation masks at all
                 segm_mask_test = list(np.array(torch.eq(img_predictions.get_field("mask"), rsz_predictions_xywh.get_field("mask")).tolist()).flat)
                 if not all(segm_mask_test):
                     logging.critical("Segmentation mask is different after BoxList resizing! Check what is happening.")
-                    exit()
+                    #exit()
 
                 #-CHECK: If we ever get a 28x28 prediction mask with a zero value
                 if img_predictions.get_field("mask")[i, 0, :, :].numpy().min() == 0.0:
                     logging.critical("We received a prediction mask with a zero value! Check what is happening")
-                    exit()
+                    #exit()
 
 
                 if pred_mask_resized_logit_filtered_binary_np_area == 0:
