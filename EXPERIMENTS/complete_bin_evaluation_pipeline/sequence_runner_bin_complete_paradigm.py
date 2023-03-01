@@ -81,6 +81,7 @@ class flowRunner:
                                  '2. NOT for its test set: this parameter is irrelevant')
         parser.add_argument('-mb', '--middle-boundary', nargs='+',
                             required=False,
+                            type = int,
                             default=[100],
                             help='The edge size of the middle square we define to have high-resolution')
         parser.add_argument('-bs', '--bin-spacing', nargs='?',
@@ -109,7 +110,7 @@ class flowRunner:
                                  'present in each annotation file after filtering, and selecting from ALL'
                                  'other annotation files a random subset of the same number of objects.'
                                  'Thereafter, preforming the evaluations on those subsets.')
-        parser.add_argument('-paf', '--annotation-normalization-factor', nargs='?',
+        parser.add_argument('-anf', '--annotation-normalization-factor', nargs='?',
                             default=0.9,
                             type=float,
                             required = False,
@@ -147,7 +148,7 @@ class flowRunner:
                                  ' as well as the newly generated predictions file will be stored')
         parser.add_argument('-efi', '--experiment-folder-identificator', nargs='?',
                             type=str,
-                            default = "vanilla",
+                            default = "ann_norm",
                             required = False,
                             help='As the amount of tunable parameters of this script grows, it is needed'
                                  'to have some idea of what an experiment folder contains. This variable'
@@ -401,7 +402,7 @@ class flowRunner:
                     tester_obj.write_results_to_disk()
                     tester_obj.change_pth_filename("coco_results.pth", misk_results_pth_filename)
                 else:
-                    logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
+                    logging.info("Misk evaluation file exists. Moving to next bin (if any) -->>")
 
             self.summarize_results_csv(misk_csv_filepath, misk_results_json_filename)
             self.generate_results_graph_photo(misk_graph_photo_filepath, misk_csv_filepath)
