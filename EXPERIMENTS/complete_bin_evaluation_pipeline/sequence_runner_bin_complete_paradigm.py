@@ -44,6 +44,8 @@ class flowRunner:
     _GENERATED_RESULTS_FILE_NAME = "coco_results_original.json"
     _GENERATED_RESULTS_TXT_FILE_NAME = "coco_results_original.txt"
     _GENERATED_RESULTS_PTH_FILE_NAME = "coco_results_original.pth"
+    _GENERATED_RESULTS_BBOX_FILE_NAME = "bbox_original.json"
+    _GENERATED_RESULTS_SEGM_FILE_NAME = "segm_original.json"
     _GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
     _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.png"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
@@ -59,6 +61,8 @@ class flowRunner:
     _GENERATED_SUBSAMPLE_RESULTS_FILE_NAME_TMPL = "coco_results_on_%s.json"
     _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL = "coco_results_on_%s.txt"
     _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL = "coco_results_on_%s.pth"
+    _GENERATED_SUBSAMPLE_RESULTS_BBOX_FILE_NAME_TMPL = "bbox_on_%s.json"
+    _GENERATED_SUBSAMPLE_RESULTS_SEGM_FILE_NAME_TMPL = "segm_on_%s.json"
     _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL = "eval_across_bins_on_%s.csv"
     _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
 
@@ -323,7 +327,9 @@ class flowRunner:
                 #so that we see the AR metric
                 tester_obj.test_model()
                 tester_obj.write_results_to_disk()
-                tester_obj.change_pth_filename("coco_results.pth", flowRunner._GENERATED_RESULTS_PTH_FILE_NAME)
+                tester_obj.change_result_filename("coco_results.pth", flowRunner._GENERATED_RESULTS_PTH_FILE_NAME)
+                tester_obj.change_result_filename("bbox.json", flowRunner._GENERATED_RESULTS_BBOX_FILE_NAME)
+                tester_obj.change_result_filename("segm.json", flowRunner._GENERATED_RESULTS_SEGM_FILE_NAME)
             else: logging.info("Evaluation file exists. Moving to next bin (if any) -->>")
             #--------------------
             #-----------------
@@ -363,6 +369,10 @@ class flowRunner:
                 _GENERATED_SUBSAMPLE_RESULTS_TXT_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_results_pth_filename = flowRunner. \
                 _GENERATED_SUBSAMPLE_RESULTS_PTH_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
+            misk_results_bbox_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_RESULTS_BBOX_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
+            misk_results_segm_filename = flowRunner. \
+                _GENERATED_SUBSAMPLE_RESULTS_SEGM_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_csv_filename = flowRunner. \
                 _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
             misk_graph_photo_filename = flowRunner. \
@@ -400,7 +410,9 @@ class flowRunner:
                     # so that we see the AR metric
                     tester_obj.test_model()
                     tester_obj.write_results_to_disk()
-                    tester_obj.change_pth_filename("coco_results.pth", misk_results_pth_filename)
+                    tester_obj.change_result_filename("coco_results.pth", misk_results_pth_filename)
+                    tester_obj.change_result_filename("bbox.json", misk_results_bbox_filename)
+                    tester_obj.change_result_filename("segm.json", misk_results_segm_filename)
                 else:
                     logging.info("Misk evaluation file exists. Moving to next bin (if any) -->>")
 
@@ -419,7 +431,7 @@ class flowRunner:
             writer = csv.writer(csv_file)
 
             # Write the header row to the CSV file
-            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AP"])
+            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AR"])
             for folder in self.evaluation_folders:
                 folder_name = os.path.basename(os.path.normpath(folder))
                 #Extract the bin from the folder name
@@ -432,7 +444,7 @@ class flowRunner:
                 try:
                     with open(potential_eval_storage_file) as json_results_file:
                         json_data = json.load(json_results_file)
-                    avg_precision = json_data["bbox"]["AP"]
+                    avg_precision = json_data["bbox"]["AR"]
                     to_store_in_csv = [str(lower_threshold), str(upper_threshold),
                                        str(lower_threshold)+"-"+str(upper_threshold),
                                        avg_precision]

@@ -124,8 +124,8 @@ class testerObj:
             self.results.append(result)
         if is_main_process():
             map_results, raw_results = self.results[0]
-            bbox_map = map_results.results["bbox"]['AP']
-            segm_map = map_results.results["segm"]['AP']
+            bbox_map = map_results.results["bbox"]['AR']
+            segm_map = map_results.results["segm"]['AR']
             dllogger.log(step=(cfg.SOLVER.MAX_ITER, cfg.SOLVER.MAX_ITER / iters_per_epoch,),
                          data={"BBOX_mAP": bbox_map, "MASK_mAP": segm_map})
             dllogger.log(step=tuple(), data={"BBOX_mAP": bbox_map, "MASK_mAP": segm_map})
@@ -137,7 +137,7 @@ class testerObj:
         self.utils_helper.write_data_to_json(_results_to_store_file_path, self.results[0][0].results)
         # ----------------------
 
-    def change_pth_filename(self, original_name, name_to_change_to):
+    def change_result_filename(self, original_name, name_to_change_to):
         # This function is used to change the name of the auto-generated coco predictions .pth file
         # The reason is that otherwise there may be conflict when a new .pth file is generated during the
         # annotations nomalization

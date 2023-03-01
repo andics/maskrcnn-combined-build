@@ -295,9 +295,13 @@ def evaluate_predictions_on_coco(
 
 
 class COCOResults(object):
+    #Note: E.g. AR@1 = Average Precision, maxDets=1, Area=all
+    #AR_ = Average Precision, maxDets=100, Area=_
     METRICS = {
-        "bbox": ["AP", "AP50", "AP75", "APs", "APm", "APl"],
-        "segm": ["AP", "AP50", "AP75", "APs", "APm", "APl"],
+        "bbox": ["AP", "AP50", "AP75", "APs", "APm", "APl",
+                 "AR@1", "AR@10", "AR", "ARs", "ARm", "ARl"],
+        "segm": ["AP", "AP50", "AP75", "APs", "APm", "APl",
+                 "AR@1", "AR@10", "AR", "ARs", "ARm", "ARl"],
         "box_proposal": [
             "AR@100",
             "ARs@100",
