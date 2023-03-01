@@ -95,7 +95,8 @@ class flowRunner:
                                  'folder in which this experiment is stored')
         parser.add_argument('-fp', '--filter-preds', nargs='?',
                             type=str,
-                            default="True",
+                            default="False",
+                            required = False,
                             help='Whether to filter the prediction files (True),'
                                  ' or only the annotation files (False).'
                                  'This measure was implemented due to suspected bias in the eval'
@@ -103,10 +104,11 @@ class flowRunner:
         parser.add_argument('-pan', '--perform-annotation-normalization', nargs='?',
                             type=str,
                             default="False",
+                            required = False,
                             help='The annotation normalization includes taking the smallest number of objects'
                                  'present in each annotation file after filtering, and selecting from ALL'
                                  'other annotation files a random subset of the same number of objects.'
-                                 'Thereafter, preforming the evaluation on this subset.')
+                                 'Thereafter, preforming the evaluations on those subsets.')
         parser.add_argument('-paf', '--annotation-normalization-factor', nargs='?',
                             default=0.9,
                             type=float,
