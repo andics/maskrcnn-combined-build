@@ -211,12 +211,11 @@ class predictionProcessor:
 
                 # Now we proceed to the filtering
                 # Calculate hr/total ratio
-                try:
+                if pred_mask_resized_logit_filtered_binary_np_area != 0:
                     high_res_area_fract = pred_mask_resized_logit_filtered_inside_hr_bin_area / pred_mask_resized_logit_filtered_binary_np_area
-                except Exception as e:
+                else:
+                    logging.error("Recieved a completely empty prediction mask (after filtering). Avoided zero-division!")
                     high_res_area_fract = 0
-                    logging.info("Error while calculating area_fract: ")
-                    logging.error(e)
 
                 logging.debug(f"Calculated segmentation area inside high-resolution region:"
                             f" {pred_mask_resized_logit_filtered_inside_hr_bin_area}"
