@@ -431,7 +431,7 @@ class flowRunner:
             writer = csv.writer(csv_file)
 
             # Write the header row to the CSV file
-            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AR"])
+            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AP"])
             for folder in self.evaluation_folders:
                 folder_name = os.path.basename(os.path.normpath(folder))
                 #Extract the bin from the folder name
@@ -444,7 +444,7 @@ class flowRunner:
                 try:
                     with open(potential_eval_storage_file) as json_results_file:
                         json_data = json.load(json_results_file)
-                    avg_precision = json_data["bbox"]["AR"]
+                    avg_precision = json_data["bbox"]["AP"]
                     to_store_in_csv = [str(lower_threshold), str(upper_threshold),
                                        str(lower_threshold)+"-"+str(upper_threshold),
                                        avg_precision]
@@ -472,7 +472,7 @@ class flowRunner:
         ax.plot(x_data, y_data, marker='o', linestyle='--')
         # Set the axis labels and title
         ax.set_xlabel('Bins (lower-thresh)')
-        ax.set_ylabel('AR (IoU=0.50:0.95), maxDets=100')
+        ax.set_ylabel('AP (IoU=0.50:0.95), maxDets=100')
         ax.set_title('Performance graph')
         # Save the plot as a PNG image
         fig.savefig(eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')

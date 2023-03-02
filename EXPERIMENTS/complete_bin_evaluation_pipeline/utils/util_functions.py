@@ -48,6 +48,17 @@ class Utilities_helper(object):
         return json_name, extension
 
 
+    def flatten_nested_dict(self, nested_dict, parent_key='', sep='_'):
+        items = []
+        for key, value in nested_dict.items():
+            new_key = f"{parent_key}{sep}{key}" if parent_key else key
+            if isinstance(value, dict):
+                items.extend(self.flatten_nested_dict(value, new_key, sep=sep).items())
+            else:
+                items.append((new_key, value))
+        return dict(items)
+
+
     def extract_path_base_from_full(self, target_path):
         return os.path.dirname(target_path)
 
