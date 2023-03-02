@@ -472,7 +472,7 @@ class flowRunner:
         ax.plot(x_data, y_data, marker='o', linestyle='--')
         # Set the axis labels and title
         ax.set_xlabel('Bins (lower-thresh)')
-        ax.set_ylabel('AP (IoU=0.50:0.95), maxDets=100')
+        ax.set_ylabel('AR (IoU=0.50:0.95), maxDets=100')
         ax.set_title('Performance graph')
         # Save the plot as a PNG image
         fig.savefig(eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
