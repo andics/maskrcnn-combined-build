@@ -500,7 +500,7 @@ class flowRunner:
             # hide the x and y axis labels and ticks
             ax.set_xlabel('Bins (lower-thresh)')
             ax.set_ylabel(f'{y_col}')
-            ax.set_title('Performance graph')
+            ax.set_title('')
 
         # adjust the layout of the subplots
         fig.tight_layout()
