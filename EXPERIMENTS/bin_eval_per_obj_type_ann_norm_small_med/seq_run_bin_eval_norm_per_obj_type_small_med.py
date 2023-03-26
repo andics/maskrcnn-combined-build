@@ -125,6 +125,14 @@ class flowRunner:
                                  ' bin also. '
                                  'However, this parameter can also be an integer > 1. Then: exactly that '
                                  'many random objects will be picked from each annotation bin')
+        parser.add_argument('-anlp', '--annotation-normalization-large-objects-present', nargs='?',
+                            type = str,
+                            default = "False",
+                            required = False,
+                            help='The filtered bin annotation files sometimes have 0 large objects,'
+                                 ' or very few. Those few large objects impede the annotation normalization'
+                                 'process, as they enforce a smaller number of annotations for small/medium'
+                                 'objects. By default, we do not include large objects')
         parser.add_argument('-oal', '--org-annotations-location', nargs='?',
                             type=str,
                             default = os.path.normpath(os.path.join(flowRunner._MASKRCNN_PARENT_DIR_ABSOLUTE,
@@ -163,6 +171,8 @@ class flowRunner:
                self.args.perform_annotation_normalization == "False")
         assert(self.args.filter_preds == "True" or
                self.args.filter_preds == "False")
+        assert(self.args.annotation_normalization_large_objects_present == "True" or
+               self.args.annotation_normalization_large_objects_present == "False")
 
         self.model_name = self.args.model_name
         self.model_config_file = self.args.model_config_file
@@ -170,6 +180,7 @@ class flowRunner:
         self.bin_spacing = self.args.bin_spacing
         self.filter_preds = True if self.args.filter_preds == "True" else False
         self.perform_annotation_norm = True if self.args.perform_annotation_normalization == "True" else False
+        self.annotation_normalization_large_objects_present = True if self.args.annotation_normalization_large_objects_present == "True" else False
         self.annotation_normalization_factor = self.args.annotation_normalization_factor
         self.org_annotations_location = self.args.org_annotations_location
         self.images_location = self.args.images_location
@@ -354,6 +365,7 @@ class flowRunner:
                                                                          ann_summary_file_name = flowRunner._GENERATED_ANNOTATION_FILES_SUMMARIES,
                                                                          utils_helper = self.utils_helper,
                                                                          normalization_factor = self.annotation_normalization_factor,
+                                                                         large_objects_present = self.annotation_normalization_large_objects_present,
                                                                          ann_subset_files_name_template = flowRunner._GENERATED_ANNOTATION_SUBSAMPLE_FILES_NAME_TMPL,
                                                                          ann_subset_files_summary_name_template = flowRunner._GENERATED_ANNOTATION_SUBSAMPLE_SUMMARY_FILES_NAME_TMPL)
             self.misk_annotation_processor_obj.read_all_nums_objects()

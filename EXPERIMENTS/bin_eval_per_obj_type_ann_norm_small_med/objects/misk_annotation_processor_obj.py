@@ -21,7 +21,8 @@ class miskAnnotationProcessor:
     def __init__(self, bins_lower_th_array, bins_upper_th_array,
                  bins_annotations_paths_array, bins_paths_array,
                  ann_summary_file_name, utils_helper,
-                 normalization_factor, ann_subset_files_name_template,
+                 normalization_factor, large_objects_present,
+                 ann_subset_files_name_template,
                  ann_subset_files_summary_name_template):
         self.bins_lower_th_array = bins_lower_th_array
         self.bins_upper_th_array = bins_upper_th_array
@@ -30,6 +31,7 @@ class miskAnnotationProcessor:
         self.annotation_summary_file_name = ann_summary_file_name
         self.utils_helper = utils_helper
         self.normalization_factor = normalization_factor
+        self.large_objects_present = large_objects_present
         self.generated_annotation_subset_files_name_template = ann_subset_files_name_template
         self.generated_annotation_subset_files_summary_name_template =\
             ann_subset_files_summary_name_template
@@ -151,11 +153,12 @@ class miskAnnotationProcessor:
                                                             ann_indices_small_objs)
         ann_indices_to_keep_medium = self.generate_random_indices(target_subsample_number,
                                                             ann_indices_medium_objs)
-        ann_indices_to_keep_large = self.generate_random_indices(0,
+        ann_indices_to_keep_large = self.generate_random_indices(target_subsample_number if self.large_objects_present else 0,
                                                             ann_indices_large_objs)
 
         ann_indices_to_keep_all = self.utils_helper.concatenate_lists(ann_indices_to_keep_small,
-                                                                         ann_indices_to_keep_medium)
+                                                                        ann_indices_to_keep_medium,
+                                                                        ann_indices_to_keep_large)
 
         new_annotations_data["annotations"] = [new_annotations_data["annotations"][index] for index in
                                                     ann_indices_to_keep_all]
@@ -181,6 +184,6 @@ class miskAnnotationProcessor:
 
 
     def generate_random_indices(self, n, list_to_choose_n_elements_from):
-        """Generate n random integers between a and b-1, inclusive."""
-        random_indices = random.sample(list_to_choose_n_elements_from, n)
-        return random_indices
+        """Pick n points from list"""
+        random_sample = random.sample(list_to_choose_n_elements_from, n)
+        return random_sample

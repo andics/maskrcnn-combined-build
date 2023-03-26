@@ -2,4 +2,5 @@ This script performs evaluation on bins (containing a particular range of
 area in high-res/total area) for their annotation objects
 
 For each bin annotation, it selects a subset of objects which are dependant on the SMALLEST number of
-annotations FOR SOME OBJECT TYPE in the smallest bin.
+annotations FOR SOME OBJECT TYPE in the smallest bin. This version allows to exclude large objects from
+the filtered annotations as well, in case there are 0 in some e.g. 0.9-1.0 bin after filtering
