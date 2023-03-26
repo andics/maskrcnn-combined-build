@@ -432,7 +432,17 @@ class flowRunner:
             writer = csv.writer(csv_file)
 
             # Write the header row to the CSV file
-            writer.writerow(["lower_bin_thresh", "upper_bin_thresh", "bin_prefix", "AP"])
+            csv_identification_header = ["lower_bin_thresh", "upper_bin_thresh", "bin_prefix"]
+            csv_metrics_header = ["bbox_AP", "bbox_AP50", "bbox_AP75",
+                             "bbox_APs", "bbox_APm", "bbox_APl",
+                             "bbox_AR@1", "bbox_AR@10", "bbox_AR",
+                             "bbox_ARs", "bbox_ARm", "bbox_ARl",
+                             "segm_AP", "segm_AP50", "segm_AP75",
+                             "segm_APs", "segm_APm", "segm_APl",
+                             "segm_AR@1", "segm_AR@10", "segm_AR",
+                             "segm_ARs", "segm_ARm", "segm_ARl"]
+            writer.writerow(csv_identification_header + csv_metrics_header)
+
             for folder in self.evaluation_folders:
                 folder_name = os.path.basename(os.path.normpath(folder))
                 #Extract the bin from the folder name
@@ -445,11 +455,17 @@ class flowRunner:
                 try:
                     with open(potential_eval_storage_file) as json_results_file:
                         json_data = json.load(json_results_file)
-                    avg_precision = json_data["bbox"]["AP"]
+                    metric_values = []
+                    for metric in csv_metrics_header:
+                        metric_dict_recipe = metric.split("_")
+                        current_metric = json_data[metric_dict_recipe[0]][metric_dict_recipe[1]]
+                        metric_values.append(current_metric)
+
                     to_store_in_csv = [str(lower_threshold), str(upper_threshold),
-                                       str(lower_threshold)+"-"+str(upper_threshold),
-                                       avg_precision]
+                                       str(lower_threshold)+"-"+str(upper_threshold)]
+                    to_store_in_csv = to_store_in_csv + metric_values
                     writer.writerow(to_store_in_csv)
+
                 except Exception as e:
                     logging.critical(f"Error received while generating the .CSV file: {e.with_traceback()}")
                     return
@@ -463,20 +479,36 @@ class flowRunner:
             return
 
         data = pd.read_csv(eval_across_bins_csv_file_path)
-        # Get the x and y data from the Pandas DataFrame
-        x_data = data.iloc[:, 0]  # first column
-        y_data = data.iloc[:, 3]  # fourth column
+        column_names_metrics = list(data.columns)[-24:]
+        # create a 6x4 grid of plots
+        fig, axs = plt.subplots(nrows=6, ncols=4, figsize=(16, 24))
 
-        # Create a new figure and axis for the plot
-        fig, ax = plt.subplots()
-        # Plot the data as a line plot
-        ax.plot(x_data, y_data, marker='o', linestyle='--')
-        # Set the axis labels and title
-        ax.set_xlabel('Bins (lower-thresh)')
-        ax.set_ylabel('AP (IoU=0.50:0.95), maxDets=100')
-        ax.set_title('Performance graph')
-        # Save the plot as a PNG image
-        fig.savefig(eval_across_bins_graph_file_path, dpi=300, bbox_inches='tight')
+        # iterate over the grid of plots and plot each pair of columns
+        for i, ax in enumerate(axs.flat):
+            # extract the x and y columns for this plot
+            x_col = f'lower_bin_thresh'
+            y_col = column_names_metrics[i]
+            x_data = data[x_col].values
+            y_data = data[y_col].values
+
+            # plot the data on the current subplot
+            ax.plot(x_data, y_data)
+
+            # set the title to the name of the y column
+            ax.set_title(y_col)
+
+            # hide the x and y axis labels and ticks
+            ax.set_xlabel('Bins (lower-thresh)')
+            ax.set_ylabel(f'{y_col}')
+            ax.set_title('Performance graph')
+            ax.set_xticks([])
+            ax.set_yticks([])
+
+        # adjust the layout of the subplots
+        fig.tight_layout()
+
+        # save the figure to a file
+        fig.savefig(eval_across_bins_graph_file_path, dpi=300)
         logging.info(f"Finished generating plot image!")
 
 
