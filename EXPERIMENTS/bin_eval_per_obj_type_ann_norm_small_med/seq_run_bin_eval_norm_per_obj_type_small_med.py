@@ -268,6 +268,7 @@ class flowRunner:
         logging.info(f"  -  CSV file with eval across bins: {self.eval_across_bins_csv_file_path}")
         logging.info(f"  -  Filtering predictions: {str(self.filter_preds)}")
         logging.info(f"  -  Running normalized annotation eval (misk): {str(self.perform_annotation_norm)}")
+        logging.info(f"  -  Annotation normalization Large objects present (misk): {str(self.annotation_normalization_large_objects_present)}")
 
 
     def run_all_vanilla(self):
