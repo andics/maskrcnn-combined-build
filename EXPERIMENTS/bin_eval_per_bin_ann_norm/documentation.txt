@@ -1,0 +1,5 @@
+This script performs evaluation on bins (containing a particular range of
+area in high-res/total area) for their annotation objects
+
+For each bin annotation, it selects a subset of objects which are dependant on the TOTAL number of
+annotations in the smallest bin.
