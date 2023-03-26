@@ -346,6 +346,7 @@ class flowRunner:
         # 2. Selects & saves a random subset of all of them in new annotation files
         # 3. Runs the evaluation of the prediction files across the new annotation files
         if self.perform_annotation_norm:
+            logging.info("(Misk) Beginning annotation normalization and new evaluation")
             self.misk_annotation_processor_obj = miskAnnotationProcessor(bins_lower_th_array = self.bins_lower_threshold,
                                                                          bins_upper_th_array = self.bins_upper_threshold,
                                                                          bins_annotations_paths_array = self.generated_annotation_files_paths,
