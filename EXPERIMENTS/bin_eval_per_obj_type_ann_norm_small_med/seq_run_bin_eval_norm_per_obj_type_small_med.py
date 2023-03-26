@@ -492,7 +492,7 @@ class flowRunner:
             y_data = data[y_col].values
 
             # plot the data on the current subplot
-            ax.plot(x_data, y_data)
+            ax.plot(x_data, y_data, marker='o', linestyle='--')
 
             # set the title to the name of the y column
             ax.set_title(y_col)
@@ -501,8 +501,6 @@ class flowRunner:
             ax.set_xlabel('Bins (lower-thresh)')
             ax.set_ylabel(f'{y_col}')
             ax.set_title('Performance graph')
-            ax.set_xticks([])
-            ax.set_yticks([])
 
         # adjust the layout of the subplots
         fig.tight_layout()
