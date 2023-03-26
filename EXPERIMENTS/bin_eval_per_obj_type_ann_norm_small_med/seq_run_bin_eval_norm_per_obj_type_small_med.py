@@ -491,8 +491,12 @@ class flowRunner:
             x_data = data[x_col].values
             y_data = data[y_col].values
 
+            slope, intercept = np.polyfit(x_data, y_data, 1)
+            line_of_best_fit = slope * x_data + intercept
+
             # plot the data on the current subplot
             ax.plot(x_data, y_data, marker='o', linestyle='--')
+            ax.plot(x_data, line_of_best_fit, '--r', label='L.b.f.')
 
             # set the title to the name of the y column
             ax.set_title(y_col)
