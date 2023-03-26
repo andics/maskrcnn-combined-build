@@ -154,7 +154,7 @@ class miskAnnotationProcessor:
         ann_indices_to_keep_large = self.generate_random_indices(target_subsample_number,
                                                             ann_indices_large_objs)
 
-        ann_indices_to_keep_all = self.utils_helper.conconcatenate_lists(ann_indices_to_keep_small,
+        ann_indices_to_keep_all = self.utils_helper.concatenate_lists(ann_indices_to_keep_small,
                                                                          ann_indices_to_keep_medium,
                                                                          ann_indices_to_keep_large)
 
