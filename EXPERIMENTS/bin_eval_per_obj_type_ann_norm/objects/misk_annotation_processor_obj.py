@@ -52,7 +52,8 @@ class miskAnnotationProcessor:
             self.num_filtered_annotations_in_each_bin_array =\
                 np.append(self.num_filtered_annotations_in_each_bin_array,
                           (int(json_data["small_annotations"]),
-                           int(json_data["medium_annotations"]), int(json_data["large_annotations"])
+                           int(json_data["medium_annotations"]),
+                           int(json_data["large_annotations"])
                            ))
 
 

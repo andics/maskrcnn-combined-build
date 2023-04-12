@@ -3,7 +3,7 @@ import copy
 import numpy as np
 import cv2
 import logging
-import math
+import typing as T
 import random
 
 from PIL import Image
@@ -21,7 +21,7 @@ class miskAnnotationProcessor:
     def __init__(self, bins_lower_th_array, bins_upper_th_array,
                  bins_annotations_paths_array, bins_paths_array,
                  ann_summary_file_name, utils_helper,
-                 normalization_factor, large_objects_present,
+                 normalization_factor, random_seed, large_objects_present,
                  ann_subset_files_name_template,
                  ann_subset_files_summary_name_template):
         self.bins_lower_th_array = bins_lower_th_array
@@ -31,6 +31,7 @@ class miskAnnotationProcessor:
         self.annotation_summary_file_name = ann_summary_file_name
         self.utils_helper = utils_helper
         self.normalization_factor = normalization_factor
+        self.random_seed = random_seed
         self.large_objects_present = large_objects_present
         self.generated_annotation_subset_files_name_template = ann_subset_files_name_template
         self.generated_annotation_subset_files_summary_name_template =\
@@ -124,9 +125,9 @@ class miskAnnotationProcessor:
         total_num_preds_medium = 0
         total_num_preds_large = 0
 
-        ann_indices_small_objs = []
-        ann_indices_medium_objs = []
-        ann_indices_large_objs = []
+        ann_indices_small_objs_shuffled = []
+        ann_indices_medium_objs_shuffled = []
+        ann_indices_large_objs_shuffled = []
         for i, annotation in tqdm(enumerate(new_annotations_data["annotations"]),
                                   total = len(new_annotations_data["annotations"]),
                                   desc ="Progress for summarizing the new annotations"):
@@ -148,27 +149,26 @@ class miskAnnotationProcessor:
             logging.debug(f"Calculated segmentation area: {current_image_binary_mask_calculated_area}")
 
             if current_image_binary_mask_calculated_area <= 32 ** 2:
-                ann_indices_small_objs.append(i)
+                ann_indices_small_objs_shuffled.append(i)
                 total_num_preds_small += 1
             elif current_image_binary_mask_calculated_area <= 96 ** 2:
-                ann_indices_medium_objs.append(i)
+                ann_indices_medium_objs_shuffled.append(i)
                 total_num_preds_medium += 1
             else:
-                ann_indices_large_objs.append(i)
+                ann_indices_large_objs_shuffled.append(i)
                 total_num_preds_large += 1
 
-        #TODO: add a fixed random seed shuffle here, but with legit randomness
+        ann_indices_small_objs_shuffled = self.legit_shuffle_list(ann_indices_small_objs_shuffled)
+        ann_indices_medium_objs_shuffled = self.legit_shuffle_list(ann_indices_medium_objs_shuffled)
+        ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs_shuffled)
         #Then, make the generate random indices function
         #select as little overlapping batches of consecutive
         # indices, of size target sample number
 
-
-        ann_indices_to_keep_small = self.generate_random_indices(target_subsample_number,
-                                                            ann_indices_small_objs)
-        ann_indices_to_keep_medium = self.generate_random_indices(target_subsample_number,
-                                                            ann_indices_medium_objs)
-        ann_indices_to_keep_large = self.generate_random_indices(target_subsample_number if self.large_objects_present else 0,
-                                                            ann_indices_large_objs)
+        ann_indices_to_keep_small = ann_indices_small_objs_shuffled[0:target_subsample_number]
+        ann_indices_to_keep_medium = ann_indices_medium_objs_shuffled[0:target_subsample_number]
+        ann_indices_to_keep_large = ann_indices_large_objs_shuffled[0:target_subsample_number] \
+                                        if self.large_objects_present else []
 
         ann_indices_to_keep_all = self.utils_helper.concatenate_lists(ann_indices_to_keep_small,
                                                                         ann_indices_to_keep_medium,
@@ -201,3 +201,25 @@ class miskAnnotationProcessor:
         """Pick n points from list"""
         random_sample = random.sample(list_to_choose_n_elements_from, n)
         return random_sample
+
+    def legit_shuffle_list(self, lst: T.List[int]) -> T.List[int]:
+        """
+        Shuffle a list randomly and return the shuffled list.
+        If the same seed is used, the same shuffling output is achieved.
+
+        Args:
+            lst (List[int]): The list to be shuffled.
+            seed (int): The seed for the random number generator.
+
+        Returns:
+            List[int]: The shuffled list.
+        """
+        if not self.random_seed == "None":
+            rng = random.Random(self.random_seed)
+        else:
+            rng = random.Random()
+        # Generate a sequence of random numbers based on the seed
+        rand_sequence = [rng.random() for _ in range(len(lst))]
+        # Sort the list based on the random numbers (zero-th element)
+        shuffled_lst = [x for _, x in sorted(zip(rand_sequence, lst), key=lambda x: x[0])]
+        return shuffled_lst
