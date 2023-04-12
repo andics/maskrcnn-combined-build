@@ -51,15 +51,23 @@ class miskAnnotationProcessor:
             with open(_ann_summary_file) as _ann_json_file:
                 json_data = json.load(_ann_json_file)
 
-            self.num_filtered_annotations_in_each_bin_array =\
-                np.append(self.num_filtered_annotations_in_each_bin_array,
-                          (int(json_data["small_annotations"]),
-                           int(json_data["medium_annotations"])
-                           ))
+            if not self.large_objects_present:
+                self.num_filtered_annotations_in_each_bin_array =\
+                    np.append(self.num_filtered_annotations_in_each_bin_array,
+                              (int(json_data["small_annotations"]),
+                               int(json_data["medium_annotations"])
+                               ))
+            else:
+                self.num_filtered_annotations_in_each_bin_array = \
+                    np.append(self.num_filtered_annotations_in_each_bin_array,
+                              (int(json_data["small_annotations"]),
+                               int(json_data["medium_annotations"]),
+                               int(json_data["large_annotations"])
+                               ))
 
 
     def eval_normalization_factor(self):
-        # Use the normaliztion factor to determine if we shouuld select min, or a fixed number
+        # Use the normalization factor to determine if we should select min, or a fixed number
 
         assert(self.normalization_factor > 0)
 
@@ -148,6 +156,12 @@ class miskAnnotationProcessor:
             else:
                 ann_indices_large_objs.append(i)
                 total_num_preds_large += 1
+
+        #TODO: add a fixed random seed shuffle here, but with legit randomness
+        #Then, make the generate random indices function
+        #select as little overlapping batches of consecutive
+        # indices, of size target sample number
+
 
         ann_indices_to_keep_small = self.generate_random_indices(target_subsample_number,
                                                             ann_indices_small_objs)
