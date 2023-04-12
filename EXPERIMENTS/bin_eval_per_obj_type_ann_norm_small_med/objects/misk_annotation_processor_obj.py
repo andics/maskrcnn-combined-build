@@ -41,7 +41,7 @@ class miskAnnotationProcessor:
         self.ann_subset_summary_file_paths_array = []
 
 
-    def read_all_nums_objects(self, ):
+    def read_all_nums_objects(self):
         #This function reads the number of objects in ann bins and stores in array
 
         for bin_path in self.bins_paths_array:
