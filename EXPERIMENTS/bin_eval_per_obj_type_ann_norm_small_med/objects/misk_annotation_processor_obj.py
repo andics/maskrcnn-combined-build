@@ -158,12 +158,12 @@ class miskAnnotationProcessor:
                 ann_indices_large_objs_shuffled.append(i)
                 total_num_preds_large += 1
 
-        ann_indices_small_objs_shuffled = self.legit_shuffle_list(ann_indices_small_objs_shuffled)
-        ann_indices_medium_objs_shuffled = self.legit_shuffle_list(ann_indices_medium_objs_shuffled)
-        ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs_shuffled)
-        #Then, make the generate random indices function
-        #select as little overlapping batches of consecutive
-        # indices, of size target sample number
+        #Shuffle the lists of indices randomly, but with different randomness for each small, medium and large
+        #This ensures that in case there is some dependency between ann. index and position this is not perserved
+        #for small, med, large
+        ann_indices_small_objs_shuffled = self.legit_shuffle_list(ann_indices_small_objs_shuffled, self.random_seed)
+        ann_indices_medium_objs_shuffled = self.legit_shuffle_list(ann_indices_medium_objs_shuffled, self.random_seed + 1)
+        ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs_shuffled, self.random_seed + 2)
 
         ann_indices_to_keep_small = ann_indices_small_objs_shuffled[0:target_subsample_number]
         ann_indices_to_keep_medium = ann_indices_medium_objs_shuffled[0:target_subsample_number]
@@ -202,7 +202,7 @@ class miskAnnotationProcessor:
         random_sample = random.sample(list_to_choose_n_elements_from, n)
         return random_sample
 
-    def legit_shuffle_list(self, lst: T.List[int]) -> T.List[int]:
+    def legit_shuffle_list(self, lst: T.List[int], seed: int) -> T.List[int]:
         """
         Shuffle a list randomly and return the shuffled list.
         If the same seed is used, the same shuffling output is achieved.
@@ -215,7 +215,7 @@ class miskAnnotationProcessor:
             List[int]: The shuffled list.
         """
         if not self.random_seed == "None":
-            rng = random.Random(self.random_seed)
+            rng = random.Random(seed)
         else:
             rng = random.Random()
         # Generate a sequence of random numbers based on the seed
