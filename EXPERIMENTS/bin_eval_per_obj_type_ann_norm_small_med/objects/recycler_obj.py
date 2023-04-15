@@ -19,3 +19,16 @@ class recyclerObj:
                     src_file = os.path.join(subdir, f)
                     dst_file = os.path.join(new_subdir, f)
                     shutil.copy(src_file, dst_file)
+
+    def copy_subfolders(self):
+        for root, dirs, files in os.walk(self.prev_folder):
+            for subdir in dirs:
+                subdir_path = os.path.join(root, subdir)
+                subfolder_name = os.path.relpath(subdir_path, self.prev_folder)
+                new_subdir = os.path.join(self.current_folder, subfolder_name)
+                os.makedirs(new_subdir, exist_ok=True)
+                for f in self.file_names_to_copy:
+                    src_file = os.path.join(subdir_path, f)
+                    dst_file = os.path.join(new_subdir, f)
+                    if os.path.isfile(src_file):
+                        shutil.copy(src_file, dst_file)
