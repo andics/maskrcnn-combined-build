@@ -200,13 +200,14 @@ class flowRunner:
         self.logger = self.logger_ref.setup_logger()
         self.logger.info("Passed arguments -->>")
         self.logger.info('\n  -  '+ '\n  -  '.join(f'{k}={v}' for k, v in vars(self.args).items()))
+        self.logger.info(f"  -  Main experiment folder: {self.main_experiment_dir}")
 
     def generate_trial_folders(self):
         self.trial_folders = []
 
         for trial_i in range(self.num_trials):
             _current_trial_folder = os.path.join(self.main_experiment_dir,
-                                                 flowRunner._TRIAL_SUBFOLDERS_TEMPLATE.format(str(trial_i)))
+                                                 flowRunner._TRIAL_SUBFOLDERS_TEMPLATE % str(trial_i))
             self.trial_folders.append(_current_trial_folder)
 
 
@@ -214,7 +215,7 @@ class flowRunner:
         self.trial_objects = []
 
         for i, trial_folder in enumerate(self.trial_folders):
-            self.logger.info(f"Working on trial #{i};")
+            self.logger.info(f"Working on Trial #{i};")
             current_trial_object = trialRunnerObj(model_name = self.model_name,
                  model_config_file = self.model_config_file,
                  middle_boundary = self.middle_boundary,
@@ -230,7 +231,7 @@ class flowRunner:
                  experiment_dir = trial_folder,
                  num_trials = self.num_trials,
                  utils_helper = self.utils_helper,
-                 current_trial_number=i)
+                 current_trial_number = i)
 
             _prev_trail_folder = self.trial_folders[i-1] if i>0 else None
 
@@ -238,8 +239,9 @@ class flowRunner:
             current_trial_object.run_recycler(_prev_trail_folder)
             current_trial_object.run_all_vanilla()
             current_trial_object.run_all_misk()
+            current_trial_object.logger.factory_reset_logger()
 
-            self.logger.info(f"Finished working on trial #{i}. Moving to next (if any)...")
+            self.logger.info(f"Finished working on Trial #{i}. Moving to next (if any)...")
 
 
 if __name__ == "__main__":

@@ -172,6 +172,8 @@ class trialRunnerObj:
         logging.info(f"  -  Filtering predictions: {str(self.filter_preds)}")
         logging.info(f"  -  Running normalized annotation eval (misk): {str(self.perform_annotation_norm)}")
         logging.info(f"  -  Annotation normalization Large objects present (misk): {str(self.annotation_normalization_large_objects_present)}")
+        logging.info(f"  -  Annotation normalization random seed (misk): {str(self.annotation_normalization_random_seed)}")
+        logging.info(f"  -  Current / total trials (misk): {str(self.current_trial_number)}/{str(self.num_trials)}")
 
 
     def run_recycler(self, prev_trial_folder):
@@ -184,7 +186,8 @@ class trialRunnerObj:
             logging.info(f"Recycling files from {prev_trial_folder}")
             self.recycler_obj = recyclerObj(prev_trial_folder=prev_trial_folder,
                                             current_folder=self.experiment_dir,
-                                            files_to_recycle=trialRunnerObj._FILES_TO_RECYCLE)
+                                            files_to_recycle=trialRunnerObj._FILES_TO_RECYCLE,
+                                            current_trial_number=self.current_trial_number)
             self.recycler_obj.copy_subfolders()
 
 
@@ -286,7 +289,9 @@ class trialRunnerObj:
                                                                          random_seed = self.annotation_normalization_random_seed,
                                                                          large_objects_present = self.annotation_normalization_large_objects_present,
                                                                          ann_subset_files_name_template = trialRunnerObj._GENERATED_ANNOTATION_SUBSAMPLE_FILES_NAME_TMPL,
-                                                                         ann_subset_files_summary_name_template = trialRunnerObj._GENERATED_ANNOTATION_SUBSAMPLE_SUMMARY_FILES_NAME_TMPL)
+                                                                         ann_subset_files_summary_name_template = trialRunnerObj._GENERATED_ANNOTATION_SUBSAMPLE_SUMMARY_FILES_NAME_TMPL,
+                                                                         current_trial_number=self.current_trial_number,
+                                                                         num_trials=self.num_trials)
             self.misk_annotation_processor_obj.read_all_nums_objects()
             self.misk_annotation_processor_obj.eval_normalization_factor()
             self.misk_ann_subsample_size = self.misk_annotation_processor_obj.target_subsample_number

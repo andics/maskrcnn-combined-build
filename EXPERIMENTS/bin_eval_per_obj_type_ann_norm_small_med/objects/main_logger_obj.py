@@ -43,12 +43,16 @@ class loggerObj():
     def factory_reset_logger(self):
         logger_ref = logging.getLogger(self.logger_name)
         logger_ref.setLevel(logging.NOTSET)
-        for handler in logger_ref.handlers[:]:
+        for handler in logger_ref.handlers:
             logger_ref.removeHandler(handler)
         logging.basicConfig(level=logging.WARNING)
 
     def setup_logger(self):
-        self.factory_reset_logger()
+        #self.factory_reset_logger()
+        logger_main = logging.getLogger(self.logger_name)
+        for handler in logger_main.handlers:
+            if isinstance(handler, logging.StreamHandler):
+                logger_main.removeHandler(handler)
 
         if self.utils_helper.check_dir_and_make_if_na(self.logs_path):
             print("General log dir exists; proceeding...")
