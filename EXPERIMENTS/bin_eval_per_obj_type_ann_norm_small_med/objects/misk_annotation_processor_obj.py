@@ -172,19 +172,21 @@ class miskAnnotationProcessor:
         ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs,
                                                                   self.random_seed + 2)
 
-        #TODO: make sure the randomization here takes into account the trail number
         ann_indices_to_keep_small = self.select_lst_subsample_trial(ann_indices_small_objs_shuffled,
                                                                     target_subsample_number,
                                                                     self.current_trial_number,
-                                                                    self.num_trials)
+                                                                    self.num_trials,
+                                                                    "small")
         ann_indices_to_keep_medium = self.select_lst_subsample_trial(ann_indices_medium_objs_shuffled,
                                                                      target_subsample_number,
                                                                      self.current_trial_number,
-                                                                     self.num_trials)
+                                                                     self.num_trials,
+                                                                     "medium")
         ann_indices_to_keep_large = self.select_lst_subsample_trial(ann_indices_large_objs_shuffled,
                                                                     target_subsample_number,
                                                                     self.current_trial_number,
-                                                                    self.num_trials) \
+                                                                    self.num_trials,
+                                                                    "large") \
                                         if self.large_objects_present else []
         #---
 
@@ -243,7 +245,7 @@ class miskAnnotationProcessor:
         return shuffled_lst
 
     def select_lst_subsample_trial(self, lst, target_subsample_number,
-                                   current_trial_number, total_num_trials):
+                                   current_trial_number, total_num_trials, obj_type):
         #The following function selects a chunk from lst that is equispaced along its
         #entire length and with respect to the current_trial number
 
@@ -254,5 +256,12 @@ class miskAnnotationProcessor:
 
         selection_start_index = math.floor(current_trial_number * gap_size)
         selection_end_index = selection_start_index + target_subsample_number
+
+        logging.info("Chunk selector result:")
+        logging.info(f"  -  Indices list length: {str(lst_len)}")
+        logging.info(f"  -  Selection sample size: {target_subsample_number}")
+        logging.info(f"  -  Current / total trials: {str(current_trial_number)}/{str(total_num_trials)}")
+        logging.info(f"  -  Selection indices: {selection_start_index}-{selection_end_index}")
+        logging.info(f"  -  Type objects selected: {obj_type}")
 
         return lst[selection_start_index:selection_end_index]
