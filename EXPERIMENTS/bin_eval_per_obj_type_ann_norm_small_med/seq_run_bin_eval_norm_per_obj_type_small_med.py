@@ -100,7 +100,9 @@ class flowRunner:
                             help='The Misk annotation processor picks out an anf*smallest_num_objs_in_bin number of'
                                  'objects of each type (small, med, large) from each bin. Those objects can be the'
                                  ' same every time if the random seed is the same. If anrs is not set (is -1),'
-                                 'the set of picked objects will be the random every time.')
+                                 'the set of picked objects will be the random every time.'
+                                 'This parameter should be provided in decile numbers only, due to'
+                                 'the internal double-randomization (e.g. anrs = 10, 20...)')
         parser.add_argument('-anlp', '--annotation-normalization-large-objects-present', nargs='?',
                             type = str,
                             default = "False",

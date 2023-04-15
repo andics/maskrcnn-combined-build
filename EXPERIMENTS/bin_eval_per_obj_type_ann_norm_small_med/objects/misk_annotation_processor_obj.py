@@ -5,6 +5,7 @@ import cv2
 import logging
 import typing as T
 import random
+import math
 
 from PIL import Image
 from pycocotools.coco import COCO
@@ -23,7 +24,9 @@ class miskAnnotationProcessor:
                  ann_summary_file_name, utils_helper,
                  normalization_factor, random_seed, large_objects_present,
                  ann_subset_files_name_template,
-                 ann_subset_files_summary_name_template):
+                 ann_subset_files_summary_name_template,
+                 current_trial_number,
+                 num_trials):
         self.bins_lower_th_array = bins_lower_th_array
         self.bins_upper_th_array = bins_upper_th_array
         self.bins_annotations_paths_array = bins_annotations_paths_array
@@ -36,6 +39,8 @@ class miskAnnotationProcessor:
         self.generated_annotation_subset_files_name_template = ann_subset_files_name_template
         self.generated_annotation_subset_files_summary_name_template =\
             ann_subset_files_summary_name_template
+        self.current_trial_number = current_trial_number
+        self.num_trials = num_trials
 
         self.num_filtered_annotations_in_each_bin_array = np.array([])
         self.ann_subset_file_paths_array = []
@@ -125,9 +130,9 @@ class miskAnnotationProcessor:
         total_num_preds_medium = 0
         total_num_preds_large = 0
 
-        ann_indices_small_objs_shuffled = []
-        ann_indices_medium_objs_shuffled = []
-        ann_indices_large_objs_shuffled = []
+        ann_indices_small_objs = []
+        ann_indices_medium_objs = []
+        ann_indices_large_objs = []
         for i, annotation in tqdm(enumerate(new_annotations_data["annotations"]),
                                   total = len(new_annotations_data["annotations"]),
                                   desc ="Progress for summarizing the new annotations"):
@@ -149,26 +154,39 @@ class miskAnnotationProcessor:
             logging.debug(f"Calculated segmentation area: {current_image_binary_mask_calculated_area}")
 
             if current_image_binary_mask_calculated_area <= 32 ** 2:
-                ann_indices_small_objs_shuffled.append(i)
+                ann_indices_small_objs.append(i)
                 total_num_preds_small += 1
             elif current_image_binary_mask_calculated_area <= 96 ** 2:
-                ann_indices_medium_objs_shuffled.append(i)
+                ann_indices_medium_objs.append(i)
                 total_num_preds_medium += 1
             else:
-                ann_indices_large_objs_shuffled.append(i)
+                ann_indices_large_objs.append(i)
                 total_num_preds_large += 1
 
         #Shuffle the lists of indices randomly, but with different randomness for each small, medium and large
         #This ensures that in case there is some dependency between ann. index and position this is not perserved
         #for small, med, large
-        ann_indices_small_objs_shuffled = self.legit_shuffle_list(ann_indices_small_objs_shuffled, self.random_seed)
-        ann_indices_medium_objs_shuffled = self.legit_shuffle_list(ann_indices_medium_objs_shuffled, self.random_seed + 1)
-        ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs_shuffled, self.random_seed + 2)
+        ann_indices_small_objs_shuffled = self.legit_shuffle_list(ann_indices_small_objs, self.random_seed)
+        ann_indices_medium_objs_shuffled = self.legit_shuffle_list(ann_indices_medium_objs,
+                                                                   self.random_seed + 1)
+        ann_indices_large_objs_shuffled = self.legit_shuffle_list(ann_indices_large_objs,
+                                                                  self.random_seed + 2)
 
-        ann_indices_to_keep_small = ann_indices_small_objs_shuffled[0:target_subsample_number]
-        ann_indices_to_keep_medium = ann_indices_medium_objs_shuffled[0:target_subsample_number]
-        ann_indices_to_keep_large = ann_indices_large_objs_shuffled[0:target_subsample_number] \
+        #TODO: make sure the randomization here takes into account the trail number
+        ann_indices_to_keep_small = self.select_lst_subsample_trial(ann_indices_small_objs_shuffled,
+                                                                    target_subsample_number,
+                                                                    self.current_trial_number,
+                                                                    self.num_trials)
+        ann_indices_to_keep_medium = self.select_lst_subsample_trial(ann_indices_medium_objs_shuffled,
+                                                                     target_subsample_number,
+                                                                     self.current_trial_number,
+                                                                     self.num_trials)
+        ann_indices_to_keep_large = self.select_lst_subsample_trial(ann_indices_large_objs_shuffled,
+                                                                    target_subsample_number,
+                                                                    self.current_trial_number,
+                                                                    self.num_trials) \
                                         if self.large_objects_present else []
+        #---
 
         ann_indices_to_keep_all = self.utils_helper.concatenate_lists(ann_indices_to_keep_small,
                                                                         ann_indices_to_keep_medium,
@@ -223,3 +241,18 @@ class miskAnnotationProcessor:
         # Sort the list based on the random numbers (zero-th element)
         shuffled_lst = [x for _, x in sorted(zip(rand_sequence, lst), key=lambda x: x[0])]
         return shuffled_lst
+
+    def select_lst_subsample_trial(self, lst, target_subsample_number,
+                                   current_trial_number, total_num_trials):
+        #The following function selects a chunk from lst that is equispaced along its
+        #entire length and with respect to the current_trial number
+
+        lst_len = len(lst)
+        #To generate total_num_trials different chunks we need to shift our selection
+        #a number of total_num_trials-1 times
+        gap_size = (lst_len - target_subsample_number)/(total_num_trials - 1)
+
+        selection_start_index = math.floor(current_trial_number * gap_size)
+        selection_end_index = selection_start_index + target_subsample_number
+
+        return lst[selection_start_index:selection_end_index]
