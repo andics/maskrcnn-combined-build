@@ -9,8 +9,9 @@ import pandas as pd
 
 from pathlib import Path
 
-from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.logger_obj import loggerObj
+from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.main_logger_obj import loggerObj
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.utils.util_functions import Utilities_helper
+from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.recycler_obj import recyclerObj
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.annotation_processor_obj import annotationProcessor
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.misk_annotation_processor_obj import miskAnnotationProcessor
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.prediction_processor_obj import predictionProcessor
@@ -31,10 +32,14 @@ class trialRunnerObj:
     _GENERATED_PREDICTIONS_FILES_NAME = "predictions.pth"
     _GENERATED_PREDICTION_FILES_SUMMARIES = "predictions_summary.json"
     _GENERATED_RESULTS_FILE_NAME = "coco_results_original.json"
-    _GENERATED_RESULTS_TXT_FILE_NAME = "coco_results_original.txt"
     _GENERATED_RESULTS_PTH_FILE_NAME = "coco_results_original.pth"
     _GENERATED_RESULTS_BBOX_FILE_NAME = "bbox_original.json"
     _GENERATED_RESULTS_SEGM_FILE_NAME = "segm_original.json"
+    _FILES_TO_RECYCLE = [_GENERATED_ANNOTATION_FILES_NAME, _GENERATED_ANNOTATION_FILES_SUMMARIES,
+                         _GENERATED_PREDICTIONS_FILES_NAME, _GENERATED_PREDICTION_FILES_SUMMARIES,
+                         _GENERATED_RESULTS_BBOX_FILE_NAME, _GENERATED_RESULTS_SEGM_FILE_NAME,
+                         _GENERATED_RESULTS_PTH_FILE_NAME, _GENERATED_RESULTS_FILE_NAME]
+
     _GENERATED_HIGH_LVL_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
     _GENERATED_HIGH_LVL_GRAPH_FILE_NAME = "performance_graph.png"
     #This parameter determines whether the script will filter predictions having masks with no Logit score > 0.5
@@ -55,6 +60,9 @@ class trialRunnerObj:
     _GENERATED_SUBSAMPLE_HIGH_LVL_CSV_RESULTS_FILE_NAME_TMPL = "eval_across_bins_on_%s.csv"
     _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
 
+    #Not used currently
+    _GENERATED_RESULTS_TXT_FILE_NAME = "coco_results_original.txt"
+
     def __init__(self, model_name,
                  model_config_file,
                  middle_boundary,
@@ -67,7 +75,7 @@ class trialRunnerObj:
                  org_annotations_location,
                  images_location,
                  org_predictions_location,
-                 experiment_folder_identificator,
+                 experiment_dir,
                  num_trials,
                  current_trial_number,
                  utils_helper):
@@ -84,7 +92,7 @@ class trialRunnerObj:
         self.org_annotations_location = org_annotations_location
         self.images_location = images_location
         self.org_predictions_location = org_predictions_location
-        self.experiment_dir = experiment_folder_identificator
+        self.experiment_dir = experiment_dir
         self.num_trials = num_trials
         self.current_trial_number = current_trial_number
 
@@ -102,6 +110,7 @@ class trialRunnerObj:
                                 log_file_name = "log",
                                 utils_helper = self.utils_helper,
                                 log_level=trialRunnerObj._LOG_LEVEL)
+        self.logger.setup_logger()
         logging.info("Finished setting up logger...")
         #---SETUP-BINS---
         self.bins_lower_threshold = list(np.around(np.linspace(0, 1-self.bin_spacing,
@@ -163,6 +172,19 @@ class trialRunnerObj:
         logging.info(f"  -  Filtering predictions: {str(self.filter_preds)}")
         logging.info(f"  -  Running normalized annotation eval (misk): {str(self.perform_annotation_norm)}")
         logging.info(f"  -  Annotation normalization Large objects present (misk): {str(self.annotation_normalization_large_objects_present)}")
+
+
+    def run_recycler(self, prev_trial_folder):
+        #The following function creates an instance of the recycler class,
+        #which checks if one of the previous trials has created some files that can be reused in this trial.
+        #This is typically the case, for example, with the prediction files for each bin
+        if prev_trial_folder is None:
+            logging.info("No previous trial folder was passed to the recycler. Not recycling anything, moving on...")
+        else:
+            logging.info(f"Recycling files from {prev_trial_folder}")
+            self.recycler_obj = recyclerObj(prev_trial_folder=prev_trial_folder,
+                                            current_folder=self.experiment_dir,
+                                            files_to_recycle=trialRunnerObj._FILES_TO_RECYCLE)
 
 
     def run_all_vanilla(self):

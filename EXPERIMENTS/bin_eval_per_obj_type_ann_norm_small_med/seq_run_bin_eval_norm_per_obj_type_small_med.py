@@ -22,6 +22,7 @@ except Exception:
 
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.trail_runner_obj import trialRunnerObj
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.utils.util_functions import Utilities_helper
+from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.main_logger_obj import loggerObj
 
 import argparse
 
@@ -189,8 +190,14 @@ class flowRunner:
         self.utils_helper.check_dir_and_make_if_na(self.main_experiment_dir)
 
         #TODO: set up a logger
-        print("Passed arguments -->>")
-        print('\n  -  '+ '\n  -  '.join(f'{k}={v}' for k, v in vars(self.args).items()))
+        self.logger_ref = loggerObj(logs_subdir=self.main_experiment_dir,
+                                log_file_name="log",
+                                utils_helper=self.utils_helper,
+                                log_level=flowRunner._LOG_LEVEL,
+                                name="flow_logger")
+        self.logger = self.logger_ref.setup_logger()
+        self.logger.info("Passed arguments -->>")
+        self.logger.info('\n  -  '+ '\n  -  '.join(f'{k}={v}' for k, v in vars(self.args).items()))
 
     def generate_trial_folders(self):
         self.trial_folders = []
@@ -205,6 +212,7 @@ class flowRunner:
         self.trial_objects = []
 
         for i, trial_folder in enumerate(self.trial_folders):
+            self.logger.info(f"Working on trial #{i};")
             current_trial_object = trialRunnerObj(model_name = self.model_name,
                  model_config_file = self.model_config_file,
                  middle_boundary = self.middle_boundary,
@@ -217,15 +225,19 @@ class flowRunner:
                  org_annotations_location = self.org_annotations_location,
                  images_location = self.images_location,
                  org_predictions_location = self.org_predictions_location,
-                 experiment_folder_identificator = self.experiment_folder_identificator,
+                 experiment_dir = trial_folder,
                  num_trials = self.num_trials,
                  utils_helper = self.utils_helper,
                  current_trial_number=i)
+
+            _prev_trail_folder = self.trial_folders[i-1] if i>0 else None
+
             current_trial_object.setup_objects_and_file_structure()
+            current_trial_object.run_recycler(_prev_trail_folder)
             current_trial_object.run_all_vanilla()
             current_trial_object.run_all_misk()
 
-            print(f"Finished working on trial {i}. Moving to next (if any)...")
+            self.logger.info(f"Finished working on trial #{i}. Moving to next (if any)...")
 
 
 if __name__ == "__main__":
