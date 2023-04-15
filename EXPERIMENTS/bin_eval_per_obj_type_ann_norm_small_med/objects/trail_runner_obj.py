@@ -185,6 +185,7 @@ class trialRunnerObj:
             self.recycler_obj = recyclerObj(prev_trial_folder=prev_trial_folder,
                                             current_folder=self.experiment_dir,
                                             files_to_recycle=trialRunnerObj._FILES_TO_RECYCLE)
+            self.recycler_obj.copy_subfolders()
 
 
     def run_all_vanilla(self):
