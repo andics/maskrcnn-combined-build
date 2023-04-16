@@ -34,6 +34,13 @@ class Utilities_helper(object):
 
         return annotation_ids_left
 
+    def generate_equispaced_numbers(self, a, b, n):
+        # Calculate the spacing between the numbers
+        spacing = (b - a) / (n - 1)
+        # Generate the equispaced numbers
+        equispaced_numbers = [a + i * spacing for i in range(n)]
+        return equispaced_numbers
+
     def check_dir_and_make_if_na(self, path_to_check):
         if os.path.exists(path_to_check):
             return True

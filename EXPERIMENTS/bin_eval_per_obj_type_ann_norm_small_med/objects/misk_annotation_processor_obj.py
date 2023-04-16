@@ -260,7 +260,7 @@ class miskAnnotationProcessor:
         logging.info("Chunk selector result:")
         logging.info(f"  -  Indices list length: {str(lst_len)}")
         logging.info(f"  -  Selection sample size: {target_subsample_number}")
-        logging.info(f"  -  Current / total trials: {str(current_trial_number)}/{str(total_num_trials)}")
+        logging.info(f"  -  Current trial id / total trial id-s: {str(current_trial_number)}/{str(total_num_trials-1)}")
         logging.info(f"  -  Selection indices: {selection_start_index}-{selection_end_index}")
         logging.info(f"  -  Type objects selected: {obj_type}")
 

@@ -214,8 +214,6 @@ class flowRunner:
                                                  flowRunner._TRIAL_SUBFOLDERS_TEMPLATE % str(trial_i))
             self.trial_folders.append(_current_trial_folder)
 
-        self.trial_combined_csv_file = os.path.join(self.main_experiment_dir, "")
-
 
     def run_all_trails(self):
         self.trial_objects = []
@@ -257,6 +255,23 @@ class flowRunner:
 
             self.logger.info(f"Finished working on Trial #{i}. Moving to next (if any)...")
 
+
+    def create_combined_info_files(self):
+        self.trial_combined_csv_file = os.path.join(self.main_experiment_dir,
+                                                    flowRunner._COMBINED_CSV_RESULTS_FILE_NAME)
+        self.trial_combined_misk_csv_file = os.path.join(self.main_experiment_dir,
+                                                         flowRunner._COMBINED_MISK_CSV_RESULTS_FILE_NAME % str(self.trial_misk_ann_subsample_sizes[0]))
+
+        self.trial_combined_graph_file = os.path.join(self.main_experiment_dir,
+                                                      flowRunner._COMBINED_GRAPH_FILE_NAME_TMPL)
+        self.trial_combined_misk_graph_file = os.path.join(self.main_experiment_dir, flowRunner._COMBINED_MISK_GRAPH_FILE_NAME_TMPL % str(self.trial_misk_ann_subsample_sizes[0]))
+
+        self.create_combined_trials_csv(self.trial_eval_csv_files, self.trial_combined_csv_file)
+        self.create_combined_trials_csv(self.trial_eval_misk_csv_files, self.trial_combined_misk_csv_file)
+        self.generate_combined_results_graph_photo(self.trial_eval_csv_files, self.trial_combined_graph_file)
+        self.generate_combined_results_graph_photo(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file)
+
+
     def create_combined_trials_csv(self, csv_files, path_to_save_combined_in):
         if os.path.exists(path_to_save_combined_in):
             self.logger.info("Combined CSV file with eval across bins already exists!")
@@ -285,19 +300,22 @@ class flowRunner:
             writer = csv.writer(f)
             writer.writerows(concatenated_rows)
 
+        self.logger.info("Generated combined CSV file ...")
 
-    def generate_results_graph_photo(self, eval_across_bins_graph_file_path, eval_across_bins_csv_file_paths):
+
+    def generate_combined_results_graph_photo(self, eval_across_bins_csv_file_paths, eval_across_bins_graph_file_path):
         # This function takes the generated .csv files and outputs a photo of the model performance graph
         if os.path.exists(eval_across_bins_graph_file_path):
-            logging.info("CSV file with eval across bins already exists!")
+            self.logger.info("CSV file with eval across bins already exists!")
             return
 
         # load the column names from the first csv file
         data = pd.read_csv(eval_across_bins_csv_file_paths[0])
-        column_names_metrics = list(data.columns)[-24:]
+        column_names_metrics = list(data.columns)[-28:-4]
+        bar_chart_columns = list(data.columns)[-4:]
 
-        # create a 6x4 grid of plots
-        fig, axs = plt.subplots(nrows=6, ncols=4, figsize=(16, 24))
+        # create a 7x4 grid of plots
+        fig, axs = plt.subplots(nrows=7, ncols=4, figsize=(16, 28))
 
         # generate an arbitrary number of colors depending on the number of csv files
         num_files = len(eval_across_bins_csv_file_paths)
@@ -308,38 +326,70 @@ class flowRunner:
         for i, ax in enumerate(axs.flat):
             # extract the x and y columns for this plot
             x_col = f'lower_bin_thresh'
-            y_col = column_names_metrics[i]
+            if i < len(column_names_metrics):
+                y_col = column_names_metrics[i]
 
-            # plot data from each csv file with a different color
-            for j, csv_file_path in enumerate(eval_across_bins_csv_file_paths):
-                data = pd.read_csv(csv_file_path)
-                x_data = data[x_col].values
+                all_x_data = []
+                all_y_data = []
+                # plot data from each csv file with a different color
+                for j, csv_file_path in enumerate(eval_across_bins_csv_file_paths):
+                    _data = pd.read_csv(csv_file_path)
+                    x_data = _data[x_col].values
+                    y_data = _data[y_col].values
+
+                    # plot the data on the current subplot with a different color
+                    ax.plot(x_data, y_data, marker='o', linewidth=1, linestyle='-', color=colors[j])
+                    all_x_data.extend(x_data.tolist())
+                    all_y_data.extend(y_data.tolist())
+
+                # plot the line of best fit
+                slope, intercept = np.polyfit(all_x_data, all_y_data, 1)
+                line_of_best_fit_y = slope * np.array(all_x_data) + intercept
+                ax.plot(all_x_data, line_of_best_fit_y, '-', linewidth=1.5, color='black', label='L.b.f.')
+
+                # set the title to the name of the y column
+                ax.set_title(y_col)
+
+                # hide the x and y axis labels and ticks
+                ax.set_xlabel('Bins (lower-thresh)')
+                ax.set_ylabel(f'{y_col}')
+                ax.set_title('')
+            else:
+                # plot the data on the current subplot as bar charts
+                y_col = bar_chart_columns[i - len(column_names_metrics)]
                 y_data = data[y_col].values
-                slope, intercept = np.polyfit(x_data, y_data, 1)
-                line_of_best_fit = slope * x_data + intercept
+                x_data = data[x_col].values
+                ax.bar(x_data, y_data, width=0.05)
 
-                # plot the data on the current subplot with a different color
-                ax.plot(x_data, y_data, marker='o', linestyle='--', color=colors[j])
-                ax.plot(x_data, line_of_best_fit, '--', linewidth=2, color=colors[j], label='L.b.f.')
+                # set the title to the name of the y column
+                ax.set_title(y_col)
 
-            # set the title to the name of the y column
-            ax.set_title(y_col)
+                # set the y-axis ticks to show the range of bar heights
+                max_height = int(np.ceil(y_data.max()))
+                min_height = int(np.floor(y_data.min()))
+                num_ticks = 5
 
-            # hide the x and y axis labels and ticks
-            ax.set_xlabel('Bins (lower-thresh)')
-            ax.set_ylabel(f'{y_col}')
-            ax.set_title('')
+                y_ticks = np.array(self.utils_helper.generate_equispaced_numbers(min_height,
+                                                                                   max_height,
+                                                                                   num_ticks))
+                ax.set_yticks(y_ticks)
+
+                # hide the x-axis ticks and labels
+                ax.set_xlabel('Bins (lower-thresh)')
+                ax.set_ylabel(f'{y_col}')
+                ax.set_title('')
 
         # adjust the layout of the subplots
         fig.tight_layout()
 
         # save the figure to a file
         fig.savefig(eval_across_bins_graph_file_path, dpi=300)
-        logging.info(f"Finished generating plot image!")
+        self.logger.info(f"Finished generating plot image!")
 
 
 if __name__ == "__main__":
     flow_runner = flowRunner()
     flow_runner.setup_objects_and_file_structure()
-    flow_runner.generate_trial_folders()
+    flow_runner.generate_trial_folders_and_vars()
     flow_runner.run_all_trails()
+    flow_runner.create_combined_info_files()

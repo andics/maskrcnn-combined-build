@@ -21,7 +21,7 @@ import argparse
 
 class trialRunnerObj:
     #Some default (usually unnecessary to change) parameters
-    _LOG_LEVEL = logging.DEBUG
+    _LOG_LEVEL = logging.INFO
     _ORIGINAL_ANNOTATIONS_SUBDIR = "original_annotations"
     _PROCESSED_ANNOTATIONS_SAVE_SUBDIR = "filtered_annotations"
     _OVERRIDE_ANNOTATIONS = False
@@ -173,7 +173,7 @@ class trialRunnerObj:
         logging.info(f"  -  Running normalized annotation eval (misk): {str(self.perform_annotation_norm)}")
         logging.info(f"  -  Annotation normalization Large objects present (misk): {str(self.annotation_normalization_large_objects_present)}")
         logging.info(f"  -  Annotation normalization random seed (misk): {str(self.annotation_normalization_random_seed)}")
-        logging.info(f"  -  Current / total trials (misk): {str(self.current_trial_number)}/{str(self.num_trials)}")
+        logging.info(f"  -  Current trial id / total trial id-s (misk): {str(self.current_trial_number)}/{str(self.num_trials-1)}")
 
 
     def run_recycler(self, prev_trial_folder):
@@ -268,7 +268,8 @@ class trialRunnerObj:
             self.logger.remove_temp_file_handler_and_add_main_file_handler()
             logging.info(f"Finished working on bin {lower_threshold}-{upper_threshold} in:\n{evaluation_folder}")
 
-        self.summarize_results_csv(self.eval_across_bins_csv_file_path, trialRunnerObj._GENERATED_RESULTS_FILE_NAME)
+        self.summarize_results_csv(self.eval_across_bins_csv_file_path, trialRunnerObj._GENERATED_RESULTS_FILE_NAME,
+                                   trialRunnerObj._GENERATED_ANNOTATION_FILES_SUMMARIES)
         self.generate_results_graph_photo(self.eval_across_bins_graph_file_path, self.eval_across_bins_csv_file_path)
 
 
@@ -343,8 +344,6 @@ class trialRunnerObj:
                                            results_file_name=misk_results_json_filename,
                                            results_file_verbose_name=misk_results_txt_filename)
                     tester_obj.build_model()
-                    # TODO: Add a script which temporarily de-rails print statements to a file
-                    # so that we see the AR metric
                     tester_obj.test_model()
                     tester_obj.write_results_to_disk()
                     tester_obj.change_result_filename("coco_results.pth", misk_results_pth_filename)
@@ -353,11 +352,11 @@ class trialRunnerObj:
                 else:
                     logging.info("Misk evaluation file exists. Moving to next bin (if any) -->>")
 
-            self.summarize_results_csv(self.misk_csv_filepath, misk_results_json_filename)
+            self.summarize_results_csv(self.misk_csv_filepath, misk_results_json_filename, trialRunnerObj._GENERATED_ANNOTATION_FILES_SUMMARIES)
             self.generate_results_graph_photo(self.misk_graph_photo_filepath, self.misk_csv_filepath)
 
 
-    def summarize_results_csv(self, eval_across_bins_csv_file_path, potential_results_file_name):
+    def summarize_results_csv(self, eval_across_bins_csv_file_path, potential_results_file_name, potential_ann_summary_file_name):
         if os.path.exists(eval_across_bins_csv_file_path):
             logging.info("CSV file with eval across bins already exists!")
             return
@@ -377,29 +376,41 @@ class trialRunnerObj:
                              "segm_APs", "segm_APm", "segm_APl",
                              "segm_AR@1", "segm_AR@10", "segm_AR",
                              "segm_ARs", "segm_ARm", "segm_ARl"]
-            writer.writerow(csv_identification_header + csv_metrics_header)
+            csv_ann_distr_headers = ["total_obj", "small_obj", "med_obj",
+                             "large_obj"]
+            writer.writerow(csv_identification_header + csv_metrics_header + csv_ann_distr_headers)
 
             for folder in self.evaluation_folders:
                 folder_name = os.path.basename(os.path.normpath(folder))
                 #Extract the bin from the folder name
                 lower_threshold, upper_threshold = self.utils_helper.extract_floats_and_nums_from_string(folder_name)
                 potential_eval_storage_file = os.path.join(folder, potential_results_file_name)
-                assert(os.path.exists(potential_eval_storage_file))
+                potential_ann_summary_file = os.path.join(folder, potential_ann_summary_file_name)
+                assert (os.path.exists(potential_eval_storage_file))
+                assert (os.path.exists(potential_ann_summary_file))
 
                 #Extract the value of the evaluation metric
                 # Write the data to the CSV file
                 try:
+                    #Read eval metrics first
                     with open(potential_eval_storage_file) as json_results_file:
-                        json_data = json.load(json_results_file)
+                        eval_data = json.load(json_results_file)
                     metric_values = []
                     for metric in csv_metrics_header:
                         metric_dict_recipe = metric.split("_")
-                        current_metric = json_data[metric_dict_recipe[0]][metric_dict_recipe[1]]
+                        current_metric = eval_data[metric_dict_recipe[0]][metric_dict_recipe[1]]
                         metric_values.append(current_metric)
+
+                    with open(potential_ann_summary_file) as ann_summary_file:
+                        ann_summary_data = json.load(ann_summary_file)
+                    ann_summary_lst = [ann_summary_data["after_filtering_annotations_number"],
+                                       ann_summary_data["small_annotations"],
+                                       ann_summary_data["medium_annotations"],
+                                       ann_summary_data["large_annotations"]]
 
                     to_store_in_csv = [str(lower_threshold), str(upper_threshold),
                                        str(lower_threshold)+"-"+str(upper_threshold)]
-                    to_store_in_csv = to_store_in_csv + metric_values
+                    to_store_in_csv = to_store_in_csv + metric_values + ann_summary_lst
                     writer.writerow(to_store_in_csv)
 
                 except Exception as e:
@@ -413,34 +424,62 @@ class trialRunnerObj:
         if os.path.exists(eval_across_bins_graph_file_path):
             logging.info("CSV file with eval across bins already exists!")
             return
+        else:
+            logging.info("Generating graph photo ...")
 
         data = pd.read_csv(eval_across_bins_csv_file_path)
-        column_names_metrics = list(data.columns)[-24:]
-        # create a 6x4 grid of plots
-        fig, axs = plt.subplots(nrows=6, ncols=4, figsize=(16, 24))
+        column_names_metrics = list(data.columns)[-28:-4]
+        bar_chart_columns = list(data.columns)[-4:]
+
+        # create a 7x4 grid of plots
+        fig, axs = plt.subplots(nrows=7, ncols=4, figsize=(16, 28))
 
         # iterate over the grid of plots and plot each pair of columns
         for i, ax in enumerate(axs.flat):
             # extract the x and y columns for this plot
             x_col = f'lower_bin_thresh'
-            y_col = column_names_metrics[i]
             x_data = data[x_col].values
-            y_data = data[y_col].values
+            if i < len(column_names_metrics):
+                y_col = column_names_metrics[i]
+                y_data = data[y_col].values
 
-            slope, intercept = np.polyfit(x_data, y_data, 1)
-            line_of_best_fit = slope * x_data + intercept
+                slope, intercept = np.polyfit(x_data, y_data, 1)
+                line_of_best_fit = slope * x_data + intercept
 
-            # plot the data on the current subplot
-            ax.plot(x_data, y_data, marker='o', linestyle='--')
-            ax.plot(x_data, line_of_best_fit, '--r', label='L.b.f.')
+                # plot the data on the current subplot
+                ax.plot(x_data, y_data, marker='o', linestyle='--')
+                ax.plot(x_data, line_of_best_fit, '-', linewidth=1.5, color='black', label='L.b.f.')
 
-            # set the title to the name of the y column
-            ax.set_title(y_col)
+                # set the title to the name of the y column
+                ax.set_title(y_col)
 
-            # hide the x and y axis labels and ticks
-            ax.set_xlabel('Bins (lower-thresh)')
-            ax.set_ylabel(f'{y_col}')
-            ax.set_title('')
+                # hide the x and y axis labels and ticks
+                ax.set_xlabel('Bins (lower-thresh)')
+                ax.set_ylabel(f'{y_col}')
+                ax.set_title('')
+            else:
+                # plot the data on the current subplot as bar charts
+                y_col = bar_chart_columns[i - len(column_names_metrics)]
+                y_data = data[y_col].values
+                ax.bar(x_data, y_data, width=0.05)
+
+                # set the title to the name of the y column
+                ax.set_title(y_col)
+
+                # set the y-axis ticks to show the range of bar heights
+                max_height = int(np.ceil(y_data.max()))
+                min_height = int(np.floor(y_data.min()))
+                num_ticks = 5
+
+                y_ticks = np.asarray(self.utils_helper.generate_equispaced_numbers(min_height,
+                                                                                   max_height,
+                                                                                   num_ticks))
+                ax.set_yticks(y_ticks)
+
+                # hide the x-axis ticks and labels
+                ax.set_xlabel('Bins (lower-thresh)')
+                ax.set_ylabel(f'{y_col}')
+                ax.set_title('')
 
         # adjust the layout of the subplots
         fig.tight_layout()
