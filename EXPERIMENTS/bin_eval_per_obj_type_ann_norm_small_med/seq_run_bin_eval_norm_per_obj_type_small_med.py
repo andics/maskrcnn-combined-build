@@ -31,6 +31,10 @@ class flowRunner:
     _MASKRCNN_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))).parents[1])
     _FLOW_RUNNER_PARENT_DIR_ABSOLUTE = str(Path(os.path.dirname(os.path.realpath(__file__))))
     _TRIAL_SUBFOLDERS_TEMPLATE = "trial_%s"
+    _COMBINED_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
+    _COMBINED_MISK_CSV_RESULTS_FILE_NAME = "eval_across_bins_on_%s.csv"
+    _COMBINED_GRAPH_FILE_NAME_TMPL = "performance_graph.png"
+    _COMBINED_MISK_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
     _LOG_LEVEL = logging.DEBUG
 
 
@@ -202,7 +206,7 @@ class flowRunner:
         self.logger.info('\n  -  '+ '\n  -  '.join(f'{k}={v}' for k, v in vars(self.args).items()))
         self.logger.info(f"  -  Main experiment folder: {self.main_experiment_dir}")
 
-    def generate_trial_folders(self):
+    def generate_trial_folders_and_vars(self):
         self.trial_folders = []
 
         for trial_i in range(self.num_trials):
@@ -210,9 +214,14 @@ class flowRunner:
                                                  flowRunner._TRIAL_SUBFOLDERS_TEMPLATE % str(trial_i))
             self.trial_folders.append(_current_trial_folder)
 
+        self.trial_combined_csv_file = os.path.join(self.main_experiment_dir, "")
+
 
     def run_all_trails(self):
         self.trial_objects = []
+        self.trial_eval_csv_files = []
+        self.trial_eval_misk_csv_files = []
+        self.trial_misk_ann_subsample_sizes = []
 
         for i, trial_folder in enumerate(self.trial_folders):
             self.logger.info(f"Working on Trial #{i};")
@@ -238,10 +247,95 @@ class flowRunner:
             current_trial_object.setup_objects_and_file_structure()
             current_trial_object.run_recycler(_prev_trail_folder)
             current_trial_object.run_all_vanilla()
+            self.trial_eval_csv_files.append(current_trial_object.eval_across_bins_csv_file_path)
+
             current_trial_object.run_all_misk()
+            self.trial_misk_ann_subsample_sizes.append(current_trial_object.misk_ann_subsample_size)
+            self.trial_eval_misk_csv_files.append(current_trial_object.misk_csv_filepath)
+
             current_trial_object.logger.factory_reset_logger()
 
             self.logger.info(f"Finished working on Trial #{i}. Moving to next (if any)...")
+
+    def create_combined_trials_csv(self, csv_files, path_to_save_combined_in):
+        if os.path.exists(path_to_save_combined_in):
+            self.logger.info("Combined CSV file with eval across bins already exists!")
+            return
+
+        # Initialize an empty list to hold the concatenated rows
+        concatenated_rows = []
+
+        # Loop through each CSV file and concatenate its rows
+        for idx, csv_file in enumerate(csv_files):
+            with open(csv_file, 'r') as f:
+                reader = csv.reader(f)
+                # Get the header row from the first CSV file
+                if idx == 0:
+                    header_row = next(reader)
+                    concatenated_rows.append(header_row)
+                # Add a row of "-" strings before the rows of the next CSV file are written
+                else:
+                    concatenated_rows.append([' ' for _ in header_row])
+                # Append the rows to the concatenated_rows list
+                for row in reader:
+                    concatenated_rows.append(row)
+
+        # Write the concatenated rows to a new CSV file
+        with open(path_to_save_combined_in, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(concatenated_rows)
+
+
+    def generate_results_graph_photo(self, eval_across_bins_graph_file_path, eval_across_bins_csv_file_paths):
+        # This function takes the generated .csv files and outputs a photo of the model performance graph
+        if os.path.exists(eval_across_bins_graph_file_path):
+            logging.info("CSV file with eval across bins already exists!")
+            return
+
+        # load the column names from the first csv file
+        data = pd.read_csv(eval_across_bins_csv_file_paths[0])
+        column_names_metrics = list(data.columns)[-24:]
+
+        # create a 6x4 grid of plots
+        fig, axs = plt.subplots(nrows=6, ncols=4, figsize=(16, 24))
+
+        # generate an arbitrary number of colors depending on the number of csv files
+        num_files = len(eval_across_bins_csv_file_paths)
+        cmap = plt.get_cmap('viridis')
+        colors = cmap(np.linspace(0, 1, num_files))
+
+        # iterate over the grid of plots and plot each pair of columns
+        for i, ax in enumerate(axs.flat):
+            # extract the x and y columns for this plot
+            x_col = f'lower_bin_thresh'
+            y_col = column_names_metrics[i]
+
+            # plot data from each csv file with a different color
+            for j, csv_file_path in enumerate(eval_across_bins_csv_file_paths):
+                data = pd.read_csv(csv_file_path)
+                x_data = data[x_col].values
+                y_data = data[y_col].values
+                slope, intercept = np.polyfit(x_data, y_data, 1)
+                line_of_best_fit = slope * x_data + intercept
+
+                # plot the data on the current subplot with a different color
+                ax.plot(x_data, y_data, marker='o', linestyle='--', color=colors[j])
+                ax.plot(x_data, line_of_best_fit, '--', linewidth=2, color=colors[j], label='L.b.f.')
+
+            # set the title to the name of the y column
+            ax.set_title(y_col)
+
+            # hide the x and y axis labels and ticks
+            ax.set_xlabel('Bins (lower-thresh)')
+            ax.set_ylabel(f'{y_col}')
+            ax.set_title('')
+
+        # adjust the layout of the subplots
+        fig.tight_layout()
+
+        # save the figure to a file
+        fig.savefig(eval_across_bins_graph_file_path, dpi=300)
+        logging.info(f"Finished generating plot image!")
 
 
 if __name__ == "__main__":

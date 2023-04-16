@@ -315,8 +315,8 @@ class trialRunnerObj:
             misk_graph_photo_filename = trialRunnerObj. \
                 _GENERATED_SUBSAMPLE_HIGH_LVL_GRAPH_FILE_NAME_TMPL % str(self.misk_ann_subsample_size)
 
-            misk_csv_filepath = os.path.join(self.experiment_dir, misk_csv_filename)
-            misk_graph_photo_filepath = os.path.join(self.experiment_dir, misk_graph_photo_filename)
+            self.misk_csv_filepath = os.path.join(self.experiment_dir, misk_csv_filename)
+            self.misk_graph_photo_filepath = os.path.join(self.experiment_dir, misk_graph_photo_filename)
             #------------------------
 
             #---RUN-TESTING-SCRIPT---
@@ -353,8 +353,8 @@ class trialRunnerObj:
                 else:
                     logging.info("Misk evaluation file exists. Moving to next bin (if any) -->>")
 
-            self.summarize_results_csv(misk_csv_filepath, misk_results_json_filename)
-            self.generate_results_graph_photo(misk_graph_photo_filepath, misk_csv_filepath)
+            self.summarize_results_csv(self.misk_csv_filepath, misk_results_json_filename)
+            self.generate_results_graph_photo(self.misk_graph_photo_filepath, self.misk_csv_filepath)
 
 
     def summarize_results_csv(self, eval_across_bins_csv_file_path, potential_results_file_name):
