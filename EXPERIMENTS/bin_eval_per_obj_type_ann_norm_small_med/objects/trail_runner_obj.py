@@ -252,8 +252,8 @@ class trialRunnerObj:
                                        current_bin_dataset_name = gen_test_set_name,
                                        current_bin_images_path = self.images_location,
                                        utils_helper = self.utils_helper,
-                                       results_file_name = flow_runner._GENERATED_RESULTS_FILE_NAME,
-                                       results_file_verbose_name = flow_runner._GENERATED_RESULTS_TXT_FILE_NAME)
+                                       results_file_name = trialRunnerObj._GENERATED_RESULTS_FILE_NAME,
+                                       results_file_verbose_name = trialRunnerObj._GENERATED_RESULTS_TXT_FILE_NAME)
                 tester_obj.build_model()
                 #TODO: Add a script which temporarily de-rails print statements to a file
                 #so that we see the AR metric
@@ -487,10 +487,3 @@ class trialRunnerObj:
         # save the figure to a file
         fig.savefig(eval_across_bins_graph_file_path, dpi=300)
         logging.info(f"Finished generating plot image!")
-
-
-if __name__ == "__main__":
-    flow_runner = trialRunnerObj()
-    flow_runner.setup_objects_and_file_structure()
-    flow_runner.run_all_vanilla()
-    flow_runner.run_all_misk()
