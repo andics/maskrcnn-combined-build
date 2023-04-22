@@ -37,10 +37,10 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
 
         if ('train' in ann_file):
             fov_crop_info_file = os.path.join(ann_root, "train2017_fov_crop_multi_ch.json")
-            self.folder_to_save_new_dataset = "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/stacked_single/stacked_single_from_combined"
+            self.folder_to_save_new_dataset = "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/dataset_stacked_single_val_and_train_2017/stacked_single_from_combined_train"
         else:
             fov_crop_info_file = os.path.join(ann_root, "val2017_fov_crop_multi_ch.json")
-            self.folder_to_save_new_dataset = "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/stacked_single/stacked_single_from_combined_val"
+            self.folder_to_save_new_dataset = "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/dataset_stacked_single_val_and_train_2017/stacked_single_from_combined_val"
 
         json_file = open(fov_crop_info_file)
         crop_info = json.load(json_file)

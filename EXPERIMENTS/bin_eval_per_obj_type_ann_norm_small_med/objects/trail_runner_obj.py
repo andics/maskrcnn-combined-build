@@ -21,7 +21,7 @@ import argparse
 
 class trialRunnerObj:
     #Some default (usually unnecessary to change) parameters
-    _LOG_LEVEL = logging.INFO
+    _LOG_LEVEL = logging.DEBUG
     _ORIGINAL_ANNOTATIONS_SUBDIR = "original_annotations"
     _PROCESSED_ANNOTATIONS_SAVE_SUBDIR = "filtered_annotations"
     _OVERRIDE_ANNOTATIONS = False

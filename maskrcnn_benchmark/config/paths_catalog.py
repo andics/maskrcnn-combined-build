@@ -117,16 +117,16 @@ class DatasetCatalog(object):
 
         # Used to train multi-stacked-single
         "coco_2017_multi_stacked_single_train": {
-            "img_dir": "coco_filt/train2017_multi",
-            "ann_file": "coco_filt/annotations/instances_ch3_train2017.json"
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/train2017_multi.no_filt",
+            "ann_file": "/home/projects/bagon/dannyh/data/coco_filt/annotations/instances_ch3_train2017.json"
         },
         "coco_2017_multi_stacked_single_val": {
-            "img_dir": "coco_filt/val2017_multi",
-            "ann_file": "coco_filt/annotations/instances_ch3_val2017.json"
+            "img_dir": "/home/projects/bagon/dannyh/data/coco_filt/val2017_multi.no_filt",
+            "ann_file": "/home/projects/bagon/dannyh/data/coco_filt/annotations/instances_ch3_val2017.json"
         },
         "coco_2017_multi_stacked_single_premade_val": {
-            "img_dir": "coco_filt/val2017/Stacked_multi_channel",
-            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/annotations/multi_stacked_single/instances_multi_stacked_val2017.json"
+            "img_dir": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/dataset_stacked_single_val_and_train_2017/stacked_single_from_combined_val",
+            "ann_file": "/home/projects/bagon/andreyg/Projects/Variable_Resolution/Datasets/annotations/multi_stacked_org/instances_ch3_val2017.json"
         },
         # -----------------------------------
 
