@@ -7,7 +7,7 @@ import os
 class DatasetCatalog(object):
     """
     A class used to localize different datasets and their corresponding annotation files
-    DATA_DIR: points to the base folder, which is prepended to all img_dirs & ann_files
+    DATA_DIR: points to the base folder, which is prepended to all img_dirs & ann_files, unless they start with /
             Needs to be changed to /home/projects/bagon/dannyh/data/coco_filt/ occasionally
     """
     DATA_DIR = "/home/projects/bagon/shared"
