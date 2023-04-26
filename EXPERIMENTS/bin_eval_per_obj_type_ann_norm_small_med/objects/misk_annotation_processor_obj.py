@@ -241,6 +241,7 @@ class miskAnnotationProcessor:
         # Generate a sequence of random numbers based on the seed
         rand_sequence = [rng.random() for _ in range(len(lst))]
         # Sort the list based on the random numbers (zero-th element)
+        # This achieves a random-shuffling effect
         shuffled_lst = [x for _, x in sorted(zip(rand_sequence, lst), key=lambda x: x[0])]
         return shuffled_lst
 

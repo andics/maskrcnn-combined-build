@@ -1,11 +1,6 @@
 import sys
 import os
 import logging
-import json
-import numpy as np
-import csv
-import matplotlib.pyplot as plt
-import pandas as pd
 
 from pathlib import Path
 
@@ -23,6 +18,7 @@ except Exception:
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.trail_runner_obj import trialRunnerObj
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.utils.util_functions import Utilities_helper
 from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.main_logger_obj import loggerObj
+from EXPERIMENTS.bin_eval_per_obj_type_ann_norm_small_med.objects.seq_runner_drawer_obj import seqRunnerDrawerObj
 
 import argparse
 
@@ -33,8 +29,10 @@ class flowRunner:
     _TRIAL_SUBFOLDERS_TEMPLATE = "trial_%s"
     _COMBINED_CSV_RESULTS_FILE_NAME = "eval_across_bins.csv"
     _COMBINED_MISK_CSV_RESULTS_FILE_NAME = "eval_across_bins_on_%s.csv"
-    _COMBINED_GRAPH_FILE_NAME_TMPL = "performance_graph.png"
-    _COMBINED_MISK_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
+    _COMBINED_PLT_GRAPH_FILE_NAME_TMPL = "performance_graph.png"
+    _COMBINED_PLT_MISK_GRAPH_FILE_NAME_TMPL = "performance_graph_on_%s.png"
+    _COMBINED_SB_GRAPH_FILE_NAME_TMPL = "sb_performance_graph.png"
+    _COMBINED_SB_MISK_GRAPH_FILE_NAME_TMPL = "sb_performance_graph_on_%s.png"
     _LOG_LEVEL = logging.DEBUG
 
 
@@ -206,6 +204,9 @@ class flowRunner:
         self.logger.info('\n  -  '+ '\n  -  '.join(f'{k}={v}' for k, v in vars(self.args).items()))
         self.logger.info(f"  -  Main experiment folder: {self.main_experiment_dir}")
 
+        self.drawer_writer_obj = seqRunnerDrawerObj(utils_helper = self.utils_helper,
+                                                    logger = self.logger)
+
     def generate_trial_folders_and_vars(self):
         self.trial_folders = []
 
@@ -262,129 +263,23 @@ class flowRunner:
         self.trial_combined_misk_csv_file = os.path.join(self.main_experiment_dir,
                                                          flowRunner._COMBINED_MISK_CSV_RESULTS_FILE_NAME % str(self.trial_misk_ann_subsample_sizes[0]))
 
-        self.trial_combined_graph_file = os.path.join(self.main_experiment_dir,
-                                                      flowRunner._COMBINED_GRAPH_FILE_NAME_TMPL)
-        self.trial_combined_misk_graph_file = os.path.join(self.main_experiment_dir, flowRunner._COMBINED_MISK_GRAPH_FILE_NAME_TMPL % str(self.trial_misk_ann_subsample_sizes[0]))
+        self.trial_combined_graph_file_plt = os.path.join(self.main_experiment_dir,
+                                                          flowRunner._COMBINED_PLT_GRAPH_FILE_NAME_TMPL)
+        self.trial_combined_misk_graph_file_plt = os.path.join(self.main_experiment_dir, flowRunner._COMBINED_PLT_MISK_GRAPH_FILE_NAME_TMPL
+                                                               % str(self.trial_misk_ann_subsample_sizes[0]))
 
-        self.create_combined_trials_csv(self.trial_eval_csv_files, self.trial_combined_csv_file)
-        self.create_combined_trials_csv(self.trial_eval_misk_csv_files, self.trial_combined_misk_csv_file)
-        self.generate_combined_results_graph_photo(self.trial_eval_csv_files, self.trial_combined_graph_file)
-        self.generate_combined_results_graph_photo(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file)
-
-
-    def create_combined_trials_csv(self, csv_files, path_to_save_combined_in):
-        if os.path.exists(path_to_save_combined_in):
-            self.logger.info("Combined CSV file with eval across bins already exists!")
-            return
-
-        # Initialize an empty list to hold the concatenated rows
-        concatenated_rows = []
-
-        # Loop through each CSV file and concatenate its rows
-        for idx, csv_file in enumerate(csv_files):
-            with open(csv_file, 'r') as f:
-                reader = csv.reader(f)
-                # Get the header row from the first CSV file
-                if idx == 0:
-                    header_row = next(reader)
-                    concatenated_rows.append(header_row)
-                # Add a row of "-" strings before the rows of the next CSV file are written
-                else:
-                    concatenated_rows.append([' ' for _ in header_row])
-                # Append the rows to the concatenated_rows list
-                for row in reader:
-                    concatenated_rows.append(row)
-
-        # Write the concatenated rows to a new CSV file
-        with open(path_to_save_combined_in, 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerows(concatenated_rows)
-
-        self.logger.info("Generated combined CSV file ...")
+        self.trial_combined_graph_file_seaborn = os.path.join(self.main_experiment_dir,
+                                                          flowRunner._COMBINED_SB_GRAPH_FILE_NAME_TMPL)
+        self.trial_combined_misk_graph_file_seaborn = os.path.join(self.main_experiment_dir, flowRunner._COMBINED_SB_MISK_GRAPH_FILE_NAME_TMPL
+                                                                   % str(self.trial_misk_ann_subsample_sizes[0]))
 
 
-    def generate_combined_results_graph_photo(self, eval_across_bins_csv_file_paths, eval_across_bins_graph_file_path):
-        # This function takes the generated .csv files and outputs a photo of the model performance graph
-        if os.path.exists(eval_across_bins_graph_file_path):
-            self.logger.info("CSV file with eval across bins already exists!")
-            return
-
-        # load the column names from the first csv file
-        data = pd.read_csv(eval_across_bins_csv_file_paths[0])
-        column_names_metrics = list(data.columns)[-28:-4]
-        bar_chart_columns = list(data.columns)[-4:]
-
-        # create a 7x4 grid of plots
-        fig, axs = plt.subplots(nrows=7, ncols=4, figsize=(16, 28))
-
-        # generate an arbitrary number of colors depending on the number of csv files
-        num_files = len(eval_across_bins_csv_file_paths)
-        cmap = plt.get_cmap('viridis')
-        colors = cmap(np.linspace(0, 1, num_files))
-
-        # iterate over the grid of plots and plot each pair of columns
-        for i, ax in enumerate(axs.flat):
-            # extract the x and y columns for this plot
-            x_col = f'lower_bin_thresh'
-            if i < len(column_names_metrics):
-                y_col = column_names_metrics[i]
-
-                all_x_data = []
-                all_y_data = []
-                # plot data from each csv file with a different color
-                for j, csv_file_path in enumerate(eval_across_bins_csv_file_paths):
-                    _data = pd.read_csv(csv_file_path)
-                    x_data = _data[x_col].values
-                    y_data = _data[y_col].values
-
-                    # plot the data on the current subplot with a different color
-                    ax.plot(x_data, y_data, marker='o', linewidth=1, linestyle='-', color=colors[j])
-                    all_x_data.extend(x_data.tolist())
-                    all_y_data.extend(y_data.tolist())
-
-                # plot the line of best fit
-                slope, intercept = np.polyfit(all_x_data, all_y_data, 1)
-                line_of_best_fit_y = slope * np.array(all_x_data) + intercept
-                ax.plot(all_x_data, line_of_best_fit_y, '-', linewidth=1.5, color='black', label='L.b.f.')
-
-                # set the title to the name of the y column
-                ax.set_title(y_col)
-
-                # hide the x and y axis labels and ticks
-                ax.set_xlabel('Bins (lower-thresh)')
-                ax.set_ylabel(f'{y_col}')
-                ax.set_title('')
-            else:
-                # plot the data on the current subplot as bar charts
-                y_col = bar_chart_columns[i - len(column_names_metrics)]
-                y_data = data[y_col].values
-                x_data = data[x_col].values
-                ax.bar(x_data, y_data, width=0.05)
-
-                # set the title to the name of the y column
-                ax.set_title(y_col)
-
-                # set the y-axis ticks to show the range of bar heights
-                max_height = int(np.ceil(y_data.max()))
-                min_height = int(np.floor(y_data.min()))
-                num_ticks = 5
-
-                y_ticks = np.array(self.utils_helper.generate_equispaced_numbers(min_height,
-                                                                                   max_height,
-                                                                                   num_ticks))
-                ax.set_yticks(y_ticks)
-
-                # hide the x-axis ticks and labels
-                ax.set_xlabel('Bins (lower-thresh)')
-                ax.set_ylabel(f'{y_col}')
-                ax.set_title('')
-
-        # adjust the layout of the subplots
-        fig.tight_layout()
-
-        # save the figure to a file
-        fig.savefig(eval_across_bins_graph_file_path, dpi=300)
-        self.logger.info(f"Finished generating plot image!")
+        self.drawer_writer_obj.create_combined_trials_csv(self.trial_eval_csv_files, self.trial_combined_csv_file)
+        self.drawer_writer_obj.create_combined_trials_csv(self.trial_eval_misk_csv_files, self.trial_combined_misk_csv_file)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_csv_files, self.trial_combined_graph_file_plt)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_csv_files, self.trial_combined_graph_file_plt)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt)
 
 
 if __name__ == "__main__":
