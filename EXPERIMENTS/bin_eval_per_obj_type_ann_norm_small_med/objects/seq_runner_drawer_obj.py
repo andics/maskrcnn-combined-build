@@ -28,7 +28,7 @@ class seqRunnerDrawerObj:
                 if idx == 0:
                     header_row = next(reader)
                     concatenated_rows.append(header_row)
-                # Add a row of "-" strings before the rows of the next CSV file are written
+                # Add a row of " " strings before the rows of the next CSV file are written
                 else:
                     concatenated_rows.append([' ' for _ in header_row])
                 # Append the rows to the concatenated_rows list
@@ -165,13 +165,11 @@ class seqRunnerDrawerObj:
                     all_x_data.extend(x_data.tolist())
                     all_y_data.extend(y_data.tolist())
 
-                # calculate the mean and standard deviation of the y-data at each unique x-value
-                x_unique, y_mean, y_std = scipy.stats.binned_statistic(all_x_data, all_y_data, statistic='mean',
-                                                                       bins=np.unique(all_x_data))
-
                 # create a Seaborn lineplot of the mean values with error bounds
-                sns.lineplot(x=x_unique, y=y_mean, ci='sd', ax=ax, color=colors[0])
-                ax.fill_between(x_unique, y_mean - y_std, y_mean + y_std, alpha=0.2, color=colors[0])
+                df = pd.DataFrame({'all_x_data': all_x_data, 'all_y_data': all_y_data})
+
+                # Create plot
+                sns.lineplot(data = df, x='all_x_data', y='all_y_data', ci='sd', ax=ax)
 
                 # set the title to the name of the y column
                 ax.set_title(y_col)

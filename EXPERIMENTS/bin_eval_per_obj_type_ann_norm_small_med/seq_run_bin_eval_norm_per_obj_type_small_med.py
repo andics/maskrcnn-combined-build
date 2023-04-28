@@ -278,8 +278,8 @@ class flowRunner:
         self.drawer_writer_obj.create_combined_trials_csv(self.trial_eval_misk_csv_files, self.trial_combined_misk_csv_file)
         self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_csv_files, self.trial_combined_graph_file_plt)
         self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt)
-        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_csv_files, self.trial_combined_graph_file_plt)
-        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_csv_files, self.trial_combined_graph_file_seaborn)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_seaborn)
 
 
 if __name__ == "__main__":
