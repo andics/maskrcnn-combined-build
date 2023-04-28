@@ -1,0 +1,4 @@
+The following json file contains min/max performances across all models and trials, but including experiments
+that did not contain large objects in their annotation files
+
+The performance for large objects is thus -1, which can de-rail large-objects-inclusive experiments

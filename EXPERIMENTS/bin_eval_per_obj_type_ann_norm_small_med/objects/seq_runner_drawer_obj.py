@@ -4,13 +4,24 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import seaborn as sns
-import scipy
+import json
 import pandas as pd
 
 class seqRunnerDrawerObj:
-    def __init__(self, logger, utils_helper):
+    _SCALER_MIN_MULT_FACTOR = 0.9
+    _SCALER_MAX_MULT_FACTOR = 1.1
+
+    def __init__(self, logger, utils_helper, scaler_file):
         self.logger = logger
         self.utils_helper = utils_helper
+        self.scaler_file = scaler_file
+
+        self.read_scaler_info()
+
+    def read_scaler_info(self):
+        # read the column range data from the .json file
+        with open(self.scaler_file, 'r') as f:
+            self.column_ranges = json.load(f)['columns']
 
     def create_combined_trials_csv(self, csv_files: T.List[str], path_to_save_combined_in: str):
         if os.path.exists(path_to_save_combined_in):
@@ -44,7 +55,7 @@ class seqRunnerDrawerObj:
 
 
     def generate_combined_results_graph_photo_plt(self, eval_across_bins_csv_file_paths: T.List[str],
-                                                  eval_across_bins_graph_file_path: str):
+                                                  eval_across_bins_graph_file_path: str, use_scaler: bool = False) -> None:
         # This function takes the generated .csv files and outputs a photo of the model performance graph
         if os.path.exists(eval_across_bins_graph_file_path):
             self.logger.info("CSV file with eval across bins already exists!")
@@ -70,6 +81,9 @@ class seqRunnerDrawerObj:
             if i < len(column_names_metrics):
                 y_col = column_names_metrics[i]
 
+                y_min = max(0, seqRunnerDrawerObj._SCALER_MIN_MULT_FACTOR * float(self.column_ranges[y_col]['min']))
+                y_max = min(1, seqRunnerDrawerObj._SCALER_MAX_MULT_FACTOR * float(self.column_ranges[y_col]['max']))
+
                 all_x_data = []
                 all_y_data = []
                 # plot data from each csv file with a different color
@@ -90,6 +104,10 @@ class seqRunnerDrawerObj:
 
                 # set the title to the name of the y column
                 ax.set_title(y_col)
+
+                # set the y-axis limits to the min and max values for the current column
+                if use_scaler:
+                    ax.set_ylim([y_min, y_max])
 
                 # hide the x and y axis labels and ticks
                 ax.set_xlabel('Bins (lower-thresh)')
@@ -128,7 +146,7 @@ class seqRunnerDrawerObj:
         self.logger.info(f"Finished generating plot image!")
 
     def generate_combined_results_graph_photo_seaborn(self, eval_across_bins_csv_file_paths: T.List[str],
-                                                  eval_across_bins_graph_file_path: str):
+                                                  eval_across_bins_graph_file_path: str, use_scaler: bool = False) -> None:
         # This function takes the generated .csv files and outputs a photo of the model performance graph
         if os.path.exists(eval_across_bins_graph_file_path):
             self.logger.info("CSV file with eval across bins already exists!")
@@ -154,6 +172,10 @@ class seqRunnerDrawerObj:
             if i < len(column_names_metrics):
                 y_col = column_names_metrics[i]
 
+                # get the min and max values for the current column and scale for display
+                y_min = max(0, seqRunnerDrawerObj._SCALER_MIN_MULT_FACTOR * float(self.column_ranges[y_col]['min']))
+                y_max = min(1, seqRunnerDrawerObj._SCALER_MAX_MULT_FACTOR * float(self.column_ranges[y_col]['max']))
+
                 all_x_data = []
                 all_y_data = []
                 # collect data from each csv file into a single list
@@ -169,10 +191,14 @@ class seqRunnerDrawerObj:
                 df = pd.DataFrame({'all_x_data': all_x_data, 'all_y_data': all_y_data})
 
                 # Create plot
-                sns.lineplot(data = df, x='all_x_data', y='all_y_data', ci='sd', ax=ax)
+                sns.lineplot(data=df, x='all_x_data', y='all_y_data', ci='sd', ax=ax)
 
                 # set the title to the name of the y column
                 ax.set_title(y_col)
+
+                # set the y-axis limits to the min and max values for the current column
+                if use_scaler:
+                    ax.set_ylim([y_min, y_max])
 
                 # hide the x and y axis labels and ticks
                 ax.set_xlabel('Bins (lower-thresh)')

@@ -152,6 +152,12 @@ class flowRunner:
                             required = False,
                             help='The number of trials with different subsets of the normalized annotations '
                                  'which will be performed. Each trials will be stored in its own trial_n folder')
+        parser.add_argument('-sf', '--scaler-file', nargs='?',
+                            default="/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/dataset_processing/calculate_perf_min_max/perf_w_full_res_ylarge_28.04/column_ranges.json",
+                            type=str,
+                            required = False,
+                            help='A .json file which specifies the min and max values that each metric achieves'
+                                 'across all models. Used to determine Seaborn graph scales')
 
         self.args = parser.parse_args()
         assert(self.args.perform_annotation_normalization == "True" or
@@ -180,6 +186,7 @@ class flowRunner:
         self.parent_storage_location = self.args.parent_storage_location
         self.experiment_folder_identificator = self.args.experiment_folder_identificator
         self.num_trials = self.args.num_trials
+        self.scaler_file = self.args.scaler_file
 
         self.experiment_name = self.model_name + "_" + str(float(self.bin_spacing)) + "_" +\
                                str(self.middle_boundary) + "_" + self.experiment_folder_identificator
@@ -205,7 +212,8 @@ class flowRunner:
         self.logger.info(f"  -  Main experiment folder: {self.main_experiment_dir}")
 
         self.drawer_writer_obj = seqRunnerDrawerObj(utils_helper = self.utils_helper,
-                                                    logger = self.logger)
+                                                    logger = self.logger,
+                                                    scaler_file = self.scaler_file)
 
     def generate_trial_folders_and_vars(self):
         self.trial_folders = []
@@ -277,9 +285,9 @@ class flowRunner:
         self.drawer_writer_obj.create_combined_trials_csv(self.trial_eval_csv_files, self.trial_combined_csv_file)
         self.drawer_writer_obj.create_combined_trials_csv(self.trial_eval_misk_csv_files, self.trial_combined_misk_csv_file)
         self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_csv_files, self.trial_combined_graph_file_plt)
-        self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_plt(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_plt, True)
         self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_csv_files, self.trial_combined_graph_file_seaborn)
-        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_seaborn)
+        self.drawer_writer_obj.generate_combined_results_graph_photo_seaborn(self.trial_eval_misk_csv_files, self.trial_combined_misk_graph_file_seaborn, True)
 
 
 if __name__ == "__main__":
