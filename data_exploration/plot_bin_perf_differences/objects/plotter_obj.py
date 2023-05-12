@@ -1,6 +1,6 @@
 import seaborn
 import os
-import sys
+import json
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,10 +24,15 @@ class modelDifferencePlotter:
     _BEGINNING_OF_CSV_METRICS_COLUMN_INDEX = 3
     _END_OF_CSV_METRICS_COLUMN_INDEX_REVERS = -4
 
+     # How much extra will be added to the max/min values
+    _SCALER_MAX_MULT_FACTOR_ADD = 0.1
+    _SCALER_MIN_MULT_FACTOR_ADD = 0.1
+
     def __init__(self, model_one_avg_perf_csv_path, model_two_avg_perf_csv_path, \
                  model_one_marg_perf_csv_path, model_two_marg_perf_csv_path,
                  marg_avg_perf_diff_csv_path, perf_diff_curves_file_path,
-                 model_one_eval_folder, model_two_eval_folder, utils_helper):
+                 model_one_eval_folder, model_two_eval_folder,
+                 utils_helper, scaler_file):
 
         self.model_one_avg_perf_csv_path = model_one_avg_perf_csv_path
         self.model_one_marg_perf_csv_path = model_one_marg_perf_csv_path
@@ -40,6 +45,7 @@ class modelDifferencePlotter:
         self.model_one_eval_folder = model_one_eval_folder
         self.model_two_eval_folder = model_two_eval_folder
         self.utils_helper = utils_helper
+        self.scaler_file = scaler_file
 
         self._s = modelDifferencePlotter._BEGINNING_OF_CSV_METRICS_COLUMN_INDEX
         self._e = modelDifferencePlotter._END_OF_CSV_METRICS_COLUMN_INDEX_REVERS
@@ -48,10 +54,17 @@ class modelDifferencePlotter:
         self.csv_files_model_1 = glob.glob(os.path.join(self.model_one_eval_folder, modelDifferencePlotter._CSV_NAMING_PATTERN))
         self.csv_files_model_2 = glob.glob(os.path.join(self.model_two_eval_folder, modelDifferencePlotter._CSV_NAMING_PATTERN))
 
-        assert len(self.csv_files_model_1) == 1 and len(self.csv_files_model_2) == 1
+        if not (len(self.csv_files_model_1) == 1 and len(self.csv_files_model_2) == 1):
+            return False
         self.csv_files_model_1 = self.csv_files_model_1[0]
         self.csv_files_model_2 = self.csv_files_model_2[0]
 
+        return True
+
+    def read_scaler_info(self):
+        # read the column range data from the .json file
+        with open(self.scaler_file, 'r') as f:
+            self.column_ranges = json.load(f)['columns']
 
     def create_avg_marg_and_diff_dataframes(self):
         df_model_1_avg_metrics_per_bin_across_trials = self.create_average_value_dataframes(self.csv_files_model_1)
@@ -117,15 +130,17 @@ class modelDifferencePlotter:
         # Compute the marginal changes for each column
         marginal_changes = df[numeric_cols].diff()
 
-        # Replace the first row with zeros
+        # Replace the first row with zeros, since we cannot calculate marginal gain for datapoint 0
         marginal_changes.iloc[0] = 0
+
         # Combine the marginal changes with the non-numeric columns
         df.iloc[:, self._s:self._e] = marginal_changes
 
         return df
 
 
-    def generate_results_graph_photo(self, eval_across_bins_graph_file_path, differnce_df):
+    def generate_results_graph_photo(self, eval_across_bins_graph_file_path, differnce_df,
+                                     use_scaler = True):
         # This function takes the generated .csv file and outputs a photo of the model performance graph
         if os.path.exists(eval_across_bins_graph_file_path):
             print("Graph file with eval across bins already exists!")
@@ -147,6 +162,7 @@ class modelDifferencePlotter:
             x_data = data[x_col].values.astype(float)
             if i < len(column_names_metrics):
                 y_col = column_names_metrics[i]
+
                 y_data = data[y_col].values
 
                 # compute the rolling average with window of 2
@@ -158,6 +174,19 @@ class modelDifferencePlotter:
 
                 # set the title to the name of the y column
                 ax.set_title(y_col)
+
+                # set the y-axis limits to the min and max values for the current column
+                if use_scaler:
+                    # get the min and max values for the current column and scale for display
+                    y_min = self.column_ranges[y_col]['min'] - \
+                            modelDifferencePlotter._SCALER_MIN_MULT_FACTOR_ADD * abs(
+                        float(self.column_ranges[y_col]['min']))
+                    y_max = self.column_ranges[y_col]['max'] + \
+                            modelDifferencePlotter._SCALER_MAX_MULT_FACTOR_ADD * abs(
+                        float(self.column_ranges[y_col]['max']))
+                    y_min = max(-1, y_min)
+                    y_max = min(1, y_max)
+                    ax.set_ylim([y_min, y_max])
 
                 # hide the x and y-axis labels and ticks
                 ax.set_xlabel('Bins (lower-thresh)')

@@ -1,0 +1,2 @@
+The following script creates a .json file containing the min/max values of each performance metric
+as read from the bin experiment eval.csv files

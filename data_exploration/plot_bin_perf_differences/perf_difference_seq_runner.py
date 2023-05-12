@@ -24,8 +24,8 @@ class flowRunner:
     #First string is model prefix, second is bin high-res area size
     _MODEL_AVG_PERF_CSV_FILE_NAME_PATTERN = "%s_avg_pref_%s.csv"
     _MODEL_MARG_PERF_CSV_FILE_NAME_PATTERN = "%s_marg_of_avg_pref_%s.csv"
-    _PERF_DIFF_CSV_FILE_NAME_PATTERN = "perf_diff_%s.csv"
-    _PERF_DIFF_PNG_FILE_NAME_PATTERN = "perf_diff_%s.png"
+    _PERF_DIFF_CSV_FILE_NAME_PATTERN = "perf_diff_of_marg_of_avg_%s.csv"
+    _PERF_DIFF_PNG_FILE_NAME_PATTERN = "perf_diff_of_marg_of_avg_%s.png"
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='Potential arguments for complete resolution-bin evaluation pipeline')
@@ -49,12 +49,19 @@ class flowRunner:
                             type = str,
                             default="Q:/Projects/Variable_resolution/Programming/maskrcnn-combined-build/data_exploration/plot_bin_perf_differences/plots_and_csv",
                             help='The general directory in which all perf. difference curves will be stored')
+        parser.add_argument('-sf', '--scaler-file', nargs='?',
+                            required=False,
+                            type=str,
+                            default="Q:/Projects/Variable_resolution/Programming/maskrcnn-combined-build/dataset_processing/calculate_marg_perf_diff_min_max/marg_avg_perf_diff_var_equiconst_12.05/column_ranges.json",
+                            help='The file that will be used to create boundaries on each plot. Needs to be created after generating the'
+                                 'plots and csv-s at least once, so as to se the different values they exhibit on the plots')
 
         self.args = parser.parse_args()
         self.model_one_prefix = self.args.model_one_prefix
         self.model_two_prefix = self.args.model_two_prefix
         self.general_eval_dir = self.args.general_eval_dir
         self.plots_n_csv_store_dir = self.args.plots_n_csv_store_dir
+        self.scaler_file = self.args.scaler_file
 
 
     def setup_objects_and_file_structure(self):
@@ -146,21 +153,29 @@ class flowRunner:
                                            self.hr_area_sizes):
 
             print(f"Working on {hr_area} for {self.model_one_prefix}-{self.model_two_prefix}")
-            _model_difference_plotter = modelDifferencePlotter(model_one_avg_perf_csv_path = model_one_avg_perf_csv_path,
-                                                               model_two_avg_perf_csv_path = model_two_avg_perf_csv_path,
-                                                               model_one_marg_perf_csv_path = model_one_marg_perf_csv_path,
-                                                               model_two_marg_perf_csv_path = model_two_marg_perf_csv_path,
-                                                               marg_avg_perf_diff_csv_path = marg_avg_perf_diff_csv_path,
-                                                               perf_diff_curves_file_path = perf_diff_curves_file_path,
-                                                               model_one_eval_folder = m1_m2_exp_folder_pair[0],
-                                                               model_two_eval_folder = m1_m2_exp_folder_pair[1],
-                                                               utils_helper = self.utils_helper)
-            _model_difference_plotter.setup_objects_and_find_files()
-            _model_difference_plotter.create_avg_marg_and_diff_dataframes()
-            _model_difference_plotter.generate_results_graph_photo(_model_difference_plotter.perf_diff_curve_path,
-                                                                   _model_difference_plotter.marg_perf_difference_df)
-            print(f"Finished {hr_area}, moving to next (if any) ...")
-
+            if not os.path.exists(perf_diff_curves_file_path):
+                _model_difference_plotter = modelDifferencePlotter(model_one_avg_perf_csv_path = model_one_avg_perf_csv_path,
+                                                                   model_two_avg_perf_csv_path = model_two_avg_perf_csv_path,
+                                                                   model_one_marg_perf_csv_path = model_one_marg_perf_csv_path,
+                                                                   model_two_marg_perf_csv_path = model_two_marg_perf_csv_path,
+                                                                   marg_avg_perf_diff_csv_path = marg_avg_perf_diff_csv_path,
+                                                                   perf_diff_curves_file_path = perf_diff_curves_file_path,
+                                                                   model_one_eval_folder = m1_m2_exp_folder_pair[0],
+                                                                   model_two_eval_folder = m1_m2_exp_folder_pair[1],
+                                                                   utils_helper = self.utils_helper,
+                                                                   scaler_file = self.scaler_file)
+                if _model_difference_plotter.setup_objects_and_find_files():
+                    _model_difference_plotter.read_scaler_info()
+                    _model_difference_plotter.create_avg_marg_and_diff_dataframes()
+                    _model_difference_plotter.generate_results_graph_photo(_model_difference_plotter.perf_diff_curve_path,
+                                                                           _model_difference_plotter.marg_perf_difference_df, \
+                                                                           use_scaler = True)
+                    print(f"Finished {hr_area}, moving to next (if any) ...")
+                else:
+                    print(f"Encountered problem with {hr_area} bin while finding _on_NUM.csv files. Moving to next (if any) ...")
+            else:
+                print(f"Graph photo exists. Moving to next bin (if any) ...")
+                continue
 
 
 

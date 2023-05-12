@@ -1,0 +1,2 @@
+Make the scaler internal to the comparison mechanism
+I.e. Make it run automatically after csv files are generated
