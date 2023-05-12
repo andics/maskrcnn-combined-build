@@ -1,0 +1,1 @@
+/home/projects/bagon/andreyg/Projects/Variable_Resolution/Programming/maskrcnn_combined/EXPERIMENTS/bin_eval_per_obj_type_ann_norm_small_med/evaluations/equiconst_pretrained_resnet_norm_0.1_190_an_ylarge_nfp

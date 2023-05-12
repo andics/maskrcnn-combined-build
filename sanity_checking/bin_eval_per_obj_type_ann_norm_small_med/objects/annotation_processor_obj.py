@@ -177,7 +177,7 @@ class annotationProcessor:
             _to_keep_this_annotation = True
             logging.debug(f"Annotation {annotation['id']} on image {annotation['image_id']} was kept")
         else:
-            logging.debug(f"Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
+            logging.debug(f"SANITY_CHECKER: Annotation {annotation['id']} on image {annotation['image_id']} was deleted")
         #----------
 
         if _to_keep_this_annotation:
