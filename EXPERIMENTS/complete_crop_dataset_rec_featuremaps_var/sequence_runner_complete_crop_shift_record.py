@@ -50,10 +50,10 @@ class flowRunner:
                             type=str,
                             required = False,
                             help='The new location where the shifted dataset will be located',
-                            default='trial_5')
+                            default='trial_1')
         parser.add_argument('-ll', '--lower-lengths', nargs='*',
                             type=float,
-                            default = [0.05, 0.55],
+                            default = [0.02, 0.52],
                             required = False,
                             help='The cropping of the image to be performed, first of the shifted then centered dataset')
         parser.add_argument('-ul', '--upper-lengths', nargs='*',
@@ -71,7 +71,7 @@ class flowRunner:
                             type=str,
                             required = False,
                             help='The location from which the tensor will be extracted: stem or layer3',
-                            default='stem')
+                            default='layer3')
         parser.add_argument('-compress', '--compress', nargs='?',
                             type=lambda x:bool(strtobool(x)),
                             const=True,
@@ -81,12 +81,13 @@ class flowRunner:
                                  '[slice, 0, 0]: slice mean activation'
                                  '[slice, 1, 0]: slice median activation'
                                  '[slice, 2, 0]: slice max activation'
-                                 '[slice, 3, 0]: slice st. dev. activation'
-                                 '[1024x4x1]: final compressed tensor')
+                                 '[slice, 3, 0]: slice min activation'
+                                 '[slice, 4, 0]: slice st. dev. activation'
+                                 '[1024x5x1]: final compressed tensor')
         parser.add_argument('-batchnorm', '--batchnorm', nargs='?',
                             type=lambda x:bool(strtobool(x)),
-                            const=True,
-                            default=True,
+                            const=False,
+                            default=False,
                             help='Whether to take the Tensors after batch norm (True), or before  batch norm (False)')
 
         args = parser.parse_args()
