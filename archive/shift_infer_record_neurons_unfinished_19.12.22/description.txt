@@ -1,0 +1,5 @@
+The following is a script which picks out the 5-25% of the image length
+from the shifted Variable resolution, and places it in the middle of the image.
+
+This is part of a larger script used to record the featuremaps of the network when given
+high vs low resolution input

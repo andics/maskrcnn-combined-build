@@ -233,18 +233,20 @@ class imageAndPredictionProcessor:
         if self.compress_tensors:
             logging.info("About to compress tensor...")
             num_channels = tensor.shape[0]
-            numpy_array_to_fill = np.zeros((num_channels, 4, 1), dtype=np.float32)
+            numpy_array_to_fill = np.zeros((num_channels, 5, 1), dtype=np.float32)
             for i in range(num_channels):
                 current_layer_featuremap_numpy = tensor[i, :, :].numpy()
                 current_layer_featuremap_mean = np.mean(current_layer_featuremap_numpy)
                 current_layer_featuremap_median = np.median(current_layer_featuremap_numpy)
                 current_layer_featuremap_max = np.max(current_layer_featuremap_numpy)
+                current_layer_featuremap_min = np.min(current_layer_featuremap_numpy)
                 current_layer_featuremap_std = np.std(current_layer_featuremap_numpy)
 
                 numpy_array_to_fill[i, 0, 0] = current_layer_featuremap_mean
                 numpy_array_to_fill[i, 1, 0] = current_layer_featuremap_median
                 numpy_array_to_fill[i, 2, 0] = current_layer_featuremap_max
-                numpy_array_to_fill[i, 3, 0] = current_layer_featuremap_std
+                numpy_array_to_fill[i, 3, 0] = current_layer_featuremap_min
+                numpy_array_to_fill[i, 4, 0] = current_layer_featuremap_std
 
                 #self.utils_helper.display_multi_image_collage(((current_layer_featuremap_numpy, f"Extracted featuremap"),),[1,1])
 
