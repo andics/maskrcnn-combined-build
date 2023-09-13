@@ -192,6 +192,10 @@ class seqRunnerDrawerObj:
 
                 # Create plot
                 sns.lineplot(data=df, x='all_x_data', y='all_y_data', ci='sd', ax=ax)
+                
+                slope, intercept = np.polyfit(all_x_data, all_y_data, 1)
+                line_of_best_fit_y = slope * np.array(all_x_data) + intercept
+                ax.plot(all_x_data, line_of_best_fit_y, '-', linewidth=1.5, color='black', label='L.b.f.')
 
                 # set the title to the name of the y column
                 ax.set_title(y_col)
