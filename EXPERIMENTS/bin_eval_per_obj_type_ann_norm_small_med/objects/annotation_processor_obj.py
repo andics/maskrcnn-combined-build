@@ -23,6 +23,7 @@ class annotationProcessor:
                  new_annotations_file_path,
                  filter_threshold_array,
                  middle_boundary,
+                 sample_ratio_range,
                  utils_helper,
                  summary_file_name):
         ''':param original_annotations_path - path to .json file
@@ -34,6 +35,7 @@ class annotationProcessor:
         self.new_annotations_file_path = new_annotations_file_path
         self.filter_threshold_array = filter_threshold_array
         self.middle_boundary = middle_boundary
+        self.sample_ratio_range = sample_ratio_range
         self.utils_helper = utils_helper
         self.summary_file_name = summary_file_name
 
@@ -46,7 +48,7 @@ class annotationProcessor:
         self.coco = COCO(self.original_annotations_path)
         logging.debug(f"Loaded JSON annotation data from: {self.original_annotations_path}")
 
-    def filter_annotations_w_wrong_area_ratio(self):
+    def filter_annotations_w_wrong_area_and_sample_ratio(self):
         #Filters the annotations which have a high-res-area/total-area ratio not compatible with the
         #current bin
         #E.g. If bin (self.filter_threshold_array) is [0.0, 0.1] => all segmentations with more than 10%

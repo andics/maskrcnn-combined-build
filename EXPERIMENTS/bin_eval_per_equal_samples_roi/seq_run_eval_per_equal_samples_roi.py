@@ -174,6 +174,7 @@ class flowRunner:
         self.annotation_normalization_large_objects_present = True if \
             self.args.annotation_normalization_large_objects_present == "True" else False
 
+        self.sample_ratio_range = self.args.sample_ratio_range
         self.sample_ratio_sensitivity = self.args.sample_ratio_sensitivity
         self.annotation_normalization_factor = self.args.annotation_normalization_factor
         self.annotation_normalization_random_seed = self.args.annotation_normalization_random_seed if \
@@ -233,6 +234,7 @@ class flowRunner:
                                                   bin_threshold = self.bin_threshold,
                                                   filter_preds = self.filter_preds,
                                                   perform_annotation_randomization= self.perform_annotation_randomization,
+                                                  sample_ratio_range = self.sample_ratio_range,
                                                   sample_ratio_sensitivity = self.sample_ratio_sensitivity,
                                                   annotation_normalization_large_objects_present = self.annotation_normalization_large_objects_present,
                                                   annotation_normalization_factor = self.annotation_normalization_factor,

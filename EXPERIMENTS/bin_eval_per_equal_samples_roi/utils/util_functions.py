@@ -298,6 +298,10 @@ class Utilities_helper(object):
         f.close()
 
 
+    def copy_file_from_to(self, source_path, destination_path):
+        '''A simple function which copies a file from one location to another'''
+        shutil.copy(source_path, destination_path)
+
     def find_element_with_annotation_id(self, json_object, annotation_id):
         annotation_id = str(annotation_id)
         #Delete the first character from the annotation ID as it correspons to the channel

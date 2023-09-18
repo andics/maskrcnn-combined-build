@@ -69,6 +69,7 @@ class trialRunnerObj:
                  bin_threshold,
                  filter_preds,
                  perform_annotation_randomization,
+                 sample_ratio_range,
                  sample_ratio_sensitivity,
                  annotation_normalization_large_objects_present,
                  annotation_normalization_factor,
@@ -87,6 +88,7 @@ class trialRunnerObj:
         self.bin_threshold = bin_threshold
         self.filter_preds = filter_preds
         self.perform_annotation_randomization = perform_annotation_randomization
+        self.sample_ratio_range = sample_ratio_range
         self.sample_ratio_sensitivity = sample_ratio_sensitivity
         self.annotation_normalization_large_objects_present = annotation_normalization_large_objects_present
         self.annotation_normalization_factor = annotation_normalization_factor
@@ -213,14 +215,18 @@ class trialRunnerObj:
                                                                   new_annotations_file_path = gen_annotation_file_path,
                                                                   filter_threshold_array = (lower_threshold, upper_threshold),
                                                                   middle_boundary = self.middle_boundary,
+                                                                  sample_ratio_range = self.sample_ratio_range,
                                                                   utils_helper = self.utils_helper,
                                                                   summary_file_name = trialRunnerObj._GENERATED_ANNOTATION_FILES_SUMMARIES)
                 annotation_processor_object.read_annotations()
-                annotation_processor_object.filter_annotations_w_wrong_area_ratio()
+                annotation_processor_object.filter_annotations_w_wrong_area_and_sample_ratio()
                 annotation_processor_object.write_new_annotations_to_disk()
                 annotation_processor_object.summarize_annotation_file()
             else: logging.info("Bin annotation file exists. Moving to prediction file processing -->>")
             #---PREDICTION-PROCESSING---
+            self.utils_helper.copy_file_from_to(source_path = self.org_predictions_location,
+                                                dest_path = gen_prediction_file_path)
+            logging.info("Copied original predictions locally.")
             logging.info("NOT performing prediction processing. Moving to evaluation ->>")
             #---------------------------
             #---BIN-EVALUATION---
